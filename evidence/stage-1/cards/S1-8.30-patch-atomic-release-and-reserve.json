@@ -160,7 +160,7 @@
  },
  "expected": "every expectation in the replay holds",
  "observed": "read-back step 1 GET /availability?restaurant_id=r_anker&date=2026-12-10&party_size=2: $.slots[0].available_table_ids: expected [\"t_1\", \"t_2\"], observed [\"t_2\"]",
- "status": "open",
+ "status": "withdrawn",
  "at": "2026-10-04T13:01:35+00:00",
  "trail": [
   {
@@ -209,5 +209,7 @@
     "body": "{\"restaurant_id\": \"r_anker\", \"date\": \"2026-12-10\", \"timezone\": \"Europe/Berlin\", \"slots\": [{\"starts_at_local\": \"2026-12-10T18:00\", \"starts_at\": \"2026-12-10T18:00:00+01:00\", \"available_table_ids\": [\"t_2\"]}, {\"starts_at_local\": \"2026-12-10T18:30\", \"starts_at\": \"2026-12-10T18:30:00+01:00\", \"available_table_ids\": [\"t_2\"]}, {\"starts_at_local\": \"2026-12-10T19:00\", \"starts_at\": \"2026-12-10T19:00:00+01:00\u2026"
    }
   }
- ]
+ ],
+ "withdrawn_reason": "the check amended a 90-minute reservation from 18:00 to 19:00, only a 60-minute gap; by the half-open occupancy rule in S1.1.6 a hypothetical re-booking of the freed 18:00 slot would occupy [18:00,19:30) which genuinely overlaps the new [19:00,20:30) occupancy, so t_1 correctly stays unavailable at 18:00 regardless of whether release-and-reserve is atomic. Verified with a 120-minute gap (18:00 to 20:00, >= the 90-minute duration): the old slot (18:00) correctly shows free and the new occupancy correctly blocks only the slots that actually overlap it. The service's atomic release-and-reserve is correct; my check's chosen gap was the bug.",
+ "withdrawn_at": "2026-10-04T13:10:39+00:00"
 }
