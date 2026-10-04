@@ -16,13 +16,46 @@
      "json": {
       "users": [
        {
-        "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "email": "longid@example.com",
+        "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "email": "d1@example.com",
         "password": "correct horse",
-        "display_name": "Long"
+        "display_name": "D1"
        }
       ],
-      "restaurants": [],
+      "restaurants": [
+       {
+        "id": "r_anker",
+        "name": "Zum Anker",
+        "timezone": "Europe/Berlin",
+        "slot_minutes": 30,
+        "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 120,
+        "opening_hours": [
+         {
+          "weekday": "thu",
+          "opens": "18:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "18:00",
+          "closes": "23:30"
+         }
+        ],
+        "tables": [
+         {
+          "id": "t_1",
+          "label": "1",
+          "capacity": 2
+         },
+         {
+          "id": "t_2",
+          "label": "2",
+          "capacity": 4
+         }
+        ]
+       }
+      ],
       "reservations": []
      }
     },
@@ -38,7 +71,7 @@
  "expected": "every expectation in the replay holds",
  "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
  "status": "open",
- "at": "2026-10-04T11:52:03+00:00",
+ "at": "2026-10-04T12:50:53+00:00",
  "trail": [
   {
    "request": {
@@ -47,13 +80,46 @@
     "json": {
      "users": [
       {
-       "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-       "email": "longid@example.com",
+       "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+       "email": "d1@example.com",
        "password": "[masked]",
-       "display_name": "Long"
+       "display_name": "D1"
       }
      ],
-     "restaurants": [],
+     "restaurants": [
+      {
+       "id": "r_anker",
+       "name": "Zum Anker",
+       "timezone": "Europe/Berlin",
+       "slot_minutes": 30,
+       "reservation_duration_minutes": 90,
+       "cancellation_cutoff_minutes": 120,
+       "opening_hours": [
+        {
+         "weekday": "thu",
+         "opens": "18:00",
+         "closes": "23:00"
+        },
+        {
+         "weekday": "fri",
+         "opens": "18:00",
+         "closes": "23:30"
+        }
+       ],
+       "tables": [
+        {
+         "id": "t_1",
+         "label": "1",
+         "capacity": 2
+        },
+        {
+         "id": "t_2",
+         "label": "2",
+         "capacity": 4
+        }
+       ]
+      }
+     ],
      "reservations": []
     }
    },

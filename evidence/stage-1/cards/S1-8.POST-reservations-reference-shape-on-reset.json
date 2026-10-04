@@ -5,7 +5,7 @@
  "to": "coordinator",
  "revision": "706e50850c889759ac99514345b6b1cf89f28a3f",
  "check_id": "S1-8.POST-reservations-reference-shape-on-reset",
- "sentence": "`reference` is 6 to 12 characters of `A-Z0-9`, unique across all reservations, and never changes.",
+ "sentence": "reference is 6 to 12 characters of A-Z0-9, unique across all reservations, and never changes.",
  "kind": "literal",
  "replay": {
   "steps": [
@@ -16,10 +16,16 @@
      "json": {
       "users": [
        {
-        "id": "u_ada",
-        "email": "ada@example.com",
+        "id": "u_d1",
+        "email": "d1@example.com",
         "password": "correct horse",
-        "display_name": "Ada"
+        "display_name": "D1"
+       },
+       {
+        "id": "u_d2",
+        "email": "d2@example.com",
+        "password": "correct horse",
+        "display_name": "D2"
        }
       ],
       "restaurants": [
@@ -35,6 +41,11 @@
           "weekday": "thu",
           "opens": "18:00",
           "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "18:00",
+          "closes": "23:30"
          }
         ],
         "tables": [
@@ -42,133 +53,25 @@
           "id": "t_1",
           "label": "1",
           "capacity": 2
+         },
+         {
+          "id": "t_2",
+          "label": "2",
+          "capacity": 4
          }
         ]
        }
       ],
       "reservations": [
        {
-        "id": "res_bad1",
+        "id": "res_badref",
         "reference": "x",
-        "user_id": "u_ada",
+        "user_id": "u_d1",
         "restaurant_id": "r_anker",
         "table_id": "t_1",
-        "starts_at_local": "2026-09-24T19:00",
-        "party_size": 2
-       }
-      ]
-     }
-    },
-    "expect": {
-     "status": 422,
-     "json": {
-      "$.error.code": "validation_failed"
-     }
-    }
-   },
-   {
-    "request": {
-     "method": "POST",
-     "path": "/_test/reset",
-     "json": {
-      "users": [
-       {
-        "id": "u_ada",
-        "email": "ada@example.com",
-        "password": "correct horse",
-        "display_name": "Ada"
-       }
-      ],
-      "restaurants": [
-       {
-        "id": "r_anker",
-        "name": "Zum Anker",
-        "timezone": "Europe/Berlin",
-        "slot_minutes": 30,
-        "reservation_duration_minutes": 90,
-        "cancellation_cutoff_minutes": 120,
-        "opening_hours": [
-         {
-          "weekday": "thu",
-          "opens": "18:00",
-          "closes": "23:00"
-         }
-        ],
-        "tables": [
-         {
-          "id": "t_1",
-          "label": "1",
-          "capacity": 2
-         }
-        ]
-       }
-      ],
-      "reservations": [
-       {
-        "id": "res_bad2",
-        "reference": "lower01",
-        "user_id": "u_ada",
-        "restaurant_id": "r_anker",
-        "table_id": "t_1",
-        "starts_at_local": "2026-09-24T19:00",
-        "party_size": 2
-       }
-      ]
-     }
-    },
-    "expect": {
-     "status": 422,
-     "json": {
-      "$.error.code": "validation_failed"
-     }
-    }
-   },
-   {
-    "request": {
-     "method": "POST",
-     "path": "/_test/reset",
-     "json": {
-      "users": [
-       {
-        "id": "u_ada",
-        "email": "ada@example.com",
-        "password": "correct horse",
-        "display_name": "Ada"
-       }
-      ],
-      "restaurants": [
-       {
-        "id": "r_anker",
-        "name": "Zum Anker",
-        "timezone": "Europe/Berlin",
-        "slot_minutes": 30,
-        "reservation_duration_minutes": 90,
-        "cancellation_cutoff_minutes": 120,
-        "opening_hours": [
-         {
-          "weekday": "thu",
-          "opens": "18:00",
-          "closes": "23:00"
-         }
-        ],
-        "tables": [
-         {
-          "id": "t_1",
-          "label": "1",
-          "capacity": 2
-         }
-        ]
-       }
-      ],
-      "reservations": [
-       {
-        "id": "res_bad3",
-        "reference": "TOO-LONG-WITH-DASH",
-        "user_id": "u_ada",
-        "restaurant_id": "r_anker",
-        "table_id": "t_1",
-        "starts_at_local": "2026-09-24T19:00",
-        "party_size": 2
+        "starts_at_local": "2026-10-08T18:00",
+        "party_size": 2,
+        "status": "confirmed"
        }
       ]
      }
@@ -185,7 +88,7 @@
  "expected": "every expectation in the replay holds",
  "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
  "status": "open",
- "at": "2026-10-04T11:52:03+00:00",
+ "at": "2026-10-04T12:51:03+00:00",
  "trail": [
   {
    "request": {
@@ -194,10 +97,16 @@
     "json": {
      "users": [
       {
-       "id": "u_ada",
-       "email": "ada@example.com",
+       "id": "u_d1",
+       "email": "d1@example.com",
        "password": "[masked]",
-       "display_name": "Ada"
+       "display_name": "D1"
+      },
+      {
+       "id": "u_d2",
+       "email": "d2@example.com",
+       "password": "[masked]",
+       "display_name": "D2"
       }
      ],
      "restaurants": [
@@ -213,6 +122,11 @@
          "weekday": "thu",
          "opens": "18:00",
          "closes": "23:00"
+        },
+        {
+         "weekday": "fri",
+         "opens": "18:00",
+         "closes": "23:30"
         }
        ],
        "tables": [
@@ -220,19 +134,25 @@
          "id": "t_1",
          "label": "1",
          "capacity": 2
+        },
+        {
+         "id": "t_2",
+         "label": "2",
+         "capacity": 4
         }
        ]
       }
      ],
      "reservations": [
       {
-       "id": "res_bad1",
+       "id": "res_badref",
        "reference": "x",
-       "user_id": "u_ada",
+       "user_id": "u_d1",
        "restaurant_id": "r_anker",
        "table_id": "t_1",
-       "starts_at_local": "2026-09-24T19:00",
-       "party_size": 2
+       "starts_at_local": "2026-10-08T18:00",
+       "party_size": 2,
+       "status": "confirmed"
       }
      ]
     }

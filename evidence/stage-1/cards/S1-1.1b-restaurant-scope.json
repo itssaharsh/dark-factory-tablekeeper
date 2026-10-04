@@ -16,10 +16,16 @@
      "json": {
       "users": [
        {
-        "id": "u_ada",
-        "email": "ada@example.com",
+        "id": "u_d1",
+        "email": "d1@example.com",
         "password": "correct horse",
-        "display_name": "Ada"
+        "display_name": "D1"
+       },
+       {
+        "id": "u_d2",
+        "email": "d2@example.com",
+        "password": "correct horse",
+        "display_name": "D2"
        }
       ],
       "restaurants": [
@@ -35,9 +41,19 @@
           "weekday": "thu",
           "opens": "18:00",
           "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "18:00",
+          "closes": "23:30"
          }
         ],
         "tables": [
+         {
+          "id": "t_1",
+          "label": "1",
+          "capacity": 2
+         },
          {
           "id": "t_2",
           "label": "2",
@@ -46,17 +62,22 @@
         ]
        },
        {
-        "id": "r_berlin2",
-        "name": "Spree Table",
-        "timezone": "Europe/Berlin",
+        "id": "r_ny",
+        "name": "NY Diner",
+        "timezone": "America/New_York",
         "slot_minutes": 30,
         "reservation_duration_minutes": 90,
         "cancellation_cutoff_minutes": 120,
         "opening_hours": [
          {
           "weekday": "thu",
-          "opens": "18:00",
+          "opens": "11:00",
           "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "11:00",
+          "closes": "23:30"
          }
         ],
         "tables": [
@@ -80,15 +101,41 @@
      "method": "POST",
      "path": "/auth/login",
      "json": {
-      "email": "ada@example.com",
+      "email": "d1@example.com",
       "password": "correct horse"
      }
     },
     "expect": {
-     "status": 200
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
     },
     "save": {
-     "token": "$.token"
+     "tok1": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "d2@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tok2": "$.token"
     }
    }
   ],
@@ -98,18 +145,21 @@
      "method": "POST",
      "path": "/reservations",
      "headers": {
-      "Authorization": "Bearer {{token}}",
-      "Idempotency-Key": "scope-check-anker-1"
+      "Authorization": "Bearer {{tok1}}",
+      "Idempotency-Key": "ik-scope-3a"
      },
      "json": {
       "restaurant_id": "r_anker",
       "table_id": "t_2",
-      "starts_at_local": "2026-09-24T19:00",
+      "starts_at_local": "2026-10-08T19:00",
       "party_size": 4
      }
     },
     "expect": {
-     "status": 201
+     "status": 201,
+     "json": {
+      "$.starts_at": "2026-10-08T19:00:00+02:00"
+     }
     }
    },
    {
@@ -117,39 +167,42 @@
      "method": "POST",
      "path": "/reservations",
      "headers": {
-      "Authorization": "Bearer {{token}}",
-      "Idempotency-Key": "scope-check-berlin2-1"
+      "Authorization": "Bearer {{tok2}}",
+      "Idempotency-Key": "ik-scope-3b"
      },
      "json": {
-      "restaurant_id": "r_berlin2",
+      "restaurant_id": "r_ny",
       "table_id": "t_2",
-      "starts_at_local": "2026-09-24T19:00",
+      "starts_at_local": "2026-10-08T13:00",
       "party_size": 4
      }
     },
     "expect": {
-     "status": 201
+     "status": 201,
+     "json": {
+      "$.starts_at": "2026-10-08T13:00:00-04:00"
+     }
     }
    }
   ]
  },
  "expected": "every expectation in the replay holds",
- "observed": "step 2 POST /reservations: status: expected 201, observed 409",
+ "observed": "step 2 POST /reservations: status: expected 201, observed 409; step 2 POST /reservations: $.starts_at: expected \"2026-10-08T13:00:00-04:00\", observed missing",
  "status": "open",
- "at": "2026-10-04T11:52:03+00:00",
+ "at": "2026-10-04T12:50:47+00:00",
  "trail": [
   {
    "request": {
     "method": "POST",
     "path": "/auth/login",
     "json": {
-     "email": "ada@example.com",
+     "email": "d2@example.com",
      "password": "[masked]"
     }
    },
    "response": {
     "status": 200,
-    "body": "{\"user_id\": \"u_ada\", \"display_name\": \"Ada\", \"token\": \"{{token}}\"}"
+    "body": "{\"user_id\": \"u_d2\", \"display_name\": \"D2\", \"token\": \"{{tok2}}\"}"
    }
   },
   {
@@ -157,19 +210,19 @@
     "method": "POST",
     "path": "/reservations",
     "headers": {
-     "Authorization": "Bearer {{token}}",
-     "Idempotency-Key": "scope-check-anker-1"
+     "Authorization": "Bearer {{tok1}}",
+     "Idempotency-Key": "ik-scope-3a"
     },
     "json": {
      "restaurant_id": "r_anker",
      "table_id": "t_2",
-     "starts_at_local": "2026-09-24T19:00",
+     "starts_at_local": "2026-10-08T19:00",
      "party_size": 4
     }
    },
    "response": {
     "status": 201,
-    "body": "{\"reservation_id\": \"res_12bf3a2af431376ec9a4\", \"reference\": \"1BEO5PLC\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_2\", \"party_size\": 4, \"status\": \"confirmed\", \"starts_at_local\": \"2026-09-24T19:00\", \"starts_at\": \"2026-09-24T19:00:00+02:00\", \"ends_at\": \"2026-09-24T20:30:00+02:00\", \"created_at\": \"2026-10-04T11:52:03+00:00\"}"
+    "body": "{\"reservation_id\": \"res_efd957423f3f1bfd4dac\", \"reference\": \"2M07J60E\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_2\", \"party_size\": 4, \"status\": \"confirmed\", \"starts_at_local\": \"2026-10-08T19:00\", \"starts_at\": \"2026-10-08T19:00:00+02:00\", \"ends_at\": \"2026-10-08T20:30:00+02:00\", \"created_at\": \"2026-10-04T12:50:47+00:00\"}"
    }
   },
   {
@@ -177,13 +230,13 @@
     "method": "POST",
     "path": "/reservations",
     "headers": {
-     "Authorization": "Bearer {{token}}",
-     "Idempotency-Key": "scope-check-berlin2-1"
+     "Authorization": "Bearer {{tok2}}",
+     "Idempotency-Key": "ik-scope-3b"
     },
     "json": {
-     "restaurant_id": "r_berlin2",
+     "restaurant_id": "r_ny",
      "table_id": "t_2",
-     "starts_at_local": "2026-09-24T19:00",
+     "starts_at_local": "2026-10-08T13:00",
      "party_size": 4
     }
    },
