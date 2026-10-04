@@ -78,6 +78,21 @@ def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
     assert resp.error_code == "validation_failed"
 
 
+def test_reset_rejects_opening_hours_that_cross_midnight(anon):
+    resp = anon.post("/_test/reset", json_body={
+        "users": [],
+        "restaurants": [{
+            "id": "r_bad", "name": "Bad", "timezone": "Europe/Berlin", "slot_minutes": 30,
+            "reservation_duration_minutes": 90, "cancellation_cutoff_minutes": 120,
+            "opening_hours": [{"weekday": "fri", "opens": "22:00", "closes": "02:00"}],
+            "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+        }],
+        "reservations": [],
+    })
+    assert resp.status == 422
+    assert resp.error_code == "validation_failed"
+
+
 def test_invalid_reset_fixture_leaves_prior_state_untouched(reset, anon, world):
     too_long = "x" * 65
     resp = anon.post("/_test/reset", json_body={

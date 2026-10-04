@@ -19,6 +19,8 @@ from . import auth, errors, timeutil
 
 ID_MAX_LEN = 64
 _REFERENCE_RE = re.compile(r"^[A-Z0-9]{6,12}$")
+_HHMM_RE = re.compile(r"^([0-1][0-9]|2[0-3]):[0-5][0-9]$")
+_WEEKDAYS = frozenset(("mon", "tue", "wed", "thu", "fri", "sat", "sun"))
 
 
 def _checked_id(value, label: str) -> str:
@@ -26,6 +28,23 @@ def _checked_id(value, label: str) -> str:
     if not text or len(text) > ID_MAX_LEN:
         raise errors.validation_failed(f"{label} must be 1 to {ID_MAX_LEN} characters")
     return text
+
+
+def _checked_opening_hours(entries) -> list:
+    checked = []
+    for entry in entries:
+        weekday = entry.get("weekday")
+        opens, closes = entry.get("opens"), entry.get("closes")
+        if weekday not in _WEEKDAYS:
+            raise errors.validation_failed("opening_hours weekday must be one of mon..sun")
+        if not isinstance(opens, str) or not isinstance(closes, str) \
+                or not _HHMM_RE.match(opens) or not _HHMM_RE.match(closes):
+            raise errors.validation_failed("opening_hours opens/closes must be HH:MM")
+        if timeutil.minutes_of(closes) <= timeutil.minutes_of(opens):
+            raise errors.validation_failed(
+                "opening_hours closes must be later than opens on the same local day")
+        checked.append({"weekday": weekday, "opens": opens, "closes": closes})
+    return checked
 
 
 @dataclass
@@ -162,7 +181,7 @@ class Store:
                 slot_minutes=int(r["slot_minutes"]),
                 reservation_duration_minutes=int(r["reservation_duration_minutes"]),
                 cancellation_cutoff_minutes=int(r["cancellation_cutoff_minutes"]),
-                opening_hours=[dict(w) for w in r.get("opening_hours") or []],
+                opening_hours=_checked_opening_hours(r.get("opening_hours") or []),
                 tables=tables,
             )
             restaurants[restaurant.id] = restaurant
