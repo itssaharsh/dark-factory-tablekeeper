@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablekeeper — find a booking</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body data-page="lookup">
+  <header class="topband">
+    <div class="topband-row">
+      <a href="/" class="wordmark">Tablekeeper</a>
+      <nav class="topband-nav" aria-label="Account">
+        <span data-testid="current-user" class="current-user" hidden></span>
+        <button type="button" data-testid="logout-button" class="btn btn-ghost" hidden>Log out</button>
+        <a href="/login" class="nav-link" data-auth-nav="1">Log in</a>
+        <a href="/signup" class="nav-link" data-auth-nav="1">Sign up</a>
+        <a href="/lookup" class="nav-link">Find a booking</a>
+      </nav>
+    </div>
+  </header>
+  <main class="page page-narrow">
+    <div class="card">
+      <h1>Find your booking</h1>
+      <form id="lookup-form" class="auth-form" novalidate>
+        <div class="field">
+          <label for="lookup-reference-input">Reference</label>
+          <input type="text" id="lookup-reference-input" data-testid="lookup-reference-input" class="control"
+                 autocomplete="off">
+        </div>
+        <button type="submit" data-testid="lookup-submit" class="btn btn-fill">Find booking</button>
+      </form>
+      <p data-testid="reservation-error" class="auth-error" hidden></p>
+      <div data-testid="reservation-detail" hidden>
+        <p id="reservation-summary"></p>
+        <p>Status: <span data-testid="reservation-status"></span></p>
+        <p>Tables: <span data-testid="reservation-tables"></span></p>
+        <button type="button" data-testid="reservation-cancel-button" class="btn btn-outline" hidden>
+          Cancel this booking
+        </button>
+      </div>
+    </div>
+  </main>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

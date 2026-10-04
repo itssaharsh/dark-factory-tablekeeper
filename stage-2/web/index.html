@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablekeeper — search and book</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body data-page="search">
+  <header class="topband">
+    <div class="topband-row">
+      <a href="/" class="wordmark">Tablekeeper</a>
+      <nav class="topband-nav" aria-label="Account">
+        <span data-testid="current-user" class="current-user" hidden></span>
+        <button type="button" data-testid="logout-button" class="btn btn-ghost" hidden>Log out</button>
+        <a href="/login" class="nav-link" data-auth-nav="1">Log in</a>
+        <a href="/signup" class="nav-link" data-auth-nav="1">Sign up</a>
+        <a href="/lookup" class="nav-link">Find a booking</a>
+      </nav>
+    </div>
+    <form class="searchbar-row" id="search-form" onsubmit="return false">
+      <div class="field">
+        <label for="restaurant-select">Restaurant</label>
+        <select id="restaurant-select" data-testid="restaurant-select" class="control"></select>
+      </div>
+      <div class="field">
+        <label for="date-input">Date</label>
+        <input type="date" id="date-input" data-testid="date-input" class="control">
+      </div>
+      <div class="field">
+        <label for="party-size-input">Party size</label>
+        <input type="number" min="1" id="party-size-input" data-testid="party-size-input" class="control" value="2">
+      </div>
+      <button type="submit" id="search-button" data-testid="search-button" class="btn btn-fill">Search</button>
+    </form>
+  </header>
+  <main class="page">
+    <div class="layout">
+      <section class="grid-panel" aria-label="Availability">
+        <p class="grid-status-line" id="grid-status-line"></p>
+        <table id="availability-grid" data-testid="availability-grid" class="availability-grid" hidden>
+          <thead id="grid-thead"></thead>
+          <tbody id="grid-tbody"></tbody>
+        </table>
+        <p data-testid="no-slots" id="no-slots" hidden>This restaurant has no slots on this day.</p>
+      </section>
+      <aside class="booking-panel" aria-label="Booking" id="booking-panel" tabindex="-1">
+        <p class="panel-hint">Pick a table to book it.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

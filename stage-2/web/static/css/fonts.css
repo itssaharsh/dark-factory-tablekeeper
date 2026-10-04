@@ -1,0 +1,57 @@
+/* Bundled at build time from the @fontsource packages (see Dockerfile). No remote host is linked. */
+
+@font-face {
+  font-family: "Marcellus";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/marcellus-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/figtree-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/figtree-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/fonts/figtree-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/fonts/figtree-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/spline-sans-mono-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/spline-sans-mono-latin-500-normal.woff2") format("woff2");
+}

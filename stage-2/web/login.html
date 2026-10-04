@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablekeeper — log in</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body data-page="login">
+  <header class="topband">
+    <div class="topband-row">
+      <a href="/" class="wordmark">Tablekeeper</a>
+      <nav class="topband-nav" aria-label="Account">
+        <span data-testid="current-user" class="current-user" hidden></span>
+        <button type="button" data-testid="logout-button" class="btn btn-ghost" hidden>Log out</button>
+        <a href="/login" class="nav-link" data-auth-nav="1">Log in</a>
+        <a href="/signup" class="nav-link" data-auth-nav="1">Sign up</a>
+        <a href="/lookup" class="nav-link">Find a booking</a>
+      </nav>
+    </div>
+  </header>
+  <main class="page page-narrow">
+    <div class="card">
+      <h1>Log in</h1>
+      <form id="login-form" class="auth-form" novalidate>
+        <p data-testid="auth-error" class="auth-error" hidden></p>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" data-testid="login-email" class="control" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" data-testid="login-password" class="control" required
+                 autocomplete="current-password">
+        </div>
+        <button type="submit" data-testid="login-submit" class="btn btn-fill">Log in</button>
+      </form>
+    </div>
+  </main>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

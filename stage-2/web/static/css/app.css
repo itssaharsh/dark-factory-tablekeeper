@@ -1,0 +1,626 @@
+/* Tablekeeper -- host-stand design system. All fonts are served locally (see fonts.css). */
+@import url("/static/css/fonts.css");
+
+:root {
+  --color-bg: #F6F3EA;
+  --color-band: #0F3D24;
+  --color-band-ink: #F6F3EA;
+  --color-ink: #1C2420;
+  --color-ink-muted: #6B6256;
+  --color-border: #D9D2C2;
+  --color-page: #FFFFFF;
+  --color-chosen: #14532D;
+  --color-chosen-ink: #FFFFFF;
+  --color-yours-bg: #E1EEE5;
+  --color-yours-border: #14532D;
+  --color-refused-bg: #FBEDEA;
+  --color-refused-ink: #A3261D;
+  --color-unsure-bg: #FBF1D9;
+  --color-unsure-ink: #7A4F00;
+  --color-focus: #0F3D24;
+  --font-display: "Marcellus", Georgia, serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+  --radius: 8px;
+  --control-height: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0 0 0.5em;
+  font-weight: 400;
+}
+
+a {
+  color: var(--color-band);
+}
+
+button, input, select, a, [tabindex] {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* -- top band --------------------------------------------------------- */
+
+.topband {
+  background: var(--color-band);
+  color: var(--color-band-ink);
+  padding: 12px 20px;
+}
+
+.topband-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-band-ink);
+  text-decoration: none;
+  margin-right: auto;
+  white-space: nowrap;
+}
+
+.topband-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: var(--color-band-ink);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px 4px;
+  min-height: var(--control-height);
+  display: flex;
+  align-items: center;
+}
+
+.current-user {
+  color: var(--color-band-ink);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.searchbar-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 12px auto 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 12px;
+  color: var(--color-band-ink);
+}
+
+.control {
+  height: var(--control-height);
+  border-radius: var(--radius);
+  border: 1px solid rgba(246, 243, 234, 0.4);
+  background: #FFFFFF;
+  color: var(--color-ink);
+  font-size: 16px;
+  padding: 0 12px;
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--color-band-ink);
+  outline-offset: 2px;
+}
+
+.btn {
+  height: var(--control-height);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 44px;
+}
+
+/* Loading-state text ("Searching…", "Booking…") must not change these
+   buttons' width, so fix a width wide enough for every label they show. */
+#search-button {
+  min-width: 132px;
+}
+
+[data-testid="booking-submit"] {
+  min-width: 168px;
+}
+
+.btn-fill {
+  background: var(--color-band-ink);
+  color: var(--color-band);
+  border-color: var(--color-band-ink);
+}
+
+.btn-fill:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-band);
+  color: var(--color-band);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(246, 243, 234, 0.6);
+  color: var(--color-band-ink);
+}
+
+/* -- generic page shell ------------------------------------------------ */
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.page-narrow {
+  max-width: 480px;
+}
+
+.card {
+  background: var(--color-page);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-form .field label {
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-form .control {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+[data-testid="auth-error"],
+[data-testid="reservation-error"],
+[data-testid="booking-error"] {
+  background: var(--color-refused-bg);
+  color: var(--color-refused-ink);
+  border: 1px solid var(--color-refused-ink);
+  border-left: 3px solid var(--color-refused-ink);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+[data-testid="auth-error"]::before,
+[data-testid="reservation-error"]::before,
+[data-testid="booking-error"]::before {
+  content: "\26A0 ";
+}
+
+/* -- search + grid layout ----------------------------------------------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 767px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-panel {
+  background: var(--color-page);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.grid-status-line {
+  color: var(--color-ink-muted);
+  font-size: 14px;
+  padding: 8px 4px;
+}
+
+.availability-grid {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+}
+
+.availability-grid th,
+.availability-grid td {
+  padding: 6px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.availability-grid thead th {
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+}
+
+.availability-grid .time-cell {
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-width: 96px;
+  min-height: 56px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-ink);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 4px;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell .cell-label {
+  font-weight: 600;
+}
+
+.cell .cell-meta {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+}
+
+.cell--taken {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(107, 98, 86, 0.14) 0,
+    rgba(107, 98, 86, 0.14) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+  background-color: #EDE8DA;
+  border-color: var(--color-border);
+  color: var(--color-ink-muted);
+}
+
+.cell--taken .cell-meta,
+.cell--taken .cell-label {
+  color: var(--color-ink-muted);
+}
+
+.cell--too-small {
+  background-color: #EDE8DA;
+  border-color: var(--color-border);
+  color: var(--color-ink-muted);
+}
+
+.cell--too-small .cell-meta,
+.cell--too-small .cell-label {
+  color: var(--color-ink-muted);
+}
+
+.cell--chosen {
+  background: var(--color-chosen);
+  border-color: var(--color-chosen);
+  color: var(--color-chosen-ink);
+}
+
+.cell--chosen .cell-meta {
+  color: var(--color-chosen-ink);
+}
+
+.cell--chosen .cell-label::before {
+  content: "\2713 ";
+}
+
+.cell--yours {
+  background: var(--color-yours-bg);
+  border: 2px solid var(--color-yours-border);
+  color: var(--color-chosen);
+}
+
+.cell--yours .cell-label::before {
+  content: "\2713 ";
+}
+
+.cell--just-taken {
+  border: 2px solid var(--color-refused-ink);
+  background-color: #EDE8DA;
+  color: var(--color-refused-ink);
+}
+
+.cell--unsure {
+  background: var(--color-unsure-bg);
+  border: 2px solid var(--color-unsure-ink);
+  color: var(--color-unsure-ink);
+}
+
+.cell--unsure .cell-label::before {
+  content: "?";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: 1px;
+}
+
+/* -- skeleton loading -----------------------------------------------------
+   Skeleton placeholders are rendered as real <td> cells inside the same
+   <table> (same header row, same row count) so nothing jumps when results
+   arrive; see .cell--skeleton below. */
+
+.cell--skeleton {
+  border: none;
+  background: none;
+  cursor: default;
+}
+
+.skeleton-bar {
+  width: 70%;
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #E7E2D3 25%, #F3EFE4 37%, #E7E2D3 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-bar.short {
+  width: 45%;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* -- booking panel -------------------------------------------------------- */
+
+.booking-panel {
+  background: var(--color-page);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.booking-panel:focus-visible,
+.booking-panel:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Under 768px, once a cell is chosen the panel moves into a row directly
+   below the chosen time, as a full-width cell inside the grid table. */
+.panel-row td {
+  padding: 10px 0 2px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panel-row .booking-panel {
+  border: none;
+  padding: 12px;
+  background: var(--color-bg);
+}
+
+.panel-hint {
+  color: var(--color-ink-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.status-card {
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.status-card .status-first {
+  font-weight: 600;
+}
+
+.status-card--refused {
+  background: var(--color-refused-bg);
+  color: var(--color-refused-ink);
+  border: 1px solid var(--color-refused-ink);
+  border-left: 3px solid var(--color-refused-ink);
+}
+
+.status-card--refused::before {
+  content: "\26A0 ";
+}
+
+.status-card--unsure {
+  background: var(--color-unsure-bg);
+  color: var(--color-unsure-ink);
+  border: 1px solid var(--color-unsure-ink);
+  border-left: 3px solid var(--color-unsure-ink);
+}
+
+.status-card--unsure::before {
+  content: "?";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: -2px;
+}
+
+.booked-card {
+  background: var(--color-yours-bg);
+  border: 1px solid var(--color-yours-border);
+  border-radius: 6px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.booked-card .booked-title {
+  font-family: var(--font-display);
+  color: var(--color-chosen);
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+.booked-card [data-testid="confirmation-reference"] {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+  margin: 4px 0 8px;
+}
+
+.booked-card [data-testid="confirmation-details"] {
+  font-size: 14px;
+  color: var(--color-ink);
+}
+
+.booked-card .booked-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+#booking-form,
+[data-testid="booking-form"] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.form-tag--yours {
+  background: var(--color-yours-bg);
+  color: var(--color-chosen);
+}
+
+.form-tag--taken {
+  background: #EDE8DA;
+  color: var(--color-refused-ink);
+}
+
+[data-testid="booking-summary"] {
+  font-size: 15px;
+}
+
+.form-note {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+/* -- lookup --------------------------------------------------------------- */
+
+[data-testid="reservation-detail"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+[data-testid="reservation-status"] {
+  font-weight: 700;
+  text-transform: none;
+}
+
+/* -- responsive ------------------------------------------------------------ */
+
+@media (max-width: 374px) {
+  .page { padding: 16px 12px 48px; }
+}
