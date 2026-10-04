@@ -1,0 +1,22 @@
+{
+ "card": "finding",
+ "stage": 2,
+ "from": "verifier",
+ "to": "coordinator",
+ "check_id": "BROWSER-PRIMARY-BUTTON",
+ "sentence": "Primary actions must be easy to identify.",
+ "kind": "behaviour",
+ "revision": "f4668cdce76fe73136c1989dd57351ffc44055ce",
+ "expected": "holds, through the browser: Primary actions must be easy to identify.",
+ "observed": "2 filled buttons visible on screen at once (['search-button', 'booking-submit']); the design brief calls for one filled button per screen",
+ "status": "open",
+ "at": "2026-10-04T16:20:55.116332+00:00",
+ "replay": {
+  "steps": [
+   {
+    "browser_script": "python3 checks/stage-2-browser.py --base-url <url> --only BROWSER-PRIMARY-BUTTON",
+    "note": "Playwright-driven UI check, not a raw HTTP request"
+   }
+  ]
+ }
+}
