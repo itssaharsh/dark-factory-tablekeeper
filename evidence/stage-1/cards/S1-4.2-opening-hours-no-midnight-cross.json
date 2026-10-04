@@ -66,7 +66,7 @@
  },
  "expected": "every expectation in the replay holds",
  "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
- "status": "open",
+ "status": "closed",
  "at": "2026-10-04T13:10:00+00:00",
  "trail": [
   {
@@ -120,5 +120,7 @@
     "body": ""
    }
   }
- ]
+ ],
+ "closed_at": "2026-10-04T13:13:36+00:00",
+ "observed_on_close": "every expectation in the replay held"
 }
