@@ -558,7 +558,19 @@
       bookingPanel.appendChild(link);
     }
 
+    // Only one filled ("ready to act on") button may be on screen at a time
+    // (design brief, "Rules"): search-button is the primary action until a
+    // cell is chosen, after which booking-submit takes over.
+    function updateSearchButtonStyle() {
+      // btn-ghost (not btn-outline) because search-button sits on the dark
+      // green top band, where btn-outline's green-on-transparent text would
+      // have the same colour as the band itself.
+      searchButton.classList.toggle("btn-fill", !chosen);
+      searchButton.classList.toggle("btn-ghost", !!chosen);
+    }
+
     function renderPanelIdle(searching) {
+      updateSearchButtonStyle();
       clearChildren(bookingPanel);
       const hint = document.createElement("p");
       hint.className = "panel-hint";
@@ -571,6 +583,7 @@
         renderPanelIdle(false);
         return;
       }
+      updateSearchButtonStyle();
       clearChildren(bookingPanel);
       const map = tablesById();
       const labels = labelsFor(chosen.tableIds, map);
