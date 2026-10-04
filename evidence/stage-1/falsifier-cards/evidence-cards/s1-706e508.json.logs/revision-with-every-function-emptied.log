@@ -1,0 +1,1245 @@
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE [ 58%]
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE                     [100%]
+==================================== ERRORS ====================================
+______________ ERROR at setup of test_signup_returns_usable_token ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_login_returns_usable_token _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_signup_duplicate_email_is_409 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_signup_short_password_is_422[short] __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_signup_short_password_is_422[1234567] _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_signup_bad_email_is_422[no-at-sign] __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______________ ERROR at setup of test_signup_bad_email_is_422[] _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______ ERROR at setup of test_signup_bad_email_is_422[a b@example.com] ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_login_wrong_password_is_401 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_login_unknown_email_is_401 _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_account_supports_concurrent_sessions __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_passwords_are_not_stored_in_plaintext _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_ ERROR at setup of test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner _
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______ ERROR at setup of test_fifty_concurrent_mixed_requests_never_5xx _______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_concurrent_cancel_and_rebook_is_consistent _______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_spring_forward_gap_booking_is_422 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___ ERROR at setup of test_spring_forward_gap_never_appears_in_availability ____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_ ERROR at setup of test_fall_back_slot_appears_once_and_resolves_to_earlier_offset _
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_ ERROR at setup of test_booking_fall_back_repeated_hour_resolves_to_first_occurrence _
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_duration_is_absolute_time_across_fall_back _______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_new_york_spring_forward_gap_is_422 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_new_york_fall_back_resolves_to_earlier_offset _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_every_error_has_the_documented_shape __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_malformed_json_body_is_400 _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_non_object_json_body_is_400 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________________ ERROR at setup of test_unknown_route_is_404 __________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____ ERROR at setup of test_availability_query_int_rejects_non_digit_forms _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_availability_query_int_accepts_plain_digits ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_availability_invalid_date_is_422 ____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_unknown_query_parameters_are_ignored __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__ ERROR at setup of test_booking_in_the_past_is_not_rejected_solely_for_that __
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____ ERROR at setup of test_idempotency_key_header_name_is_case_insensitive ____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________________ ERROR at setup of test_export_shape ______________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________________ ERROR at setup of test_import_requires_204 __________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_import_restores_a_booking_receipt ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_import_preserves_tokens_and_login ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_import_preserves_idempotency_receipts _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_import_is_replacement_not_merge ____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_repeated_import_does_not_duplicate ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_export_is_a_point_in_time_snapshot ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_reset_clears_imported_state ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__ ERROR at setup of test_import_invalid_track_is_422_without_changing_state ___
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_import_invalid_version_is_422 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_import_missing_state_is_422 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_import_malformed_json_is_400 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________________ ERROR at setup of test_health_is_ok ______________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______________ ERROR at setup of test_reset_replaces_all_state ________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________________ ERROR at setup of test_reset_is_repeatable __________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_reset_clears_users_and_tokens _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_first_use_is_201_replay_is_200_with_same_body _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_same_key_different_body_is_409 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_key_reused_after_4xx_failure_is_a_first_use ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_idempotency_key_scoped_to_user _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____ ERROR at setup of test_same_key_different_path_is_a_different_request _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_idempotency_key_too_long_is_422 ____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_idempotency_resolved_before_field_validation ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___ ERROR at setup of test_concurrent_identical_requests_commit_exactly_once ___
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_replay_survives_cancellation ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_single_move_changes_the_table _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_swap_two_bookings_between_tables_atomically ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_unchanged_items_are_included ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_duplicate_references_is_422 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________________ ERROR at setup of test_empty_moves_is_422 ___________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________________ ERROR at setup of test_too_many_moves_is_422 _________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______________ ERROR at setup of test_unknown_reference_is_404 ________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_someone_elses_reference_is_404 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________________ ERROR at setup of test_no_token_is_401 ____________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_cancelled_booking_in_batch_is_409 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_ ERROR at setup of test_overlap_with_unlisted_booking_is_409_and_nothing_changes _
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_overlap_among_resulting_bookings_is_409 ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_different_restaurants_is_422 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_idempotency_applies_to_moves ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_missing_idempotency_key_is_400 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_create_returns_documented_shape ____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_ends_at_is_start_plus_duration _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_reference_is_unique_across_reservations ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_double_booking_same_table_same_slot_is_409 _______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_overlapping_but_offset_time_is_409 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______ ERROR at setup of test_adjacent_non_overlapping_booking_succeeds _______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________________ ERROR at setup of test_not_on_slot_grid_is_422 ________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_before_opening_is_outside_opening_hours ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_ending_after_closing_is_outside_opening_hours _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_closed_weekday_is_outside_opening_hours ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_party_size_exceeds_capacity_is_422 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______________ ERROR at setup of test_unknown_restaurant_is_404 _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________________ ERROR at setup of test_unknown_table_is_404 __________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_table_from_another_restaurant_is_404 __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_missing_idempotency_key_is_400 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________________ ERROR at setup of test_requires_authentication ________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_party_size_wrong_type_is_422_not_400 __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_party_size_zero_or_negative_is_422 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________ ERROR at setup of test_starts_at_local_bad_format_is_422 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_starts_at_local_wrong_json_type_is_400 _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_table_id_wrong_json_type_is_400 ____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_unknown_fields_are_ignored _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+____________ ERROR at setup of test_list_is_empty_for_a_fresh_user _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_list_contains_confirmed_and_cancelled _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_list_is_ordered_by_starts_at_descending ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___________________ ERROR at setup of test_get_by_reference ____________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_get_someone_elses_reservation_is_404 __________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_get_unknown_reference_is_404 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_cancel_sets_status_and_frees_the_table _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_cancel_twice_is_not_an_error ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_cancel_someone_elses_reservation_is_404 ________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_cancel_within_cutoff_is_409 ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________ ERROR at setup of test_patch_changes_table_and_frees_old_one _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________________ ERROR at setup of test_patch_changes_time ___________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_ ERROR at setup of test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged _
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+__________ ERROR at setup of test_patch_cancelled_reservation_is_409 ___________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_patch_someone_elses_reservation_is_404 _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____________ ERROR at setup of test_patch_invalid_new_time_is_422 _____________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_restaurant_endpoints_need_no_token[<lambda>0] _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_restaurant_endpoints_need_no_token[<lambda>1] _____
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_availability_needs_no_token ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_________________ ERROR at setup of test_restaurant_list_shape _________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________________ ERROR at setup of test_restaurant_detail_shape ________________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_______________ ERROR at setup of test_unknown_restaurant_is_404 _______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+_____ ERROR at setup of test_availability_slot_grid_steps_by_slot_minutes ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___ ERROR at setup of test_availability_filters_by_capacity_in_fixture_order ___
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______________ ERROR at setup of test_closed_day_returns_no_slots ______________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+______ ERROR at setup of test_slot_with_no_free_table_still_appears_empty ______
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+___ ERROR at setup of test_half_open_interval_does_not_overlap_adjacent_slot ___
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_availability_requires_all_three_params _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+________ ERROR at setup of test_availability_unknown_restaurant_is_404 _________
+
+    @pytest.fixture(scope="session")
+    def _port():
+        server = build_server(0)
+>       port = server.server_address[1]
+E       AttributeError: 'NoneType' object has no attribute 'server_address'
+
+tests/conftest.py:25: AttributeError
+=========================== short test summary info ============================
+ERROR tests/test_auth.py::test_signup_returns_usable_token - AttributeError: ...
+ERROR tests/test_auth.py::test_login_returns_usable_token - AttributeError: '...
+ERROR tests/test_auth.py::test_signup_duplicate_email_is_409 - AttributeError...
+ERROR tests/test_auth.py::test_signup_short_password_is_422[short] - Attribut...
+ERROR tests/test_auth.py::test_signup_short_password_is_422[1234567] - Attrib...
+ERROR tests/test_auth.py::test_signup_bad_email_is_422[no-at-sign] - Attribut...
+ERROR tests/test_auth.py::test_signup_bad_email_is_422[] - AttributeError: 'N...
+ERROR tests/test_auth.py::test_signup_bad_email_is_422[a b@example.com] - Att...
+ERROR tests/test_auth.py::test_login_wrong_password_is_401 - AttributeError: ...
+ERROR tests/test_auth.py::test_login_unknown_email_is_401 - AttributeError: '...
+ERROR tests/test_auth.py::test_account_supports_concurrent_sessions - Attribu...
+ERROR tests/test_auth.py::test_passwords_are_not_stored_in_plaintext - Attrib...
+ERROR tests/test_concurrency.py::test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner
+ERROR tests/test_concurrency.py::test_fifty_concurrent_mixed_requests_never_5xx
+ERROR tests/test_concurrency.py::test_concurrent_cancel_and_rebook_is_consistent
+ERROR tests/test_dst.py::test_spring_forward_gap_booking_is_422 - AttributeEr...
+ERROR tests/test_dst.py::test_spring_forward_gap_never_appears_in_availability
+ERROR tests/test_dst.py::test_fall_back_slot_appears_once_and_resolves_to_earlier_offset
+ERROR tests/test_dst.py::test_booking_fall_back_repeated_hour_resolves_to_first_occurrence
+ERROR tests/test_dst.py::test_duration_is_absolute_time_across_fall_back - At...
+ERROR tests/test_dst.py::test_new_york_spring_forward_gap_is_422 - AttributeE...
+ERROR tests/test_dst.py::test_new_york_fall_back_resolves_to_earlier_offset
+ERROR tests/test_errors_general.py::test_every_error_has_the_documented_shape
+ERROR tests/test_errors_general.py::test_malformed_json_body_is_400 - Attribu...
+ERROR tests/test_errors_general.py::test_non_object_json_body_is_400 - Attrib...
+ERROR tests/test_errors_general.py::test_unknown_route_is_404 - AttributeErro...
+ERROR tests/test_errors_general.py::test_availability_query_int_rejects_non_digit_forms
+ERROR tests/test_errors_general.py::test_availability_query_int_accepts_plain_digits
+ERROR tests/test_errors_general.py::test_availability_invalid_date_is_422 - A...
+ERROR tests/test_errors_general.py::test_unknown_query_parameters_are_ignored
+ERROR tests/test_errors_general.py::test_booking_in_the_past_is_not_rejected_solely_for_that
+ERROR tests/test_errors_general.py::test_idempotency_key_header_name_is_case_insensitive
+ERROR tests/test_export_import.py::test_export_shape - AttributeError: 'NoneT...
+ERROR tests/test_export_import.py::test_import_requires_204 - AttributeError:...
+ERROR tests/test_export_import.py::test_import_restores_a_booking_receipt - A...
+ERROR tests/test_export_import.py::test_import_preserves_tokens_and_login - A...
+ERROR tests/test_export_import.py::test_import_preserves_idempotency_receipts
+ERROR tests/test_export_import.py::test_import_is_replacement_not_merge - Att...
+ERROR tests/test_export_import.py::test_repeated_import_does_not_duplicate - ...
+ERROR tests/test_export_import.py::test_export_is_a_point_in_time_snapshot - ...
+ERROR tests/test_export_import.py::test_reset_clears_imported_state - Attribu...
+ERROR tests/test_export_import.py::test_import_invalid_track_is_422_without_changing_state
+ERROR tests/test_export_import.py::test_import_invalid_version_is_422 - Attri...
+ERROR tests/test_export_import.py::test_import_missing_state_is_422 - Attribu...
+ERROR tests/test_export_import.py::test_import_malformed_json_is_400 - Attrib...
+ERROR tests/test_health_and_reset.py::test_health_is_ok - AttributeError: 'No...
+ERROR tests/test_health_and_reset.py::test_reset_replaces_all_state - Attribu...
+ERROR tests/test_health_and_reset.py::test_reset_is_repeatable - AttributeErr...
+ERROR tests/test_health_and_reset.py::test_reset_clears_users_and_tokens - At...
+ERROR tests/test_idempotency.py::test_first_use_is_201_replay_is_200_with_same_body
+ERROR tests/test_idempotency.py::test_same_key_different_body_is_409 - Attrib...
+ERROR tests/test_idempotency.py::test_key_reused_after_4xx_failure_is_a_first_use
+ERROR tests/test_idempotency.py::test_idempotency_key_scoped_to_user - Attrib...
+ERROR tests/test_idempotency.py::test_same_key_different_path_is_a_different_request
+ERROR tests/test_idempotency.py::test_idempotency_key_too_long_is_422 - Attri...
+ERROR tests/test_idempotency.py::test_idempotency_resolved_before_field_validation
+ERROR tests/test_idempotency.py::test_concurrent_identical_requests_commit_exactly_once
+ERROR tests/test_idempotency.py::test_replay_survives_cancellation - Attribut...
+ERROR tests/test_reservation_moves.py::test_single_move_changes_the_table - A...
+ERROR tests/test_reservation_moves.py::test_swap_two_bookings_between_tables_atomically
+ERROR tests/test_reservation_moves.py::test_unchanged_items_are_included - At...
+ERROR tests/test_reservation_moves.py::test_duplicate_references_is_422 - Att...
+ERROR tests/test_reservation_moves.py::test_empty_moves_is_422 - AttributeErr...
+ERROR tests/test_reservation_moves.py::test_too_many_moves_is_422 - Attribute...
+ERROR tests/test_reservation_moves.py::test_unknown_reference_is_404 - Attrib...
+ERROR tests/test_reservation_moves.py::test_someone_elses_reference_is_404 - ...
+ERROR tests/test_reservation_moves.py::test_no_token_is_401 - AttributeError:...
+ERROR tests/test_reservation_moves.py::test_cancelled_booking_in_batch_is_409
+ERROR tests/test_reservation_moves.py::test_overlap_with_unlisted_booking_is_409_and_nothing_changes
+ERROR tests/test_reservation_moves.py::test_overlap_among_resulting_bookings_is_409
+ERROR tests/test_reservation_moves.py::test_different_restaurants_is_422 - At...
+ERROR tests/test_reservation_moves.py::test_idempotency_applies_to_moves - At...
+ERROR tests/test_reservation_moves.py::test_missing_idempotency_key_is_400 - ...
+ERROR tests/test_reservations_create.py::test_create_returns_documented_shape
+ERROR tests/test_reservations_create.py::test_ends_at_is_start_plus_duration
+ERROR tests/test_reservations_create.py::test_reference_is_unique_across_reservations
+ERROR tests/test_reservations_create.py::test_double_booking_same_table_same_slot_is_409
+ERROR tests/test_reservations_create.py::test_overlapping_but_offset_time_is_409
+ERROR tests/test_reservations_create.py::test_adjacent_non_overlapping_booking_succeeds
+ERROR tests/test_reservations_create.py::test_not_on_slot_grid_is_422 - Attri...
+ERROR tests/test_reservations_create.py::test_before_opening_is_outside_opening_hours
+ERROR tests/test_reservations_create.py::test_ending_after_closing_is_outside_opening_hours
+ERROR tests/test_reservations_create.py::test_closed_weekday_is_outside_opening_hours
+ERROR tests/test_reservations_create.py::test_party_size_exceeds_capacity_is_422
+ERROR tests/test_reservations_create.py::test_unknown_restaurant_is_404 - Att...
+ERROR tests/test_reservations_create.py::test_unknown_table_is_404 - Attribut...
+ERROR tests/test_reservations_create.py::test_table_from_another_restaurant_is_404
+ERROR tests/test_reservations_create.py::test_missing_idempotency_key_is_400
+ERROR tests/test_reservations_create.py::test_requires_authentication - Attri...
+ERROR tests/test_reservations_create.py::test_party_size_wrong_type_is_422_not_400
+ERROR tests/test_reservations_create.py::test_party_size_zero_or_negative_is_422
+ERROR tests/test_reservations_create.py::test_starts_at_local_bad_format_is_422
+ERROR tests/test_reservations_create.py::test_starts_at_local_wrong_json_type_is_400
+ERROR tests/test_reservations_create.py::test_table_id_wrong_json_type_is_400
+ERROR tests/test_reservations_create.py::test_unknown_fields_are_ignored - At...
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_is_empty_for_a_fresh_user
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_contains_confirmed_and_cancelled
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_is_ordered_by_starts_at_descending
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_by_reference - A...
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_unknown_reference_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_sets_status_and_frees_the_table
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_twice_is_not_an_error
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_within_cutoff_is_409
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_changes_table_and_frees_old_one
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_changes_time
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_cancelled_reservation_is_409
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_invalid_new_time_is_422
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_endpoints_need_no_token[<lambda>0]
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_endpoints_need_no_token[<lambda>1]
+ERROR tests/test_restaurants_and_availability.py::test_availability_needs_no_token
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_list_shape
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_detail_shape
+ERROR tests/test_restaurants_and_availability.py::test_unknown_restaurant_is_404
+ERROR tests/test_restaurants_and_availability.py::test_availability_slot_grid_steps_by_slot_minutes
+ERROR tests/test_restaurants_and_availability.py::test_availability_filters_by_capacity_in_fixture_order
+ERROR tests/test_restaurants_and_availability.py::test_closed_day_returns_no_slots
+ERROR tests/test_restaurants_and_availability.py::test_slot_with_no_free_table_still_appears_empty
+ERROR tests/test_restaurants_and_availability.py::test_half_open_interval_does_not_overlap_adjacent_slot
+ERROR tests/test_restaurants_and_availability.py::test_availability_requires_all_three_params
+ERROR tests/test_restaurants_and_availability.py::test_availability_unknown_restaurant_is_404
+124 errors in 1.80s

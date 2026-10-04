@@ -1,0 +1,26 @@
+.....................................................F.................. [ 54%]
+...........................................................              [100%]
+=================================== FAILURES ===================================
+_____________ test_reset_rejects_opening_hours_that_cross_midnight _____________
+
+anon = <httpclient.Client object at 0x702fc5118800>
+
+    def test_reset_rejects_opening_hours_that_cross_midnight(anon):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [],
+            "restaurants": [{
+                "id": "r_bad", "name": "Bad", "timezone": "Europe/Berlin", "slot_minutes": 30,
+                "reservation_duration_minutes": 90, "cancellation_cutoff_minutes": 120,
+                "opening_hours": [{"weekday": "fri", "opens": "22:00", "closes": "02:00"}],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:92: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_health_and_reset.py::test_reset_rejects_opening_hours_that_cross_midnight
+1 failed, 130 passed in 45.45s

@@ -1,0 +1,167 @@
+.................................................FFFFF.................. [ 55%]
+............................F.............................               [100%]
+=================================== FAILURES ===================================
+_______________ test_reset_rejects_ids_longer_than_64_characters _______________
+
+anon = <httpclient.Client object at 0x7b8ce35f9a30>
+
+    def test_reset_rejects_ids_longer_than_64_characters(anon):
+        too_long = "u_" + "x" * 64
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": too_long, "email": "long@example.com",
+                       "password": "correct horse", "display_name": "Long"}],
+            "restaurants": [], "reservations": [],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:55: AssertionError
+_____________ test_reset_rejects_invalid_reservation_references[x] _____________
+
+anon = <httpclient.Client object at 0x7b8ce3654920>, bad_reference = 'x'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+__________ test_reset_rejects_invalid_reservation_references[lower01] __________
+
+anon = <httpclient.Client object at 0x7b8ce3655820>, bad_reference = 'lower01'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+____ test_reset_rejects_invalid_reservation_references[TOO-LONG-WITH-DASH] _____
+
+anon = <httpclient.Client object at 0x7b8ce3655850>
+bad_reference = 'TOO-LONG-WITH-DASH'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+___________ test_invalid_reset_fixture_leaves_prior_state_untouched ____________
+
+reset = <function reset.<locals>._reset at 0x7b8ce35440e0>
+anon = <httpclient.Client object at 0x7b8ce3655400>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7b8ce3647da0>, bob=<httpclient.Client object at 0x7b8ce3655250>)
+
+    def test_invalid_reset_fixture_leaves_prior_state_untouched(reset, anon, world):
+        too_long = "x" * 65
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": too_long, "email": "bad@example.com",
+                       "password": "correct horse", "display_name": "Bad"}],
+            "restaurants": [], "reservations": [],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:88: AssertionError
+_________ test_same_table_id_in_different_restaurants_does_not_collide _________
+
+reset = <function reset.<locals>._reset at 0x7b8ce3547f60>
+anon = <httpclient.Client object at 0x7b8ce3594050>
+
+    def test_same_table_id_in_different_restaurants_does_not_collide(reset, anon):
+        """Table ids are only unique within a restaurant: two restaurants may both have a t_2."""
+        import datetime as dt
+    
+        weekdays = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+        restaurant = {
+            "timezone": "Europe/Berlin", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 0,
+            "opening_hours": [{"weekday": d, "opens": "18:00", "closes": "23:00"} for d in weekdays],
+            "tables": [{"id": "t_2", "label": "2", "capacity": 4}],
+        }
+        reset({
+            "users": [{"id": "u_a", "email": "two-zones@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{"id": "r_one", "name": "One", **restaurant},
+                             {"id": "r_two", "name": "Two", **restaurant}],
+            "reservations": [],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "two-zones@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        date = (dt.date.today() + dt.timedelta(days=5)).isoformat()
+        first = client.post("/reservations", json_body={
+            "restaurant_id": "r_one", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-1")
+        second = client.post("/reservations", json_body={
+            "restaurant_id": "r_two", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-2")
+        assert first.status == 201
+>       assert second.status == 201, "r_two's t_2 must not be blocked by r_one's t_2"
+E       AssertionError: r_two's t_2 must not be blocked by r_one's t_2
+E       assert 409 == 201
+E        +  where 409 = Response(409, {'error': {'code': 'table_unavailable', 'message': 'the table is already booked for an overlapping time'}}).status
+
+tests/test_reservations_create.py:217: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_health_and_reset.py::test_reset_rejects_ids_longer_than_64_characters
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[x]
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[lower01]
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[TOO-LONG-WITH-DASH]
+FAILED tests/test_health_and_reset.py::test_invalid_reset_fixture_leaves_prior_state_untouched
+FAILED tests/test_reservations_create.py::test_same_table_id_in_different_restaurants_does_not_collide
+6 failed, 124 passed in 43.21s

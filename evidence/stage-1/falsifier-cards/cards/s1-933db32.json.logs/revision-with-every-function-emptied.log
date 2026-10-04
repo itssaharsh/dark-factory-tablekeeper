@@ -1,0 +1,3448 @@
+.E......EEFEEEEFFFFFFFEEE.EEEEFEEEEEEEEEEEEEE.FFEFFFFEEEEEEEEEEEEEEEEEEE [ 55%]
+EEEFEEEEEEEEEEEFEEEEEEEEEEEEFEEEEEEEEEFEEEEEEEEEEEEEEFEEE.               [100%]
+==================================== ERRORS ====================================
+______________ ERROR at setup of test_login_returns_usable_token _______________
+
+reset = <function reset.<locals>._reset at 0x7731b2c4b4c0>
+anon = <httpclient.Client object at 0x7731b2d396a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_login_wrong_password_is_401 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2d94540>
+anon = <httpclient.Client object at 0x7731b2d21c10>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_login_unknown_email_is_401 _______________
+
+reset = <function reset.<locals>._reset at 0x7731b2d94a40>
+anon = <httpclient.Client object at 0x7731b2d22810>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_passwords_are_not_stored_in_plaintext _________
+
+reset = <function reset.<locals>._reset at 0x7731b2d95440>
+anon = <httpclient.Client object at 0x7731b2d37380>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_ ERROR at setup of test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner _
+
+reset = <function reset.<locals>._reset at 0x7731b2d95bc0>
+anon = <httpclient.Client object at 0x7731b2d37f20>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_______ ERROR at setup of test_fifty_concurrent_mixed_requests_never_5xx _______
+
+reset = <function reset.<locals>._reset at 0x7731b2d96160>
+anon = <httpclient.Client object at 0x7731b2d36a80>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_concurrent_cancel_and_rebook_is_consistent _______
+
+reset = <function reset.<locals>._reset at 0x7731b2d967a0>
+anon = <httpclient.Client object at 0x7731b2ce04d0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_every_error_has_the_documented_shape __________
+
+reset = <function reset.<locals>._reset at 0x7731b2d97560>
+anon = <httpclient.Client object at 0x7731b2ce1220>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_malformed_json_body_is_400 _______________
+
+reset = <function reset.<locals>._reset at 0x7731b2d97ba0>
+anon = <httpclient.Client object at 0x7731b2ce3ce0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_non_object_json_body_is_400 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2c50180>
+anon = <httpclient.Client object at 0x7731b2ce2480>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____ ERROR at setup of test_availability_query_int_rejects_non_digit_forms _____
+
+reset = <function reset.<locals>._reset at 0x7731b2c509a0>
+anon = <httpclient.Client object at 0x7731b2c90740>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_availability_query_int_accepts_plain_digits ______
+
+reset = <function reset.<locals>._reset at 0x7731b2c50e00>
+anon = <httpclient.Client object at 0x7731b2c92de0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________ ERROR at setup of test_availability_invalid_date_is_422 ____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c513a0>
+anon = <httpclient.Client object at 0x7731b2c93d10>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_unknown_query_parameters_are_ignored __________
+
+reset = <function reset.<locals>._reset at 0x7731b2d97560>
+anon = <httpclient.Client object at 0x7731b2ce24b0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____ ERROR at setup of test_idempotency_key_header_name_is_case_insensitive ____
+
+reset = <function reset.<locals>._reset at 0x7731b2c51260>
+anon = <httpclient.Client object at 0x7731b2ce1100>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________________ ERROR at setup of test_export_shape ______________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c50e00>
+anon = <httpclient.Client object at 0x7731b2d21f70>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________________ ERROR at setup of test_import_requires_204 __________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c51a80>
+anon = <httpclient.Client object at 0x7731b2d37230>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________ ERROR at setup of test_import_restores_a_booking_receipt ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2c52020>
+anon = <httpclient.Client object at 0x7731b2d344a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________ ERROR at setup of test_import_preserves_tokens_and_login ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2c52520>
+anon = <httpclient.Client object at 0x7731b2c92f90>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_import_preserves_idempotency_receipts _________
+
+reset = <function reset.<locals>._reset at 0x7731b2c52b60>
+anon = <httpclient.Client object at 0x7731b2c900b0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_import_is_replacement_not_merge ____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c53060>
+anon = <httpclient.Client object at 0x7731b2c929f0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_repeated_import_does_not_duplicate ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2c536a0>
+anon = <httpclient.Client object at 0x7731b2c2e600>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_export_is_a_point_in_time_snapshot ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2c53c40>
+anon = <httpclient.Client object at 0x7731b2c2f860>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_reset_clears_imported_state ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcc220>
+anon = <httpclient.Client object at 0x7731b2c2eae0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__ ERROR at setup of test_import_invalid_track_is_422_without_changing_state ___
+
+reset = <function reset.<locals>._reset at 0x7731b2c53600>
+anon = <httpclient.Client object at 0x7731b2c937a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_import_invalid_version_is_422 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c51da0>
+anon = <httpclient.Client object at 0x7731b2c92a80>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_import_missing_state_is_422 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2d96de0>
+anon = <httpclient.Client object at 0x7731b2d352e0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_import_malformed_json_is_400 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcc5e0>
+anon = <httpclient.Client object at 0x7731b2d35730>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_reset_clears_users_and_tokens _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcd300>
+anon = <httpclient.Client object at 0x7731b2c2ee70>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__ ERROR at setup of test_invalid_reset_fixture_leaves_prior_state_untouched ___
+
+reset = <function reset.<locals>._reset at 0x7731b2bcdee0>
+anon = <httpclient.Client object at 0x7731b2bec8c0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_first_use_is_201_replay_is_200_with_same_body _____
+
+reset = <function reset.<locals>._reset at 0x7731b2c53600>
+anon = <httpclient.Client object at 0x7731b2c2fe60>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_same_key_different_body_is_409 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcdbc0>
+anon = <httpclient.Client object at 0x7731b2c2c890>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_key_reused_after_4xx_failure_is_a_first_use ______
+
+reset = <function reset.<locals>._reset at 0x7731b2bcc400>
+anon = <httpclient.Client object at 0x7731b2ce30e0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_idempotency_key_scoped_to_user _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2bce700>
+anon = <httpclient.Client object at 0x7731b2d37ad0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____ ERROR at setup of test_same_key_different_path_is_a_different_request _____
+
+reset = <function reset.<locals>._reset at 0x7731b2bced40>
+anon = <httpclient.Client object at 0x7731b2d37b30>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_idempotency_key_too_long_is_422 ____________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcf2e0>
+anon = <httpclient.Client object at 0x7731b2c93260>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_idempotency_resolved_before_field_validation ______
+
+reset = <function reset.<locals>._reset at 0x7731b2bcf880>
+anon = <httpclient.Client object at 0x7731b2bef5c0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___ ERROR at setup of test_concurrent_identical_requests_commit_exactly_once ___
+
+reset = <function reset.<locals>._reset at 0x7731b2bcfe20>
+anon = <httpclient.Client object at 0x7731b2beffe0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_replay_survives_cancellation ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2c98400>
+anon = <httpclient.Client object at 0x7731b2c96450>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_single_move_changes_the_table _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c989a0>
+anon = <httpclient.Client object at 0x7731b2c973e0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_swap_two_bookings_between_tables_atomically ______
+
+reset = <function reset.<locals>._reset at 0x7731b2c98f40>
+anon = <httpclient.Client object at 0x7731b2c95f10>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_unchanged_items_are_included ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2c994e0>
+anon = <httpclient.Client object at 0x7731b2c960c0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_duplicate_references_is_422 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcf2e0>
+anon = <httpclient.Client object at 0x7731b2c967e0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________________ ERROR at setup of test_empty_moves_is_422 ___________________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcd260>
+anon = <httpclient.Client object at 0x7731b2c94140>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________________ ERROR at setup of test_too_many_moves_is_422 _________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c98fe0>
+anon = <httpclient.Client object at 0x7731b2c96c00>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_______________ ERROR at setup of test_unknown_reference_is_404 ________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c98f40>
+anon = <httpclient.Client object at 0x7731b2bee5a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_someone_elses_reference_is_404 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c99bc0>
+anon = <httpclient.Client object at 0x7731b2c91730>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________________ ERROR at setup of test_no_token_is_401 ____________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9a200>
+anon = <httpclient.Client object at 0x7731b2d35ac0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________ ERROR at setup of test_cancelled_booking_in_batch_is_409 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9a7a0>
+anon = <httpclient.Client object at 0x7731b2d22720>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_ ERROR at setup of test_overlap_with_unlisted_booking_is_409_and_nothing_changes _
+
+reset = <function reset.<locals>._reset at 0x7731b2c9ad40>
+anon = <httpclient.Client object at 0x7731b2c2f9b0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_overlap_among_resulting_bookings_is_409 ________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9b2e0>
+anon = <httpclient.Client object at 0x7731b1aaeba0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_idempotency_applies_to_moves ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9ba60>
+anon = <httpclient.Client object at 0x7731b1aaf890>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_missing_idempotency_key_is_400 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac00e0>
+anon = <httpclient.Client object at 0x7731b1aaf680>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_create_returns_documented_shape ____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9b600>
+anon = <httpclient.Client object at 0x7731b2c2cef0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_ends_at_is_start_plus_duration _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c98400>
+anon = <httpclient.Client object at 0x7731b2d22bd0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_reference_is_unique_across_reservations ________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcd260>
+anon = <httpclient.Client object at 0x7731b2d34d40>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_double_booking_same_table_same_slot_is_409 _______
+
+reset = <function reset.<locals>._reset at 0x7731b1ac04a0>
+anon = <httpclient.Client object at 0x7731b2befd10>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_overlapping_but_offset_time_is_409 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac0a40>
+anon = <httpclient.Client object at 0x7731b2c941a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_______ ERROR at setup of test_adjacent_non_overlapping_booking_succeeds _______
+
+reset = <function reset.<locals>._reset at 0x7731b1ac0f40>
+anon = <httpclient.Client object at 0x7731b2c94cb0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________________ ERROR at setup of test_not_on_slot_grid_is_422 ________________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac1580>
+anon = <httpclient.Client object at 0x7731b1aad100>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_before_opening_is_outside_opening_hours ________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac1b20>
+anon = <httpclient.Client object at 0x7731b1aae450>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_ending_after_closing_is_outside_opening_hours _____
+
+reset = <function reset.<locals>._reset at 0x7731b1ac20c0>
+anon = <httpclient.Client object at 0x7731b1acdfa0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_party_size_exceeds_capacity_is_422 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac2c00>
+anon = <httpclient.Client object at 0x7731b1acff80>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_______________ ERROR at setup of test_unknown_restaurant_is_404 _______________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac31a0>
+anon = <httpclient.Client object at 0x7731b1acfc50>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________________ ERROR at setup of test_unknown_table_is_404 __________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9b600>
+anon = <httpclient.Client object at 0x7731b1acff80>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_table_from_another_restaurant_is_404 __________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9bf60>
+anon = <httpclient.Client object at 0x7731b2ea8ad0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_missing_idempotency_key_is_400 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2c51300>
+anon = <httpclient.Client object at 0x7731b1ace900>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________________ ERROR at setup of test_requires_authentication ________________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac2ca0>
+anon = <httpclient.Client object at 0x7731b1acf230>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_party_size_wrong_type_is_422_not_400 __________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac3560>
+anon = <httpclient.Client object at 0x7731b1aaf470>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_party_size_zero_or_negative_is_422 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac1b20>
+anon = <httpclient.Client object at 0x7731b1aaffb0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________ ERROR at setup of test_starts_at_local_bad_format_is_422 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac0a40>
+anon = <httpclient.Client object at 0x7731b1aae840>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_starts_at_local_wrong_json_type_is_400 _________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac3a60>
+anon = <httpclient.Client object at 0x7731b2c94380>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_table_id_wrong_json_type_is_400 ____________
+
+reset = <function reset.<locals>._reset at 0x7731b1af4040>
+anon = <httpclient.Client object at 0x7731b2c90320>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_unknown_fields_are_ignored _______________
+
+reset = <function reset.<locals>._reset at 0x7731b1af45e0>
+anon = <httpclient.Client object at 0x7731b2c91b20>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+____________ ERROR at setup of test_list_is_empty_for_a_fresh_user _____________
+
+reset = <function reset.<locals>._reset at 0x7731b1af4ea0>
+anon = <httpclient.Client object at 0x7731b2bed820>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_list_contains_confirmed_and_cancelled _________
+
+reset = <function reset.<locals>._reset at 0x7731b1af53a0>
+anon = <httpclient.Client object at 0x7731b2d35250>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_list_is_ordered_by_starts_at_descending ________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac2f20>
+anon = <httpclient.Client object at 0x7731b2bef4a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___________________ ERROR at setup of test_get_by_reference ____________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c51300>
+anon = <httpclient.Client object at 0x7731b2c91e80>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_get_someone_elses_reservation_is_404 __________
+
+reset = <function reset.<locals>._reset at 0x7731b1af5620>
+anon = <httpclient.Client object at 0x7731b2c97e30>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_get_unknown_reference_is_404 ______________
+
+reset = <function reset.<locals>._reset at 0x7731b1af4040>
+anon = <httpclient.Client object at 0x7731b1aae600>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_cancel_sets_status_and_frees_the_table _________
+
+reset = <function reset.<locals>._reset at 0x7731b1af5d00>
+anon = <httpclient.Client object at 0x7731b1aae420>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_cancel_twice_is_not_an_error ______________
+
+reset = <function reset.<locals>._reset at 0x7731b1af62a0>
+anon = <httpclient.Client object at 0x7731b1aada00>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_cancel_someone_elses_reservation_is_404 ________
+
+reset = <function reset.<locals>._reset at 0x7731b1af6840>
+anon = <httpclient.Client object at 0x7731b1acd6a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________ ERROR at setup of test_patch_changes_table_and_frees_old_one _________
+
+reset = <function reset.<locals>._reset at 0x7731b1af7240>
+anon = <httpclient.Client object at 0x7731b2c2f4a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________________ ERROR at setup of test_patch_changes_time ___________________
+
+reset = <function reset.<locals>._reset at 0x7731b1af7740>
+anon = <httpclient.Client object at 0x7731b2ce0fe0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_ ERROR at setup of test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged _
+
+reset = <function reset.<locals>._reset at 0x7731b1af7d80>
+anon = <httpclient.Client object at 0x7731b2ce3b60>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+__________ ERROR at setup of test_patch_cancelled_reservation_is_409 ___________
+
+reset = <function reset.<locals>._reset at 0x7731b1af8220>
+anon = <httpclient.Client object at 0x7731b1afeae0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_patch_someone_elses_reservation_is_404 _________
+
+reset = <function reset.<locals>._reset at 0x7731b1af7a60>
+anon = <httpclient.Client object at 0x7731b2c2c1d0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____________ ERROR at setup of test_patch_invalid_new_time_is_422 _____________
+
+reset = <function reset.<locals>._reset at 0x7731b1af5d00>
+anon = <httpclient.Client object at 0x7731b2ce3a40>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_restaurant_endpoints_need_no_token[<lambda>0] _____
+
+reset = <function reset.<locals>._reset at 0x7731b1ac3100>
+anon = <httpclient.Client object at 0x7731b1acf590>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_restaurant_endpoints_need_no_token[<lambda>1] _____
+
+reset = <function reset.<locals>._reset at 0x7731b1af8680>
+anon = <httpclient.Client object at 0x7731b1aae930>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______________ ERROR at setup of test_availability_needs_no_token ______________
+
+reset = <function reset.<locals>._reset at 0x7731b1af8c20>
+anon = <httpclient.Client object at 0x7731b1aae2a0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_________________ ERROR at setup of test_restaurant_list_shape _________________
+
+reset = <function reset.<locals>._reset at 0x7731b1af91c0>
+anon = <httpclient.Client object at 0x7731b2c95490>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________________ ERROR at setup of test_restaurant_detail_shape ________________
+
+reset = <function reset.<locals>._reset at 0x7731b1af9760>
+anon = <httpclient.Client object at 0x7731b2c90140>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_______________ ERROR at setup of test_unknown_restaurant_is_404 _______________
+
+reset = <function reset.<locals>._reset at 0x7731b1af9c60>
+anon = <httpclient.Client object at 0x7731b2bed790>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+_____ ERROR at setup of test_availability_slot_grid_steps_by_slot_minutes ______
+
+reset = <function reset.<locals>._reset at 0x7731b1afa200>
+anon = <httpclient.Client object at 0x7731b1afef30>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___ ERROR at setup of test_availability_filters_by_capacity_in_fixture_order ___
+
+reset = <function reset.<locals>._reset at 0x7731b1afa7a0>
+anon = <httpclient.Client object at 0x7731b1afd8e0>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+______ ERROR at setup of test_slot_with_no_free_table_still_appears_empty ______
+
+reset = <function reset.<locals>._reset at 0x7731b1afb1a0>
+anon = <httpclient.Client object at 0x7731b1b07020>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+___ ERROR at setup of test_half_open_interval_does_not_overlap_adjacent_slot ___
+
+reset = <function reset.<locals>._reset at 0x7731b1af7a60>
+anon = <httpclient.Client object at 0x7731b2c92900>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+________ ERROR at setup of test_availability_requires_all_three_params _________
+
+reset = <function reset.<locals>._reset at 0x7731b1afb560>
+anon = <httpclient.Client object at 0x7731b1afd220>
+
+    @pytest.fixture
+    def world(reset, anon):
+        restaurant = make_restaurant()
+        fixture = {
+            "users": [
+                {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+                {"id": "u_bob", "email": "bob@example.com", "password": "correct horse", "display_name": "Bob"},
+            ],
+            "restaurants": [restaurant],
+            "reservations": [],
+        }
+        reset(fixture)
+        date = booking_date(restaurant["timezone"])
+        ada_login = anon.post("/auth/login", json_body={"email": "ada@example.com", "password": "correct horse"})
+        bob_login = anon.post("/auth/login", json_body={"email": "bob@example.com", "password": "correct horse"})
+        return SimpleNamespace(
+            fixture=fixture, restaurant=restaurant, rid=restaurant["id"],
+            timezone=restaurant["timezone"], date=date,
+>           ada=anon.with_token(ada_login.body["token"]),
+            bob=anon.with_token(bob_login.body["token"]),
+        )
+E       KeyError: 'token'
+
+tests/conftest.py:90: KeyError
+=================================== FAILURES ===================================
+__________________ test_account_supports_concurrent_sessions ___________________
+
+reset = <function reset.<locals>._reset at 0x7731b2d94fe0>
+anon = <httpclient.Client object at 0x7731b2d34350>
+
+    def test_account_supports_concurrent_sessions(reset, anon):
+        reset({"restaurants": [], "users": [
+            {"id": "u_c", "email": "c@example.com", "password": "correct horse", "display_name": "C"}],
+            "reservations": []})
+>       t1 = anon.post("/auth/login", json_body={"email": "c@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_auth.py:70: KeyError
+____________________ test_spring_forward_gap_booking_is_422 ____________________
+
+reset = <function reset.<locals>._reset at 0x7731b2d96d40>
+anon = <httpclient.Client object at 0x7731b2ce2a80>
+
+    def test_spring_forward_gap_booking_is_422(reset, anon):
+        """Europe/Berlin, 2026-03-29 02:00 -> 03:00; 02:30 never existed."""
+        _reset_dst_restaurant(reset)
+>       client = _client(anon)
+
+tests/test_dst.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+anon = <httpclient.Client object at 0x7731b2ce2a80>
+
+    def _client(anon):
+>       token = anon.post("/auth/login", json_body={
+            "email": "dst@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_dst.py:22: KeyError
+____________ test_spring_forward_gap_never_appears_in_availability _____________
+
+reset = <function reset.<locals>._reset at 0x7731b2d96de0>
+anon = <httpclient.Client object at 0x7731b2d37cb0>
+
+    def test_spring_forward_gap_never_appears_in_availability(reset, anon):
+        _reset_dst_restaurant(reset)
+        body = anon.get("/availability", params={
+            "restaurant_id": "r_dst", "date": "2026-03-29", "party_size": 2}).body
+>       times = [s["starts_at_local"].split("T")[1] for s in body["slots"]]
+E       KeyError: 'slots'
+
+tests/test_dst.py:42: KeyError
+_______ test_fall_back_slot_appears_once_and_resolves_to_earlier_offset ________
+
+reset = <function reset.<locals>._reset at 0x7731b2d967a0>
+anon = <httpclient.Client object at 0x7731b2d35070>
+
+    def test_fall_back_slot_appears_once_and_resolves_to_earlier_offset(reset, anon):
+        """Europe/Berlin, 2026-10-25 03:00 -> 02:00; 02:30 happens twice."""
+        _reset_dst_restaurant(reset)
+        body = anon.get("/availability", params={
+            "restaurant_id": "r_dst", "date": "2026-10-25", "party_size": 2}).body
+>       matches = [s for s in body["slots"] if s["starts_at_local"].endswith("02:30")]
+E       KeyError: 'slots'
+
+tests/test_dst.py:53: KeyError
+______ test_booking_fall_back_repeated_hour_resolves_to_first_occurrence _______
+
+reset = <function reset.<locals>._reset at 0x7731b2d96480>
+anon = <httpclient.Client object at 0x7731b2d376e0>
+
+    def test_booking_fall_back_repeated_hour_resolves_to_first_occurrence(reset, anon):
+        _reset_dst_restaurant(reset)
+>       client = _client(anon)
+
+tests/test_dst.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+anon = <httpclient.Client object at 0x7731b2d376e0>
+
+    def _client(anon):
+>       token = anon.post("/auth/login", json_body={
+            "email": "dst@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_dst.py:22: KeyError
+_______________ test_duration_is_absolute_time_across_fall_back ________________
+
+reset = <function reset.<locals>._reset at 0x7731b2d95440>
+anon = <httpclient.Client object at 0x7731b2d375f0>
+
+    def test_duration_is_absolute_time_across_fall_back(reset, anon):
+        """A 90-minute booking at 01:30 on the fall-back night ends at local 02:00, not 03:00."""
+        _reset_dst_restaurant(reset)
+>       client = _client(anon)
+
+tests/test_dst.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+anon = <httpclient.Client object at 0x7731b2d375f0>
+
+    def _client(anon):
+>       token = anon.post("/auth/login", json_body={
+            "email": "dst@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_dst.py:22: KeyError
+___________________ test_new_york_spring_forward_gap_is_422 ____________________
+
+reset = <function reset.<locals>._reset at 0x7731b2d95080>
+anon = <httpclient.Client object at 0x7731b2d23d70>
+
+    def test_new_york_spring_forward_gap_is_422(reset, anon):
+        """America/New_York, 2026-03-08 02:00 -> 03:00; 02:30 never existed."""
+        _reset_dst_restaurant(reset, rid="r_ny", timezone="America/New_York")
+>       client = _client(anon)
+
+tests/test_dst.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+anon = <httpclient.Client object at 0x7731b2d23d70>
+
+    def _client(anon):
+>       token = anon.post("/auth/login", json_body={
+            "email": "dst@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_dst.py:22: KeyError
+______________ test_new_york_fall_back_resolves_to_earlier_offset ______________
+
+reset = <function reset.<locals>._reset at 0x7731b2d972e0>
+anon = <httpclient.Client object at 0x7731b2d22c30>
+
+    def test_new_york_fall_back_resolves_to_earlier_offset(reset, anon):
+        """America/New_York, 2026-11-01 02:00 -> 01:00; 01:30 happens twice."""
+        _reset_dst_restaurant(reset, rid="r_ny2", timezone="America/New_York")
+>       client = _client(anon)
+
+tests/test_dst.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+anon = <httpclient.Client object at 0x7731b2d22c30>
+
+    def _client(anon):
+>       token = anon.post("/auth/login", json_body={
+            "email": "dst@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_dst.py:22: KeyError
+___________ test_booking_in_the_past_is_not_rejected_solely_for_that ___________
+
+reset = <function reset.<locals>._reset at 0x7731b2d96480>
+anon = <httpclient.Client object at 0x7731b2ce3a40>
+
+    def test_booking_in_the_past_is_not_rejected_solely_for_that(reset, anon):
+        import datetime as dt
+    
+        reset({
+            "users": [{"id": "u_p", "email": "past@example.com",
+                       "password": "correct horse", "display_name": "P"}],
+            "restaurants": [{
+                "id": "r_past", "name": "Past", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:30"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [],
+        })
+>       token = anon.post("/auth/login", json_body={
+            "email": "past@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_errors_general.py:73: KeyError
+________________________ test_reset_replaces_all_state _________________________
+
+reset = <function reset.<locals>._reset at 0x7731b2bcc400>
+anon = <httpclient.Client object at 0x7731b2d22900>
+
+    def test_reset_replaces_all_state(reset, anon):
+        reset({"restaurants": [{
+            "id": "r_one", "name": "One", "timezone": "UTC", "slot_minutes": 30,
+            "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+            "opening_hours": [], "tables": [],
+        }], "users": [], "reservations": []})
+>       assert [r["id"] for r in anon.get("/restaurants").body["restaurants"]] == ["r_one"]
+E       AssertionError: assert [] == ['r_one']
+E         Right contains one more item: 'r_one'
+E         Use -v to get more diff
+
+tests/test_health_and_reset.py:19: AssertionError
+___________________________ test_reset_is_repeatable ___________________________
+
+reset = <function reset.<locals>._reset at 0x7731b2bccfe0>
+anon = <httpclient.Client object at 0x7731b2ce14f0>
+
+    def test_reset_is_repeatable(reset, anon):
+        fixture = {"restaurants": [{
+            "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+            "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+            "opening_hours": [], "tables": [],
+        }], "users": [], "reservations": []}
+        reset(fixture)
+        reset(fixture)
+>       assert [r["id"] for r in anon.get("/restaurants").body["restaurants"]] == ["r_x"]
+E       AssertionError: assert [] == ['r_x']
+E         Right contains one more item: 'r_x'
+E         Use -v to get more diff
+
+tests/test_health_and_reset.py:38: AssertionError
+_______________ test_reset_rejects_ids_longer_than_64_characters _______________
+
+anon = <httpclient.Client object at 0x7731b2c2d3d0>
+
+    def test_reset_rejects_ids_longer_than_64_characters(anon):
+        too_long = "u_" + "x" * 64
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": too_long, "email": "long@example.com",
+                       "password": "correct horse", "display_name": "Long"}],
+            "restaurants": [], "reservations": [],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:55: AssertionError
+_____________ test_reset_rejects_invalid_reservation_references[x] _____________
+
+anon = <httpclient.Client object at 0x7731b2c2d8b0>, bad_reference = 'x'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+__________ test_reset_rejects_invalid_reservation_references[lower01] __________
+
+anon = <httpclient.Client object at 0x7731b2becef0>, bad_reference = 'lower01'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+____ test_reset_rejects_invalid_reservation_references[TOO-LONG-WITH-DASH] _____
+
+anon = <httpclient.Client object at 0x7731b2becec0>
+bad_reference = 'TOO-LONG-WITH-DASH'
+
+    @pytest.mark.parametrize("bad_reference", ["x", "lower01", "TOO-LONG-WITH-DASH"])
+    def test_reset_rejects_invalid_reservation_references(anon, bad_reference):
+        resp = anon.post("/_test/reset", json_body={
+            "users": [{"id": "u_a", "email": "r@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [{
+                "id": "res_bad", "reference": bad_reference, "user_id": "u_a",
+                "restaurant_id": "r_x", "table_id": "t_1",
+                "starts_at_local": "2026-01-05T10:00", "party_size": 2,
+            }],
+        })
+>       assert resp.status == 422
+E       assert 204 == 422
+E        +  where 204 = Response(204, None).status
+
+tests/test_health_and_reset.py:77: AssertionError
+______________________ test_different_restaurants_is_422 _______________________
+
+reset = <function reset.<locals>._reset at 0x7731b2c9b880>
+anon = <httpclient.Client object at 0x7731b1aaea20>
+
+    def test_different_restaurants_is_422(reset, anon):
+        reset({
+            "users": [{"id": "u_a", "email": "multi@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [
+                make_restaurant("r_one"),
+                make_restaurant("r_two", tables=[{"id": "t_x", "label": "X", "capacity": 2}]),
+            ],
+            "reservations": [],
+        })
+>       token = anon.post("/auth/login", json_body={
+            "email": "multi@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_reservation_moves.py:148: KeyError
+_________________ test_closed_weekday_is_outside_opening_hours _________________
+
+reset = <function reset.<locals>._reset at 0x7731b1ac25c0>
+anon = <httpclient.Client object at 0x7731b1ace0c0>
+
+    def test_closed_weekday_is_outside_opening_hours(reset, anon):
+        reset({
+            "users": [{"id": "u_a", "email": "a@example.com", "password": "correct horse", "display_name": "A"}],
+            "reservations": [],
+            "restaurants": [{
+                "id": "r_mon", "name": "Mon only", "timezone": "UTC",
+                "slot_minutes": 30, "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": "mon", "opens": "10:00", "closes": "14:00"}],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+        })
+>       token = anon.post("/auth/login", json_body={"email": "a@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_reservations_create.py:86: KeyError
+_________ test_same_table_id_in_different_restaurants_does_not_collide _________
+
+reset = <function reset.<locals>._reset at 0x7731b1af4ae0>
+anon = <httpclient.Client object at 0x7731b2befbf0>
+
+    def test_same_table_id_in_different_restaurants_does_not_collide(reset, anon):
+        """Table ids are only unique within a restaurant: two restaurants may both have a t_2."""
+        import datetime as dt
+    
+        weekdays = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+        restaurant = {
+            "timezone": "Europe/Berlin", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 0,
+            "opening_hours": [{"weekday": d, "opens": "18:00", "closes": "23:00"} for d in weekdays],
+            "tables": [{"id": "t_2", "label": "2", "capacity": 4}],
+        }
+        reset({
+            "users": [{"id": "u_a", "email": "two-zones@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{"id": "r_one", "name": "One", **restaurant},
+                             {"id": "r_two", "name": "Two", **restaurant}],
+            "reservations": [],
+        })
+>       token = anon.post("/auth/login", json_body={
+            "email": "two-zones@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_reservations_create.py:206: KeyError
+_______________________ test_cancel_within_cutoff_is_409 _______________________
+
+reset = <function reset.<locals>._reset at 0x7731b1af6de0>
+anon = <httpclient.Client object at 0x7731b2d35fa0>
+
+    def test_cancel_within_cutoff_is_409(reset, anon):
+        restaurant = {
+            "id": "r_soon", "name": "Soon", "timezone": "UTC", "slot_minutes": 30,
+            "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 120,
+            "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:30"}
+                               for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+            "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+        }
+        target = dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=45)
+        target = target.replace(minute=(target.minute // 30) * 30, second=0, microsecond=0)
+        local = target.strftime("%Y-%m-%dT%H:%M")
+        reset({
+            "users": [{"id": "u_a", "email": "soon@example.com", "password": "correct horse", "display_name": "A"}],
+            "restaurants": [restaurant], "reservations": [],
+        })
+>       token = anon.post("/auth/login", json_body={
+            "email": "soon@example.com", "password": "correct horse"}).body["token"]
+E       KeyError: 'token'
+
+tests/test_reservations_read_cancel_amend.py:89: KeyError
+_______________________ test_closed_day_returns_no_slots _______________________
+
+reset = <function reset.<locals>._reset at 0x7731b1afade0>
+anon = <httpclient.Client object at 0x7731b1b043b0>
+
+    def test_closed_day_returns_no_slots(reset, anon):
+        reset({
+            "users": [], "reservations": [],
+            "restaurants": [{
+                "id": "r_weekend", "name": "Weekend only", "timezone": "UTC",
+                "slot_minutes": 30, "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": "sat", "opens": "10:00", "closes": "14:00"}],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+        })
+        # find the next Monday, guaranteed closed
+        import datetime as dt
+        d = dt.date.today()
+        while d.weekday() != 0:
+            d += dt.timedelta(days=1)
+        body = anon.get("/availability", params={
+            "restaurant_id": "r_weekend", "date": d.isoformat(), "party_size": 2}).body
+>       assert body["slots"] == []
+E       KeyError: 'slots'
+
+tests/test_restaurants_and_availability.py:80: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_auth.py::test_account_supports_concurrent_sessions - KeyErr...
+FAILED tests/test_dst.py::test_spring_forward_gap_booking_is_422 - KeyError: ...
+FAILED tests/test_dst.py::test_spring_forward_gap_never_appears_in_availability
+FAILED tests/test_dst.py::test_fall_back_slot_appears_once_and_resolves_to_earlier_offset
+FAILED tests/test_dst.py::test_booking_fall_back_repeated_hour_resolves_to_first_occurrence
+FAILED tests/test_dst.py::test_duration_is_absolute_time_across_fall_back - K...
+FAILED tests/test_dst.py::test_new_york_spring_forward_gap_is_422 - KeyError:...
+FAILED tests/test_dst.py::test_new_york_fall_back_resolves_to_earlier_offset
+FAILED tests/test_errors_general.py::test_booking_in_the_past_is_not_rejected_solely_for_that
+FAILED tests/test_health_and_reset.py::test_reset_replaces_all_state - Assert...
+FAILED tests/test_health_and_reset.py::test_reset_is_repeatable - AssertionEr...
+FAILED tests/test_health_and_reset.py::test_reset_rejects_ids_longer_than_64_characters
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[x]
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[lower01]
+FAILED tests/test_health_and_reset.py::test_reset_rejects_invalid_reservation_references[TOO-LONG-WITH-DASH]
+FAILED tests/test_reservation_moves.py::test_different_restaurants_is_422 - K...
+FAILED tests/test_reservations_create.py::test_closed_weekday_is_outside_opening_hours
+FAILED tests/test_reservations_create.py::test_same_table_id_in_different_restaurants_does_not_collide
+FAILED tests/test_reservations_read_cancel_amend.py::test_cancel_within_cutoff_is_409
+FAILED tests/test_restaurants_and_availability.py::test_closed_day_returns_no_slots
+ERROR tests/test_auth.py::test_login_returns_usable_token - KeyError: 'token'
+ERROR tests/test_auth.py::test_login_wrong_password_is_401 - KeyError: 'token'
+ERROR tests/test_auth.py::test_login_unknown_email_is_401 - KeyError: 'token'
+ERROR tests/test_auth.py::test_passwords_are_not_stored_in_plaintext - KeyErr...
+ERROR tests/test_concurrency.py::test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner
+ERROR tests/test_concurrency.py::test_fifty_concurrent_mixed_requests_never_5xx
+ERROR tests/test_concurrency.py::test_concurrent_cancel_and_rebook_is_consistent
+ERROR tests/test_errors_general.py::test_every_error_has_the_documented_shape
+ERROR tests/test_errors_general.py::test_malformed_json_body_is_400 - KeyErro...
+ERROR tests/test_errors_general.py::test_non_object_json_body_is_400 - KeyErr...
+ERROR tests/test_errors_general.py::test_availability_query_int_rejects_non_digit_forms
+ERROR tests/test_errors_general.py::test_availability_query_int_accepts_plain_digits
+ERROR tests/test_errors_general.py::test_availability_invalid_date_is_422 - K...
+ERROR tests/test_errors_general.py::test_unknown_query_parameters_are_ignored
+ERROR tests/test_errors_general.py::test_idempotency_key_header_name_is_case_insensitive
+ERROR tests/test_export_import.py::test_export_shape - KeyError: 'token'
+ERROR tests/test_export_import.py::test_import_requires_204 - KeyError: 'token'
+ERROR tests/test_export_import.py::test_import_restores_a_booking_receipt - K...
+ERROR tests/test_export_import.py::test_import_preserves_tokens_and_login - K...
+ERROR tests/test_export_import.py::test_import_preserves_idempotency_receipts
+ERROR tests/test_export_import.py::test_import_is_replacement_not_merge - Key...
+ERROR tests/test_export_import.py::test_repeated_import_does_not_duplicate - ...
+ERROR tests/test_export_import.py::test_export_is_a_point_in_time_snapshot - ...
+ERROR tests/test_export_import.py::test_reset_clears_imported_state - KeyErro...
+ERROR tests/test_export_import.py::test_import_invalid_track_is_422_without_changing_state
+ERROR tests/test_export_import.py::test_import_invalid_version_is_422 - KeyEr...
+ERROR tests/test_export_import.py::test_import_missing_state_is_422 - KeyErro...
+ERROR tests/test_export_import.py::test_import_malformed_json_is_400 - KeyErr...
+ERROR tests/test_health_and_reset.py::test_reset_clears_users_and_tokens - Ke...
+ERROR tests/test_health_and_reset.py::test_invalid_reset_fixture_leaves_prior_state_untouched
+ERROR tests/test_idempotency.py::test_first_use_is_201_replay_is_200_with_same_body
+ERROR tests/test_idempotency.py::test_same_key_different_body_is_409 - KeyErr...
+ERROR tests/test_idempotency.py::test_key_reused_after_4xx_failure_is_a_first_use
+ERROR tests/test_idempotency.py::test_idempotency_key_scoped_to_user - KeyErr...
+ERROR tests/test_idempotency.py::test_same_key_different_path_is_a_different_request
+ERROR tests/test_idempotency.py::test_idempotency_key_too_long_is_422 - KeyEr...
+ERROR tests/test_idempotency.py::test_idempotency_resolved_before_field_validation
+ERROR tests/test_idempotency.py::test_concurrent_identical_requests_commit_exactly_once
+ERROR tests/test_idempotency.py::test_replay_survives_cancellation - KeyError...
+ERROR tests/test_reservation_moves.py::test_single_move_changes_the_table - K...
+ERROR tests/test_reservation_moves.py::test_swap_two_bookings_between_tables_atomically
+ERROR tests/test_reservation_moves.py::test_unchanged_items_are_included - Ke...
+ERROR tests/test_reservation_moves.py::test_duplicate_references_is_422 - Key...
+ERROR tests/test_reservation_moves.py::test_empty_moves_is_422 - KeyError: 't...
+ERROR tests/test_reservation_moves.py::test_too_many_moves_is_422 - KeyError:...
+ERROR tests/test_reservation_moves.py::test_unknown_reference_is_404 - KeyErr...
+ERROR tests/test_reservation_moves.py::test_someone_elses_reference_is_404 - ...
+ERROR tests/test_reservation_moves.py::test_no_token_is_401 - KeyError: 'token'
+ERROR tests/test_reservation_moves.py::test_cancelled_booking_in_batch_is_409
+ERROR tests/test_reservation_moves.py::test_overlap_with_unlisted_booking_is_409_and_nothing_changes
+ERROR tests/test_reservation_moves.py::test_overlap_among_resulting_bookings_is_409
+ERROR tests/test_reservation_moves.py::test_idempotency_applies_to_moves - Ke...
+ERROR tests/test_reservation_moves.py::test_missing_idempotency_key_is_400 - ...
+ERROR tests/test_reservations_create.py::test_create_returns_documented_shape
+ERROR tests/test_reservations_create.py::test_ends_at_is_start_plus_duration
+ERROR tests/test_reservations_create.py::test_reference_is_unique_across_reservations
+ERROR tests/test_reservations_create.py::test_double_booking_same_table_same_slot_is_409
+ERROR tests/test_reservations_create.py::test_overlapping_but_offset_time_is_409
+ERROR tests/test_reservations_create.py::test_adjacent_non_overlapping_booking_succeeds
+ERROR tests/test_reservations_create.py::test_not_on_slot_grid_is_422 - KeyEr...
+ERROR tests/test_reservations_create.py::test_before_opening_is_outside_opening_hours
+ERROR tests/test_reservations_create.py::test_ending_after_closing_is_outside_opening_hours
+ERROR tests/test_reservations_create.py::test_party_size_exceeds_capacity_is_422
+ERROR tests/test_reservations_create.py::test_unknown_restaurant_is_404 - Key...
+ERROR tests/test_reservations_create.py::test_unknown_table_is_404 - KeyError...
+ERROR tests/test_reservations_create.py::test_table_from_another_restaurant_is_404
+ERROR tests/test_reservations_create.py::test_missing_idempotency_key_is_400
+ERROR tests/test_reservations_create.py::test_requires_authentication - KeyEr...
+ERROR tests/test_reservations_create.py::test_party_size_wrong_type_is_422_not_400
+ERROR tests/test_reservations_create.py::test_party_size_zero_or_negative_is_422
+ERROR tests/test_reservations_create.py::test_starts_at_local_bad_format_is_422
+ERROR tests/test_reservations_create.py::test_starts_at_local_wrong_json_type_is_400
+ERROR tests/test_reservations_create.py::test_table_id_wrong_json_type_is_400
+ERROR tests/test_reservations_create.py::test_unknown_fields_are_ignored - Ke...
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_is_empty_for_a_fresh_user
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_contains_confirmed_and_cancelled
+ERROR tests/test_reservations_read_cancel_amend.py::test_list_is_ordered_by_starts_at_descending
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_by_reference - K...
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_get_unknown_reference_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_sets_status_and_frees_the_table
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_twice_is_not_an_error
+ERROR tests/test_reservations_read_cancel_amend.py::test_cancel_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_changes_table_and_frees_old_one
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_changes_time
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_cancelled_reservation_is_409
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_someone_elses_reservation_is_404
+ERROR tests/test_reservations_read_cancel_amend.py::test_patch_invalid_new_time_is_422
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_endpoints_need_no_token[<lambda>0]
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_endpoints_need_no_token[<lambda>1]
+ERROR tests/test_restaurants_and_availability.py::test_availability_needs_no_token
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_list_shape
+ERROR tests/test_restaurants_and_availability.py::test_restaurant_detail_shape
+ERROR tests/test_restaurants_and_availability.py::test_unknown_restaurant_is_404
+ERROR tests/test_restaurants_and_availability.py::test_availability_slot_grid_steps_by_slot_minutes
+ERROR tests/test_restaurants_and_availability.py::test_availability_filters_by_capacity_in_fixture_order
+ERROR tests/test_restaurants_and_availability.py::test_slot_with_no_free_table_still_appears_empty
+ERROR tests/test_restaurants_and_availability.py::test_half_open_interval_does_not_overlap_adjacent_slot
+ERROR tests/test_restaurants_and_availability.py::test_availability_requires_all_three_params
+20 failed, 10 passed, 100 errors in 3.48s

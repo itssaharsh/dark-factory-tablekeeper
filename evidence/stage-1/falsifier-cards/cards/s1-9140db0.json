@@ -1,0 +1,84 @@
+{
+ "card": "verdict",
+ "stage": 1,
+ "from": "falsifier",
+ "to": "implementer,coordinator",
+ "revision": "9140db0b4b02f8f2e2e56b7d92419d61e164dd73",
+ "base": "933db32b6237884d7e09c9fc2868a4fd76692c65",
+ "runs": [
+  {
+   "tree": "revision",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 45.95,
+   "log": "cards/s1-9140db0.json.logs/revision.log",
+   "runner": "pytest",
+   "tests_run": 131,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base as it was",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 46.63,
+   "log": "cards/s1-9140db0.json.logs/base-as-it-was.log",
+   "runner": "pytest",
+   "tests_run": 130,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base with delivered tests",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 47.12,
+   "log": "cards/s1-9140db0.json.logs/base-with-delivered-tests.log",
+   "runner": "pytest",
+   "tests_run": 131,
+   "tests_left_out": 0,
+   "tests_failed": 1,
+   "could_not_load": ""
+  },
+  {
+   "tree": "revision with implementation reverted",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 47.09,
+   "log": "cards/s1-9140db0.json.logs/revision-with-implementation-reverted.log",
+   "runner": "pytest",
+   "tests_run": 131,
+   "tests_left_out": 0,
+   "tests_failed": 1,
+   "could_not_load": ""
+  },
+  {
+   "tree": "revision with every function emptied",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 5.42,
+   "log": "cards/s1-9140db0.json.logs/revision-with-every-function-emptied.log",
+   "runner": "pytest",
+   "tests_run": 31,
+   "tests_left_out": 0,
+   "tests_failed": 21,
+   "could_not_load": ""
+  }
+ ],
+ "findings": [],
+ "verdict": "ACCEPT",
+ "at": "2026-10-04T13:11:43+00:00",
+ "notes": [
+  "a plain re-run of the listed command on the posted revision exits 0",
+  "the base is 933db32b6237884d7e09c9fc2868a4fd76692c65: the ledger accepted.jsonl holds it as the last accepted revision (stage 1)",
+  "the work also changed 6 file(s) outside stage-1, which this check did not judge: evidence/stage-1/cards/S1-1.1b-restaurant-scope.json, evidence/stage-1/cards/S1-3.4.6-reset-id-length.json, evidence/stage-1/cards/S1-4.2-opening-hours-no-midnight-cross.json, evidence/stage-1/cards/S1-8.30-patch-atomic-release-and-reserve.json, evidence/stage-1/cards/S1-8.POST-reservations-reference-shape-on-reset.json, evidence/stage-1/stage-1.jsonl",
+  "on the revision with every function emptied 21 of 31 test(s) failed; emptied were stage-1/app/store.py: _checked_opening_hours, stage-1/app/store.py: Store.reset; log cards/s1-9140db0.json.logs/revision-with-every-function-emptied.log",
+  "that the delivered tests can fail was shown by: test_reset_rejects_opening_hours_that_cross_midnight failed while they ran on the base with delivered tests; test_reset_rejects_opening_hours_that_cross_midnight failed while they ran on the revision with implementation reverted; test_reset_rejects_opening_hours_that_cross_midnight failed while they ran on the revision with every function emptied"
+ ],
+ "emptied": [
+  "stage-1/app/store.py: _checked_opening_hours",
+  "stage-1/app/store.py: Store.reset"
+ ]
+}
