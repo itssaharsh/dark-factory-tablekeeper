@@ -188,7 +188,7 @@
  },
  "expected": "every expectation in the replay holds",
  "observed": "step 2 POST /reservations: status: expected 201, observed 409; step 2 POST /reservations: $.starts_at: expected \"2026-10-08T13:00:00-04:00\", observed missing",
- "status": "open",
+ "status": "closed",
  "at": "2026-10-04T12:50:47+00:00",
  "trail": [
   {
@@ -245,5 +245,7 @@
     "body": "{\"error\": {\"code\": \"table_unavailable\", \"message\": \"the table is already booked for an overlapping time\"}}"
    }
   }
- ]
+ ],
+ "closed_at": "2026-10-04T12:57:23+00:00",
+ "observed_on_close": "every expectation in the replay held"
 }

@@ -70,7 +70,7 @@
  },
  "expected": "every expectation in the replay holds",
  "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
- "status": "open",
+ "status": "withdrawn",
  "at": "2026-10-04T12:50:53+00:00",
  "trail": [
   {
@@ -128,5 +128,7 @@
     "body": ""
    }
   }
- ]
+ ],
+ "withdrawn_reason": "the check used an id of exactly 64 characters (\"u_\" + 62 x's), which is within the stated at-most-64 limit, not over it; 204 is correct here. The off-by-one was in the check, not the service. A corrected entry using a 65-character id is in the current check list and confirms this requirement is still violated by the service.",
+ "withdrawn_at": "2026-10-04T12:57:33+00:00"
 }
