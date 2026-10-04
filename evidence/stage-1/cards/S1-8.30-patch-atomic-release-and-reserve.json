@@ -161,7 +161,7 @@
  "expected": "every expectation in the replay holds",
  "observed": "read-back step 1 GET /availability?restaurant_id=r_anker&date=2026-12-10&party_size=2: $.slots[0].available_table_ids: expected [\"t_1\", \"t_2\"], observed [\"t_2\"]",
  "status": "open",
- "at": "2026-10-04T12:56:40+00:00",
+ "at": "2026-10-04T13:01:35+00:00",
  "trail": [
   {
    "request": {
@@ -180,7 +180,7 @@
    },
    "response": {
     "status": 201,
-    "body": "{\"reservation_id\": \"res_224db68a70faf33ce7a8\", \"reference\": \"1SUNUR7B\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T18:00\", \"starts_at\": \"2026-12-10T18:00:00+01:00\", \"ends_at\": \"2026-12-10T19:30:00+01:00\", \"created_at\": \"2026-10-04T12:56:40+00:00\"}"
+    "body": "{\"reservation_id\": \"res_42fe25522712ad2fab04\", \"reference\": \"25EED508\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T18:00\", \"starts_at\": \"2026-12-10T18:00:00+01:00\", \"ends_at\": \"2026-12-10T19:30:00+01:00\", \"created_at\": \"2026-10-04T13:01:35+00:00\"}"
    }
   },
   {
@@ -196,7 +196,7 @@
    },
    "response": {
     "status": 200,
-    "body": "{\"reservation_id\": \"res_224db68a70faf33ce7a8\", \"reference\": \"1SUNUR7B\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T19:00\", \"starts_at\": \"2026-12-10T19:00:00+01:00\", \"ends_at\": \"2026-12-10T20:30:00+01:00\", \"created_at\": \"2026-10-04T12:56:40+00:00\"}"
+    "body": "{\"reservation_id\": \"res_42fe25522712ad2fab04\", \"reference\": \"25EED508\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T19:00\", \"starts_at\": \"2026-12-10T19:00:00+01:00\", \"ends_at\": \"2026-12-10T20:30:00+01:00\", \"created_at\": \"2026-10-04T13:01:35+00:00\"}"
    }
   },
   {

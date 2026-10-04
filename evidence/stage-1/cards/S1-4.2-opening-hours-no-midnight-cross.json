@@ -67,7 +67,7 @@
  "expected": "every expectation in the replay holds",
  "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
  "status": "open",
- "at": "2026-10-04T12:56:24+00:00",
+ "at": "2026-10-04T13:01:19+00:00",
  "trail": [
   {
    "request": {
