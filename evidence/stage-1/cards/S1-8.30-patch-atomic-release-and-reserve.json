@@ -1,0 +1,200 @@
+{
+ "card": "finding",
+ "stage": 1,
+ "from": "verifier",
+ "to": "coordinator",
+ "revision": "706e50850c889759ac99514345b6b1cf89f28a3f",
+ "check_id": "S1-8.30-patch-atomic-release-and-reserve",
+ "sentence": "A successful amendment releases the old slot and reserves the new one together.",
+ "kind": "behaviour",
+ "replay": {
+  "setup": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/_test/reset",
+     "json": {
+      "users": [
+       {
+        "id": "u_ada",
+        "email": "ada@example.com",
+        "password": "correct horse",
+        "display_name": "Ada"
+       }
+      ],
+      "restaurants": [
+       {
+        "id": "r_anker",
+        "name": "Zum Anker",
+        "timezone": "Europe/Berlin",
+        "slot_minutes": 30,
+        "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 120,
+        "opening_hours": [
+         {
+          "weekday": "thu",
+          "opens": "18:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "18:00",
+          "closes": "23:30"
+         }
+        ],
+        "tables": [
+         {
+          "id": "t_1",
+          "label": "1",
+          "capacity": 2
+         },
+         {
+          "id": "t_2",
+          "label": "2",
+          "capacity": 4
+         }
+        ]
+       }
+      ],
+      "reservations": []
+     }
+    },
+    "expect": {
+     "status": 204
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "ada@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200
+    },
+    "save": {
+     "token": "$.token"
+    }
+   }
+  ],
+  "steps": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/reservations",
+     "headers": {
+      "Authorization": "Bearer {{token}}",
+      "Idempotency-Key": "patch-atomic-1"
+     },
+     "json": {
+      "restaurant_id": "r_anker",
+      "table_id": "t_1",
+      "starts_at_local": "2026-12-10T18:00",
+      "party_size": 2
+     }
+    },
+    "expect": {
+     "status": 201
+    },
+    "save": {
+     "atomic_ref": "$.reference"
+    }
+   },
+   {
+    "request": {
+     "method": "PATCH",
+     "path": "/reservations/{{atomic_ref}}",
+     "headers": {
+      "Authorization": "Bearer {{token}}"
+     },
+     "json": {
+      "starts_at_local": "2026-12-10T19:00"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.starts_at_local": "2026-12-10T19:00"
+     }
+    }
+   },
+   {
+    "request": {
+     "method": "GET",
+     "path": "/availability?restaurant_id=r_anker&date=2026-12-10&party_size=2"
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.slots[0].available_table_ids": {
+       "eq": [
+        "t_1",
+        "t_2"
+       ]
+      },
+      "$.slots[2].available_table_ids": {
+       "eq": [
+        "t_2"
+       ]
+      }
+     }
+    }
+   }
+  ]
+ },
+ "expected": "every expectation in the replay holds",
+ "observed": "step 3 GET /availability?restaurant_id=r_anker&date=2026-12-10&party_size=2: $.slots[0].available_table_ids: expected [\"t_1\", \"t_2\"], observed [\"t_2\"]",
+ "status": "open",
+ "at": "2026-10-04T11:52:18+00:00",
+ "trail": [
+  {
+   "request": {
+    "method": "POST",
+    "path": "/reservations",
+    "headers": {
+     "Authorization": "Bearer {{token}}",
+     "Idempotency-Key": "patch-atomic-1"
+    },
+    "json": {
+     "restaurant_id": "r_anker",
+     "table_id": "t_1",
+     "starts_at_local": "2026-12-10T18:00",
+     "party_size": 2
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": "{\"reservation_id\": \"res_415582bc97b23b218051\", \"reference\": \"56UWFH9P\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T18:00\", \"starts_at\": \"2026-12-10T18:00:00+01:00\", \"ends_at\": \"2026-12-10T19:30:00+01:00\", \"created_at\": \"2026-10-04T11:52:18+00:00\"}"
+   }
+  },
+  {
+   "request": {
+    "method": "PATCH",
+    "path": "/reservations/{{atomic_ref}}",
+    "headers": {
+     "Authorization": "Bearer {{token}}"
+    },
+    "json": {
+     "starts_at_local": "2026-12-10T19:00"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"reservation_id\": \"res_415582bc97b23b218051\", \"reference\": \"56UWFH9P\", \"restaurant_id\": \"r_anker\", \"table_id\": \"t_1\", \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-12-10T19:00\", \"starts_at\": \"2026-12-10T19:00:00+01:00\", \"ends_at\": \"2026-12-10T20:30:00+01:00\", \"created_at\": \"2026-10-04T11:52:18+00:00\"}"
+   }
+  },
+  {
+   "request": {
+    "method": "GET",
+    "path": "/availability?restaurant_id=r_anker&date=2026-12-10&party_size=2"
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"restaurant_id\": \"r_anker\", \"date\": \"2026-12-10\", \"timezone\": \"Europe/Berlin\", \"slots\": [{\"starts_at_local\": \"2026-12-10T18:00\", \"starts_at\": \"2026-12-10T18:00:00+01:00\", \"available_table_ids\": [\"t_2\"]}, {\"starts_at_local\": \"2026-12-10T18:30\", \"starts_at\": \"2026-12-10T18:30:00+01:00\", \"available_table_ids\": [\"t_2\"]}, {\"starts_at_local\": \"2026-12-10T19:00\", \"starts_at\": \"2026-12-10T19:00:00+01:00\u2026"
+   }
+  }
+ ]
+}

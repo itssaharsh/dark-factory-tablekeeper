@@ -1,0 +1,98 @@
+{
+ "card": "finding",
+ "stage": 1,
+ "from": "verifier",
+ "to": "coordinator",
+ "revision": "706e50850c889759ac99514345b6b1cf89f28a3f",
+ "check_id": "S1-4.2-opening-hours-no-midnight-cross",
+ "sentence": "`closes` is always later than `opens` on the same local day \u2014 opening hours never cross midnight.",
+ "kind": "literal",
+ "replay": {
+  "steps": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/_test/reset",
+     "json": {
+      "users": [],
+      "restaurants": [
+       {
+        "id": "r_bad_hours",
+        "name": "Bad Hours",
+        "timezone": "Europe/Berlin",
+        "slot_minutes": 30,
+        "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 60,
+        "opening_hours": [
+         {
+          "weekday": "fri",
+          "opens": "22:00",
+          "closes": "02:00"
+         }
+        ],
+        "tables": [
+         {
+          "id": "t_x",
+          "label": "X",
+          "capacity": 2
+         }
+        ]
+       }
+      ],
+      "reservations": []
+     }
+    },
+    "expect": {
+     "status": 422,
+     "json": {
+      "$.error.code": "validation_failed"
+     }
+    }
+   }
+  ]
+ },
+ "expected": "every expectation in the replay holds",
+ "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
+ "status": "open",
+ "at": "2026-10-04T11:52:05+00:00",
+ "trail": [
+  {
+   "request": {
+    "method": "POST",
+    "path": "/_test/reset",
+    "json": {
+     "users": [],
+     "restaurants": [
+      {
+       "id": "r_bad_hours",
+       "name": "Bad Hours",
+       "timezone": "Europe/Berlin",
+       "slot_minutes": 30,
+       "reservation_duration_minutes": 90,
+       "cancellation_cutoff_minutes": 60,
+       "opening_hours": [
+        {
+         "weekday": "fri",
+         "opens": "22:00",
+         "closes": "02:00"
+        }
+       ],
+       "tables": [
+        {
+         "id": "t_x",
+         "label": "X",
+         "capacity": 2
+        }
+       ]
+      }
+     ],
+     "reservations": []
+    }
+   },
+   "response": {
+    "status": 204,
+    "body": ""
+   }
+  }
+ ]
+}

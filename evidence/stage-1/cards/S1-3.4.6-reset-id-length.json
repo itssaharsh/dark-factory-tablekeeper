@@ -1,0 +1,66 @@
+{
+ "card": "finding",
+ "stage": 1,
+ "from": "verifier",
+ "to": "coordinator",
+ "revision": "706e50850c889759ac99514345b6b1cf89f28a3f",
+ "check_id": "S1-3.4.6-reset-id-length",
+ "sentence": "This limit also applies to IDs supplied in reset fixtures.",
+ "kind": "literal",
+ "replay": {
+  "steps": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/_test/reset",
+     "json": {
+      "users": [
+       {
+        "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "email": "longid@example.com",
+        "password": "correct horse",
+        "display_name": "Long"
+       }
+      ],
+      "restaurants": [],
+      "reservations": []
+     }
+    },
+    "expect": {
+     "status": 422,
+     "json": {
+      "$.error.code": "validation_failed"
+     }
+    }
+   }
+  ]
+ },
+ "expected": "every expectation in the replay holds",
+ "observed": "step 1 POST /_test/reset: status: expected 422, observed 204; step 1 POST /_test/reset: body: expected JSON, observed none or unparseable",
+ "status": "open",
+ "at": "2026-10-04T11:52:03+00:00",
+ "trail": [
+  {
+   "request": {
+    "method": "POST",
+    "path": "/_test/reset",
+    "json": {
+     "users": [
+      {
+       "id": "u_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+       "email": "longid@example.com",
+       "password": "[masked]",
+       "display_name": "Long"
+      }
+     ],
+     "restaurants": [],
+     "reservations": []
+    }
+   },
+   "response": {
+    "status": 204,
+    "body": ""
+   }
+  }
+ ]
+}
