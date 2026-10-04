@@ -183,3 +183,35 @@ def test_table_id_wrong_json_type_is_400(world, book):
 def test_unknown_fields_are_ignored(world, book):
     resp = book(table_id="t_2", at="19:00", extra_junk="ignored me", key="k-extra")
     assert resp.status == 201
+
+
+def test_same_table_id_in_different_restaurants_does_not_collide(reset, anon):
+    """Table ids are only unique within a restaurant: two restaurants may both have a t_2."""
+    import datetime as dt
+
+    weekdays = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+    restaurant = {
+        "timezone": "Europe/Berlin", "slot_minutes": 30, "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 0,
+        "opening_hours": [{"weekday": d, "opens": "18:00", "closes": "23:00"} for d in weekdays],
+        "tables": [{"id": "t_2", "label": "2", "capacity": 4}],
+    }
+    reset({
+        "users": [{"id": "u_a", "email": "two-zones@example.com",
+                   "password": "correct horse", "display_name": "A"}],
+        "restaurants": [{"id": "r_one", "name": "One", **restaurant},
+                         {"id": "r_two", "name": "Two", **restaurant}],
+        "reservations": [],
+    })
+    token = anon.post("/auth/login", json_body={
+        "email": "two-zones@example.com", "password": "correct horse"}).body["token"]
+    client = anon.with_token(token)
+    date = (dt.date.today() + dt.timedelta(days=5)).isoformat()
+    first = client.post("/reservations", json_body={
+        "restaurant_id": "r_one", "table_id": "t_2",
+        "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-1")
+    second = client.post("/reservations", json_body={
+        "restaurant_id": "r_two", "table_id": "t_2",
+        "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-2")
+    assert first.status == 201
+    assert second.status == 201, "r_two's t_2 must not be blocked by r_one's t_2"

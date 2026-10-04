@@ -10,11 +10,22 @@ the whole request, start to finish, runs as one critical section.
 from __future__ import annotations
 
 import datetime as dt
+import re
 import threading
 from dataclasses import dataclass
 from zoneinfo import ZoneInfo
 
 from . import auth, errors, timeutil
+
+ID_MAX_LEN = 64
+_REFERENCE_RE = re.compile(r"^[A-Z0-9]{6,12}$")
+
+
+def _checked_id(value, label: str) -> str:
+    text = str(value)
+    if not text or len(text) > ID_MAX_LEN:
+        raise errors.validation_failed(f"{label} must be 1 to {ID_MAX_LEN} characters")
+    return text
 
 
 @dataclass
@@ -127,53 +138,73 @@ class Store:
         self.idempotency: dict[tuple, dict] = {}
 
     def reset(self, fixture: dict) -> None:
+        # Validate and build the whole new state before touching `self`, so a
+        # bad fixture (e.g. an id over the 64-character limit) leaves the
+        # current state untouched instead of applying a partial reset.
+        users: dict[str, User] = {}
+        email_to_user: dict[str, str] = {}
+        for u in fixture.get("users") or []:
+            uid = _checked_id(u["id"], "user id")
+            user = User(id=uid, email=u["email"], password_hash=auth.hash_password(u["password"]),
+                        display_name=u.get("display_name", ""))
+            users[user.id] = user
+            email_to_user[user.email] = user.id
+
+        restaurants: dict[str, Restaurant] = {}
+        for r in fixture.get("restaurants") or []:
+            rid = _checked_id(r["id"], "restaurant id")
+            tables = [Table(id=_checked_id(t["id"], "table id"), label=t.get("label", t["id"]),
+                             capacity=int(t["capacity"])) for t in r.get("tables") or []]
+            restaurant = Restaurant(
+                id=rid,
+                name=r.get("name", ""),
+                timezone=r["timezone"],
+                slot_minutes=int(r["slot_minutes"]),
+                reservation_duration_minutes=int(r["reservation_duration_minutes"]),
+                cancellation_cutoff_minutes=int(r["cancellation_cutoff_minutes"]),
+                opening_hours=[dict(w) for w in r.get("opening_hours") or []],
+                tables=tables,
+            )
+            restaurants[restaurant.id] = restaurant
+
+        reservations: dict[str, Reservation] = {}
+        reference_to_id: dict[str, str] = {}
+        for res in fixture.get("reservations") or []:
+            restaurant = restaurants.get(res["restaurant_id"])
+            if restaurant is None:
+                continue
+            reservation_id = _checked_id(res["id"], "reservation id")
+            reference = str(res["reference"])
+            if not _REFERENCE_RE.match(reference):
+                raise errors.validation_failed(
+                    "reservation reference must be 6 to 12 characters of A-Z0-9")
+            user_id = _checked_id(res["user_id"], "user id")
+            naive = timeutil.parse_local(res["starts_at_local"])
+            start_utc = _resolve_or_fallback(naive, restaurant.zone())
+            end_utc = start_utc + dt.timedelta(minutes=restaurant.reservation_duration_minutes)
+            reservation = Reservation(
+                id=reservation_id,
+                reference=reference,
+                user_id=user_id,
+                restaurant_id=restaurant.id,
+                table_id=res["table_id"],
+                party_size=int(res["party_size"]),
+                status=res.get("status", "confirmed"),
+                starts_at_local=res["starts_at_local"],
+                starts_at=start_utc,
+                ends_at=end_utc,
+                created_at=dt.datetime.now(dt.timezone.utc),
+            )
+            reservations[reservation.id] = reservation
+            reference_to_id[reservation.reference] = reservation.id
+
         with self.lock:
             self._reset_locked()
-            for u in fixture.get("users") or []:
-                user = User(
-                    id=str(u["id"]),
-                    email=u["email"],
-                    password_hash=auth.hash_password(u["password"]),
-                    display_name=u.get("display_name", ""),
-                )
-                self.users[user.id] = user
-                self.email_to_user[user.email] = user.id
-            for r in fixture.get("restaurants") or []:
-                tables = [Table(id=str(t["id"]), label=t.get("label", t["id"]),
-                                 capacity=int(t["capacity"])) for t in r.get("tables") or []]
-                restaurant = Restaurant(
-                    id=str(r["id"]),
-                    name=r.get("name", ""),
-                    timezone=r["timezone"],
-                    slot_minutes=int(r["slot_minutes"]),
-                    reservation_duration_minutes=int(r["reservation_duration_minutes"]),
-                    cancellation_cutoff_minutes=int(r["cancellation_cutoff_minutes"]),
-                    opening_hours=[dict(w) for w in r.get("opening_hours") or []],
-                    tables=tables,
-                )
-                self.restaurants[restaurant.id] = restaurant
-            for res in fixture.get("reservations") or []:
-                restaurant = self.restaurants.get(res["restaurant_id"])
-                if restaurant is None:
-                    continue
-                naive = timeutil.parse_local(res["starts_at_local"])
-                start_utc = _resolve_or_fallback(naive, restaurant.zone())
-                end_utc = start_utc + dt.timedelta(minutes=restaurant.reservation_duration_minutes)
-                reservation = Reservation(
-                    id=str(res["id"]),
-                    reference=str(res["reference"]),
-                    user_id=str(res["user_id"]),
-                    restaurant_id=restaurant.id,
-                    table_id=res["table_id"],
-                    party_size=int(res["party_size"]),
-                    status=res.get("status", "confirmed"),
-                    starts_at_local=res["starts_at_local"],
-                    starts_at=start_utc,
-                    ends_at=end_utc,
-                    created_at=dt.datetime.now(dt.timezone.utc),
-                )
-                self.reservations[reservation.id] = reservation
-                self.reference_to_id[reservation.reference] = reservation.id
+            self.users = users
+            self.email_to_user = email_to_user
+            self.restaurants = restaurants
+            self.reservations = reservations
+            self.reference_to_id = reference_to_id
 
     # -- export / import -------------------------------------------------
 
@@ -338,7 +369,7 @@ class Store:
                 for table in restaurant.tables:
                     if table.capacity < party_size:
                         continue
-                    if self._overlapping(table.id, start_utc, end_utc) is None:
+                    if self._overlapping(restaurant.id, table.id, start_utc, end_utc) is None:
                         available.append(table.id)
                 slots.append({
                     "starts_at_local": f"{date.isoformat()}T{hhmm}",
@@ -349,10 +380,13 @@ class Store:
 
     # -- reservation core ---------------------------------------------------
 
-    def _overlapping(self, table_id: str, start_utc: dt.datetime, end_utc: dt.datetime,
-                      exclude_ids: frozenset = frozenset()) -> Reservation | None:
+    def _overlapping(self, restaurant_id: str, table_id: str, start_utc: dt.datetime,
+                      end_utc: dt.datetime, exclude_ids: frozenset = frozenset()) -> Reservation | None:
+        # Table ids are only unique within a restaurant, so both must match:
+        # two restaurants may each have their own "t_2".
         for r in self.reservations.values():
-            if r.id in exclude_ids or r.table_id != table_id or r.status != "confirmed":
+            if (r.id in exclude_ids or r.restaurant_id != restaurant_id
+                    or r.table_id != table_id or r.status != "confirmed"):
                 continue
             if r.starts_at < end_utc and start_utc < r.ends_at:
                 return r
@@ -401,7 +435,7 @@ class Store:
                 raise errors.not_found("unknown restaurant")
             table, start_utc, end_utc, local_str = self._resolve_and_validate(
                 restaurant, table_id, starts_at_local, party_size)
-            if self._overlapping(table.id, start_utc, end_utc) is not None:
+            if self._overlapping(restaurant.id, table.id, start_utc, end_utc) is not None:
                 raise errors.table_unavailable()
             reservation = Reservation(
                 id=auth.new_id("res"),
@@ -465,7 +499,8 @@ class Store:
             party_size = changes.get("party_size", reservation.party_size)
             table, start_utc, end_utc, local_str = self._resolve_and_validate(
                 restaurant, table_id, starts_at_local, party_size)
-            conflict = self._overlapping(table.id, start_utc, end_utc, exclude_ids=frozenset({reservation.id}))
+            conflict = self._overlapping(restaurant.id, table.id, start_utc, end_utc,
+                                          exclude_ids=frozenset({reservation.id}))
             if conflict is not None:
                 raise errors.table_unavailable()
             reservation.table_id = table.id
@@ -500,7 +535,8 @@ class Store:
                 for j, (_, other_table, other_start, other_end, _l2, _p2) in enumerate(planned):
                     if i != j and other_table == table_id and other_start < end_utc and start_utc < other_end:
                         raise errors.table_unavailable()
-                if self._overlapping(table_id, start_utc, end_utc, exclude_ids=moved_ids) is not None:
+                if self._overlapping(restaurant.id, table_id, start_utc, end_utc,
+                                      exclude_ids=moved_ids) is not None:
                     raise errors.table_unavailable()
 
             for reservation, table_id, start_utc, end_utc, local_str, party_size in planned:
