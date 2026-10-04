@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import concurrent.futures
+import json
 
 from conftest import new_key
 
@@ -78,8 +79,12 @@ def test_concurrent_identical_requests_commit_exactly_once(world):
     statuses = [r.status for r in results]
     assert statuses.count(201) == 1, statuses
     assert statuses.count(200) == 11, statuses
-    first = results[0].body
-    assert all(r.body == first for r in results), "every response body must be identical"
+    # stage-1's `tuple(sorted(r.body.items()))` assumed every field was hashable;
+    # stage-2 responses carry a list-valued `table_ids` (stage-2.md, "POST
+    # /reservations": "Responses always carry table_ids"), so compare the
+    # canonical JSON form instead.
+    bodies = {json.dumps(r.body, sort_keys=True) for r in results}
+    assert len(bodies) == 1, "every response body must be identical"
 
 
 def test_replay_survives_cancellation(world, book):

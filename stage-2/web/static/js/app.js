@@ -61,19 +61,24 @@
   // Shared header: current-user / logout-button / nav links.
   // ---------------------------------------------------------------------
 
+  let toggleCurrentUser = null;
+  let toggleLogoutBtn = null;
+
   function renderHeader() {
     const nameEl = document.querySelector('[data-testid="current-user"]');
     const logoutBtn = document.querySelector('[data-testid="logout-button"]');
     const navLinks = document.querySelectorAll("[data-auth-nav]");
     if (!nameEl || !logoutBtn) return;
+    if (!toggleCurrentUser) toggleCurrentUser = makePresenceToggle(nameEl);
+    if (!toggleLogoutBtn) toggleLogoutBtn = makePresenceToggle(logoutBtn);
     if (Session.signedIn()) {
       nameEl.textContent = Session.displayName() || "";
-      nameEl.hidden = false;
-      logoutBtn.hidden = false;
+      toggleCurrentUser(true);
+      toggleLogoutBtn(true);
       navLinks.forEach((a) => { a.hidden = true; });
     } else {
-      nameEl.hidden = true;
-      logoutBtn.hidden = true;
+      toggleCurrentUser(false);
+      toggleLogoutBtn(false);
       navLinks.forEach((a) => { a.hidden = false; });
     }
   }
@@ -106,16 +111,6 @@
 
   function clearChildren(node) {
     while (node.firstChild) node.removeChild(node.firstChild);
-  }
-
-  function friendlyTime(hhmm) {
-    const parts = hhmm.split(":");
-    let hour = parseInt(parts[0], 10);
-    const minute = parts[1];
-    const suffix = hour >= 12 ? "PM" : "AM";
-    let hour12 = hour % 12;
-    if (hour12 === 0) hour12 = 12;
-    return hour12 + ":" + minute + " " + suffix;
   }
 
   function tableLabel(tableId, tablesById) {
@@ -206,8 +201,10 @@
     const cancelBtn = document.querySelector('[data-testid="reservation-cancel-button"]');
     const toggleError = makePresenceToggle(errorEl);
     const toggleCancelBtn = makePresenceToggle(cancelBtn);
+    const toggleDetail = makePresenceToggle(detail);
     toggleError(false);
     toggleCancelBtn(false);
+    toggleDetail(false);
     let current = null;
     const restaurantCache = {};
 
@@ -219,7 +216,7 @@
     }
 
     function showError(message) {
-      detail.hidden = true;
+      toggleDetail(false);
       errorEl.textContent = message;
       toggleError(true);
     }
@@ -234,9 +231,9 @@
       const labels = labelsFor(body.table_ids || [body.table_id], tablesById);
       tablesEl.textContent = labels;
       summaryEl.textContent = (restaurant ? restaurant.name : body.restaurant_id) +
-        " — " + labels + ", " + friendlyTime(body.starts_at_local.split("T")[1]);
+        " — " + labels + ", " + body.starts_at_local.split("T")[1];
       toggleCancelBtn(body.status === "confirmed");
-      detail.hidden = false;
+      toggleDetail(true);
     }
 
     form.addEventListener("submit", async (event) => {
@@ -264,7 +261,7 @@
     });
 
     window.onSessionCleared = () => {
-      detail.hidden = true;
+      toggleDetail(false);
       current = null;
     };
   }
@@ -578,7 +575,7 @@
       const map = tablesById();
       const labels = labelsFor(chosen.tableIds, map);
       const hhmm = chosen.startsAtLocal.split("T")[1];
-      const timeText = friendlyTime(hhmm);
+      const timeText = hhmm;
 
       if (chosen.outcome === "booked" && chosen.data) {
         const card = document.createElement("div");
