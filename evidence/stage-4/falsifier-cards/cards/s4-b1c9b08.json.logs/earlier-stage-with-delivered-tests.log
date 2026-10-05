@@ -1,0 +1,514 @@
+........................................................................ [ 33%]
+........................................................................ [ 66%]
+..............................................FF.FFFFFFFFF.FFFFFFFF..FF  [100%]
+=================================== FAILURES ===================================
+_________________________ test_replan_requires_manager _________________________
+
+reset = <function reset.<locals>._reset at 0x73a481c3b1a0>
+anon = <httpclient.Client object at 0x73a4817f1310>
+
+    def test_replan_requires_manager(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        resp = ada.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 403 and resp.error_code == "forbidden", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 403)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:55: AssertionError
+__________________________ test_replan_requires_token __________________________
+
+reset = <function reset.<locals>._reset at 0x73a481c3bc40>
+anon = <httpclient.Client object at 0x73a4817f3200>
+
+    def test_replan_requires_token(reset, anon):
+        reset(_managed_fixture())
+        date = booking_date()
+        resp = anon.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 401, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 401
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:64: AssertionError
+_____________________ test_replan_invalid_interval_is_422 ______________________
+
+reset = <function reset.<locals>._reset at 0x73a4818947c0>
+anon = <httpclient.Client object at 0x73a4817f3d10>
+
+    def test_replan_invalid_interval_is_422(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        date = booking_date()
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "23:00"), "to": _instant(date, "18:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:84: AssertionError
+______________________ test_replan_offset_required_is_422 ______________________
+
+reset = <function reset.<locals>._reset at 0x73a4818940e0>
+anon = <httpclient.Client object at 0x73a4817f0260>
+
+    def test_replan_offset_required_is_422(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        date = booking_date()
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": f"{date}T18:00:00", "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:94: AssertionError
+__________________ test_replan_moves_only_the_forced_booking ___________________
+
+reset = <function reset.<locals>._reset at 0x73a4818942c0>
+anon = <httpclient.Client object at 0x73a4817f2120>
+
+    def test_replan_moves_only_the_forced_booking(reset, anon):
+        """A booking on the closing table must move; one on an unaffected table should stay put
+        when that minimizes the moved-booking count (stage-4's primary lex objective)."""
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        forced = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert forced.status == 201, forced
+        other = _book(ada, "r_anker", "t_3", date, "21:00", 2)
+        assert other.status == 201, other
+    
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 201, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:116: AssertionError
+_____________________ test_replan_no_feasible_plan_is_409 ______________________
+
+reset = <function reset.<locals>._reset at 0x73a4818949a0>
+anon = <httpclient.Client object at 0x73a481ccbbc0>
+
+    def test_replan_no_feasible_plan_is_409(reset, anon):
+        # Only t_1 (capacity 1) remains once t_2 closes -- too small for the party-of-4 booking,
+        # whatever else gets reassigned, so no plan can satisfy every considered booking.
+        restaurant = make_restaurant(
+            manager_user_ids=["u_mgr"], cancellation_cutoff_minutes=0,
+            tables=[{"id": "t_1", "label": "1", "capacity": 1}, {"id": "t_2", "label": "2", "capacity": 4}],
+        )
+        reset({"users": [
+            {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+            {"id": "u_mgr", "email": "mgr@example.com", "password": "correct horse", "display_name": "Mgr"},
+        ], "restaurants": [restaurant], "reservations": []})
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        forced = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert forced.status == 201, forced
+    
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 409 and resp.error_code == "no_feasible_plan", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 409)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:146: AssertionError
+______________ test_replan_planning_limit_on_considered_bookings _______________
+
+reset = <function reset.<locals>._reset at 0x73a481894c20>
+anon = <httpclient.Client object at 0x73a481cc98e0>
+
+    def test_replan_planning_limit_on_considered_bookings(reset, anon):
+        restaurant = make_restaurant(
+            manager_user_ids=["u_mgr"], cancellation_cutoff_minutes=0, slot_minutes=90,
+            reservation_duration_minutes=90, opening_hours=all_week("08:00", "23:00"),
+            tables=[{"id": "t_1", "label": "1", "capacity": 20}],
+        )
+        reset({"users": [
+            {"id": "u_ada", "email": "ada@example.com", "password": "correct horse", "display_name": "Ada"},
+            {"id": "u_mgr", "email": "mgr@example.com", "password": "correct horse", "display_name": "Mgr"},
+        ], "restaurants": [restaurant], "reservations": []})
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        times = ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"]
+        for hhmm in times:
+            resp = _book(ada, "r_anker", "t_1", date, hhmm, 2)
+            assert resp.status == 201, resp
+    
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_1", "from": _instant(date, "08:00"), "to": _instant(date, "18:30"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "planning_limit", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:170: AssertionError
+_____________ test_replan_apply_moves_booking_and_bumps_revisions ______________
+
+reset = <function reset.<locals>._reset at 0x73a481894d60>
+anon = <httpclient.Client object at 0x73a481cca240>
+
+    def test_replan_apply_moves_booking_and_bumps_revisions(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        booked = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert booked.status == 201
+        original_ends_at = booked.body["ends_at"]
+        original_terms = booked.body["accepted_terms"]
+    
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert preview.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:190: AssertionError
+_____________ test_replan_apply_blocks_future_bookings_and_explain _____________
+
+reset = <function reset.<locals>._reset at 0x73a481894860>
+anon = <httpclient.Client object at 0x73a481bb0bc0>
+
+    def test_replan_apply_blocks_future_bookings_and_explain(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+    
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert preview.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:219: AssertionError
+_____________________ test_replan_apply_stale_plan_is_409 ______________________
+
+reset = <function reset.<locals>._reset at 0x73a481894720>
+anon = <httpclient.Client object at 0x73a4817dcfb0>
+
+    def test_replan_apply_stale_plan_is_409(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        booked = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert booked.status == 201
+    
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert preview.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:248: AssertionError
+___ test_replan_apply_already_applied_different_key_is_409_same_key_replays ____
+
+reset = <function reset.<locals>._reset at 0x73a481c3ade0>
+anon = <httpclient.Client object at 0x73a481bb3cb0>
+
+    def test_replan_apply_already_applied_different_key_is_409_same_key_replays(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        booked = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert booked.status == 201
+    
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       plan_id = preview.body["plan_id"]
+E       KeyError: 'plan_id'
+
+tests/test_stage4.py:270: KeyError
+_____________ test_replan_apply_is_atomic_across_multiple_bookings _____________
+
+reset = <function reset.<locals>._reset at 0x73a4818967a0>
+anon = <httpclient.Client object at 0x73a481cc9be0>
+
+    def test_replan_apply_is_atomic_across_multiple_bookings(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        a = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        b = _book(ada, "r_anker", "t_3", date, "21:00", 2)
+        assert a.status == 201 and b.status == 201
+    
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       assert preview.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:302: AssertionError
+___________ test_restaurant_revision_increments_for_ordinary_writes ____________
+
+reset = <function reset.<locals>._reset at 0x73a4818968e0>
+anon = <httpclient.Client object at 0x73a4817f27e0>
+
+    def test_restaurant_revision_increments_for_ordinary_writes(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+    
+        def revision_via_preview():
+            resp = mgr.post("/restaurants/r_anker/replans", json_body={
+                "table_id": "t_1", "from": _instant(date, "18:00"), "to": _instant(date, "18:30"),
+            }, idempotency_key=new_key())
+            assert resp.status == 201, resp
+            return resp.body["restaurant_revision"]
+    
+>       assert revision_via_preview() == 0
+
+tests/test_stage4.py:331: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def revision_via_preview():
+        resp = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_1", "from": _instant(date, "18:00"), "to": _instant(date, "18:30"),
+        }, idempotency_key=new_key())
+>       assert resp.status == 201, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:328: AssertionError
+______________ test_series_amend_moves_eligible_occurrences_only _______________
+
+reset = <function reset.<locals>._reset at 0x73a4818954e0>
+anon = <httpclient.Client object at 0x73a4817f1820>
+
+    def test_series_amend_moves_eligible_occurrences_only(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert anchor.status == 201
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        assert series.status == 201
+        sid = series.body["series_id"]
+    
+        resp = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 1, "from_index": 1, "local_time": "20:00",
+        }, idempotency_key=new_key())
+>       assert resp.status == 201, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:362: AssertionError
+________ test_series_amend_excludes_cancelled_and_exception_occurrences ________
+
+reset = <function reset.<locals>._reset at 0x73a481897240>
+anon = <httpclient.Client object at 0x73a4817dcd10>
+
+    def test_series_amend_excludes_cancelled_and_exception_occurrences(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+        occ1_ref = series.body["occurrences"][1]["reference"]
+    
+        # Mark occurrence 1 as an exception via an ordinary PATCH; occurrence 2 stays eligible.
+        ada.patch(f"/reservations/{occ1_ref}", json_body={"party_size": 2})
+    
+        resp = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 2, "from_index": 0, "local_time": "20:30",
+        }, idempotency_key=new_key())
+>       assert resp.status == 201, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:393: AssertionError
+__________ test_series_amend_stale_revision_precedes_field_validation __________
+
+reset = <function reset.<locals>._reset at 0x73a481894680>
+anon = <httpclient.Client object at 0x73a4817ddd90>
+
+    def test_series_amend_stale_revision_precedes_field_validation(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+    
+        resp = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 99, "from_index": 999, "local_time": "25:99",
+        }, idempotency_key=new_key())
+>       assert resp.status == 409 and resp.error_code == "stale_revision", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 409)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:413: AssertionError
+_________________ test_series_amend_invalid_local_time_is_422 __________________
+
+reset = <function reset.<locals>._reset at 0x73a481896fc0>
+anon = <httpclient.Client object at 0x73a481c49f40>
+
+    def test_series_amend_invalid_local_time_is_422(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+        resp = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 1, "from_index": 0, "local_time": "9:00",
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:428: AssertionError
+_____________ test_series_amend_all_noop_keeps_revisions_unchanged _____________
+
+reset = <function reset.<locals>._reset at 0x73a481897420>
+anon = <httpclient.Client object at 0x73a481891b80>
+
+    def test_series_amend_all_noop_keeps_revisions_unchanged(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+        resp = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 1, "from_index": 0, "local_time": "19:00",
+        }, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:443: AssertionError
+_______________________ test_series_amend_requires_token _______________________
+
+reset = <function reset.<locals>._reset at 0x73a481897920>
+anon = <httpclient.Client object at 0x73a481893d70>
+
+    def test_series_amend_requires_token(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+        resp = anon.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 1, "from_index": 0, "local_time": "20:00",
+        }, idempotency_key=new_key())
+>       assert resp.status == 401, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 401
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:461: AssertionError
+______________ test_series_amend_replay_returns_original_response ______________
+
+reset = <function reset.<locals>._reset at 0x73a481895580>
+anon = <httpclient.Client object at 0x73a481890aa0>
+
+    def test_series_amend_replay_returns_original_response(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        anchor = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        series = ada.post("/series", json_body={
+            "anchor_reference": anchor.body["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        sid = series.body["series_id"]
+        key = new_key()
+        first = ada.post(f"/series/{sid}/amend", json_body={
+            "expected_revision": 1, "from_index": 0, "local_time": "20:00",
+        }, idempotency_key=key)
+>       assert first.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage4.py:502: AssertionError
+_______________ test_export_import_round_trip_preserves_closures _______________
+
+reset = <function reset.<locals>._reset at 0x73a481848360>
+anon = <httpclient.Client object at 0x73a481817c20>
+
+    def test_export_import_round_trip_preserves_closures(reset, anon):
+        reset(_managed_fixture())
+        mgr = _login(anon, "mgr@example.com")
+        ada = _login(anon, "ada@example.com")
+        date = booking_date()
+        booked = _book(ada, "r_anker", "t_2", date, "19:00", 4)
+        assert booked.status == 201
+        preview = mgr.post("/restaurants/r_anker/replans", json_body={
+            "table_id": "t_2", "from": _instant(date, "18:00"), "to": _instant(date, "23:00"),
+        }, idempotency_key=new_key())
+>       applied = mgr.post(f"/restaurants/r_anker/replans/{preview.body['plan_id']}/apply",
+                            json_body={}, idempotency_key=new_key())
+E       KeyError: 'plan_id'
+
+tests/test_stage4.py:523: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_stage4.py::test_replan_requires_manager - AssertionError: R...
+FAILED tests/test_stage4.py::test_replan_requires_token - AssertionError: Res...
+FAILED tests/test_stage4.py::test_replan_invalid_interval_is_422 - AssertionE...
+FAILED tests/test_stage4.py::test_replan_offset_required_is_422 - AssertionEr...
+FAILED tests/test_stage4.py::test_replan_moves_only_the_forced_booking - Asse...
+FAILED tests/test_stage4.py::test_replan_no_feasible_plan_is_409 - AssertionE...
+FAILED tests/test_stage4.py::test_replan_planning_limit_on_considered_bookings
+FAILED tests/test_stage4.py::test_replan_apply_moves_booking_and_bumps_revisions
+FAILED tests/test_stage4.py::test_replan_apply_blocks_future_bookings_and_explain
+FAILED tests/test_stage4.py::test_replan_apply_stale_plan_is_409 - AssertionE...
+FAILED tests/test_stage4.py::test_replan_apply_already_applied_different_key_is_409_same_key_replays
+FAILED tests/test_stage4.py::test_replan_apply_is_atomic_across_multiple_bookings
+FAILED tests/test_stage4.py::test_restaurant_revision_increments_for_ordinary_writes
+FAILED tests/test_stage4.py::test_series_amend_moves_eligible_occurrences_only
+FAILED tests/test_stage4.py::test_series_amend_excludes_cancelled_and_exception_occurrences
+FAILED tests/test_stage4.py::test_series_amend_stale_revision_precedes_field_validation
+FAILED tests/test_stage4.py::test_series_amend_invalid_local_time_is_422 - As...
+FAILED tests/test_stage4.py::test_series_amend_all_noop_keeps_revisions_unchanged
+FAILED tests/test_stage4.py::test_series_amend_requires_token - AssertionErro...
+FAILED tests/test_stage4.py::test_series_amend_replay_returns_original_response
+FAILED tests/test_stage4.py::test_export_import_round_trip_preserves_closures
+21 failed, 194 passed in 88.73s (0:01:28)
