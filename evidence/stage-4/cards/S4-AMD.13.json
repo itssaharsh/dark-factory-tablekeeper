@@ -1,0 +1,383 @@
+{
+ "card": "finding",
+ "stage": 4,
+ "from": "verifier",
+ "to": "coordinator",
+ "revision": "b1c9b0839120fb1e6b1aa60db5c9bbdc11c44ed9",
+ "check_id": "S4-AMD.13",
+ "sentence": "On failure, histories, idempotency records and all revisions remain unchanged.",
+ "kind": "behaviour",
+ "replay": {
+  "setup": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/_test/reset",
+     "json": {
+      "users": [
+       {
+        "id": "u_d1",
+        "email": "d1@example.com",
+        "password": "correct horse",
+        "display_name": "D1"
+       },
+       {
+        "id": "u_d2",
+        "email": "d2@example.com",
+        "password": "correct horse",
+        "display_name": "D2"
+       },
+       {
+        "id": "u_mgr",
+        "email": "mgr@example.com",
+        "password": "correct horse",
+        "display_name": "Mgr"
+       }
+      ],
+      "restaurants": [
+       {
+        "id": "r_seat",
+        "name": "Seating House",
+        "timezone": "Europe/Berlin",
+        "slot_minutes": 30,
+        "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 120,
+        "manager_user_ids": [
+         "u_mgr"
+        ],
+        "combinable": [
+         [
+          "t_1",
+          "t_2"
+         ],
+         [
+          "t_2",
+          "t_3"
+         ],
+         [
+          "t_4",
+          "t_5"
+         ],
+         [
+          "t_5",
+          "t_6"
+         ]
+        ],
+        "opening_hours": [
+         {
+          "weekday": "mon",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "tue",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "wed",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "thu",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "sat",
+          "opens": "08:00",
+          "closes": "23:00"
+         }
+        ],
+        "tables": [
+         {
+          "id": "t_1",
+          "label": "1",
+          "capacity": 2
+         },
+         {
+          "id": "t_2",
+          "label": "2",
+          "capacity": 2
+         },
+         {
+          "id": "t_3",
+          "label": "3",
+          "capacity": 2
+         },
+         {
+          "id": "t_4",
+          "label": "4",
+          "capacity": 4
+         },
+         {
+          "id": "t_5",
+          "label": "5",
+          "capacity": 2
+         },
+         {
+          "id": "t_6",
+          "label": "6",
+          "capacity": 4
+         }
+        ]
+       }
+      ],
+      "reservations": [
+       {
+        "id": "res_rfal0001",
+        "reference": "RFAL0001",
+        "user_id": "u_d2",
+        "restaurant_id": "r_seat",
+        "table_id": "t_1",
+        "starts_at_local": "2026-10-15T19:30",
+        "party_size": 2
+       }
+      ]
+     }
+    },
+    "expect": {
+     "status": 204
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "d1@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tok1": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "d2@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tok2": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "mgr@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tokm": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/reservations",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}",
+      "Idempotency-Key": "ik-amd-book"
+     },
+     "json": {
+      "restaurant_id": "r_seat",
+      "table_id": "t_1",
+      "starts_at_local": "2026-10-08T18:00",
+      "party_size": 2
+     }
+    },
+    "expect": {
+     "status": 201
+    },
+    "save": {
+     "anchorref": "$.reference"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/series",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}",
+      "Idempotency-Key": "ik-amd-adopt"
+     },
+     "json": {
+      "anchor_reference": "{{anchorref}}",
+      "count": 2,
+      "interval_weeks": 1
+     }
+    },
+    "expect": {
+     "status": 201
+    },
+    "save": {
+     "seriesid": "$.series_id",
+     "occ1ref": "$.occurrences[1].reference"
+    }
+   }
+  ],
+  "steps": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/series/{{seriesid}}/amend",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}",
+      "Idempotency-Key": "ik-amd13"
+     },
+     "json": {
+      "expected_revision": 1,
+      "from_index": 1,
+      "local_time": "19:00"
+     }
+    },
+    "expect": {
+     "status": 409
+    }
+   }
+  ],
+  "readback": [
+   {
+    "request": {
+     "method": "GET",
+     "path": "/series/{{seriesid}}",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.revision": 1
+     }
+    }
+   },
+   {
+    "request": {
+     "method": "GET",
+     "path": "/reservations/{{occ1ref}}/history",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.entries": {
+       "len": 1
+      }
+     }
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/series/{{seriesid}}/amend",
+     "headers": {
+      "Authorization": "Bearer {{tok1}}",
+      "Idempotency-Key": "ik-amd13"
+     },
+     "json": {
+      "expected_revision": 1,
+      "from_index": 0,
+      "local_time": "20:00"
+     }
+    },
+    "expect": {
+     "status": 201
+    }
+   }
+  ]
+ },
+ "expected": "every expectation in the replay holds",
+ "observed": "read-back step 3 POST /series/ser_ef1c94428e7107079f8a/amend: status: expected 201, observed 409",
+ "status": "withdrawn",
+ "at": "2026-10-05T11:17:21+00:00",
+ "trail": [
+  {
+   "request": {
+    "method": "GET",
+    "path": "/series/{{seriesid}}",
+    "headers": {
+     "Authorization": "Bearer {{tok1}}"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"series_id\": \"ser_ef1c94428e7107079f8a\", \"revision\": 1, \"interval_weeks\": 1, \"occurrences\": [{\"index\": 0, \"reference\": \"SU56DQDM\", \"exception\": false, \"reservation\": {\"reservation_id\": \"res_3b380153d693741bf5f3\", \"reference\": \"SU56DQDM\", \"restaurant_id\": \"r_seat\", \"table_ids\": [\"t_1\"], \"party_size\": 2, \"status\": \"confirmed\", \"starts_at_local\": \"2026-10-08T18:00\", \"starts_at\": \"2026-10-08T18:00:0\u2026"
+   }
+  },
+  {
+   "request": {
+    "method": "GET",
+    "path": "/reservations/{{occ1ref}}/history",
+    "headers": {
+     "Authorization": "Bearer {{tok1}}"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"reference\": \"Q1SV45AJ\", \"entries\": [{\"seq\": 1, \"at\": \"2026-10-05T13:17:20+02:00\", \"event\": \"created\", \"changes\": [{\"field\": \"table_id\", \"from\": null, \"to\": \"t_1\"}, {\"field\": \"starts_at_local\", \"from\": null, \"to\": \"2026-10-15T18:00\"}, {\"field\": \"party_size\", \"from\": null, \"to\": 2}], \"revision\": 1, \"accepted_terms\": {\"policy_version\": 0, \"slot_minutes\": 30, \"reservation_duration_minutes\": 90, \"ca\u2026"
+   }
+  },
+  {
+   "request": {
+    "method": "POST",
+    "path": "/series/{{seriesid}}/amend",
+    "headers": {
+     "Authorization": "Bearer {{tok1}}",
+     "Idempotency-Key": "ik-amd13"
+    },
+    "json": {
+     "expected_revision": 1,
+     "from_index": 0,
+     "local_time": "20:00"
+    }
+   },
+   "response": {
+    "status": 409,
+    "body": "{\"error\": {\"code\": \"table_unavailable\", \"message\": \"the table is already booked for an overlapping time\"}}"
+   }
+  }
+ ],
+ "withdrawn_reason": "same blocker-timing mistake as S4-AMD.12, plus the retry's chosen time also still overlapped the shifted blocker - both fixed",
+ "withdrawn_at": "2026-10-05T11:25:23+00:00"
+}

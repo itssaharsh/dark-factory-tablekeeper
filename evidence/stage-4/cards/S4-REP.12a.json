@@ -1,0 +1,309 @@
+{
+ "card": "finding",
+ "stage": 4,
+ "from": "verifier",
+ "to": "coordinator",
+ "revision": "b1c9b0839120fb1e6b1aa60db5c9bbdc11c44ed9",
+ "check_id": "S4-REP.12a",
+ "sentence": "Assign it a single or a declared pair with enough capacity under its own accepted terms, without conflicts with fixed bookings, other assignments, previously applied closures or the proposed closure.",
+ "kind": "behaviour",
+ "replay": {
+  "setup": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/_test/reset",
+     "json": {
+      "users": [
+       {
+        "id": "u_d1",
+        "email": "d1@example.com",
+        "password": "correct horse",
+        "display_name": "D1"
+       },
+       {
+        "id": "u_d2",
+        "email": "d2@example.com",
+        "password": "correct horse",
+        "display_name": "D2"
+       },
+       {
+        "id": "u_mgr",
+        "email": "mgr@example.com",
+        "password": "correct horse",
+        "display_name": "Mgr"
+       }
+      ],
+      "restaurants": [
+       {
+        "id": "r_seat",
+        "name": "Seating House",
+        "timezone": "Europe/Berlin",
+        "slot_minutes": 30,
+        "reservation_duration_minutes": 90,
+        "cancellation_cutoff_minutes": 120,
+        "manager_user_ids": [
+         "u_mgr"
+        ],
+        "combinable": [
+         [
+          "t_1",
+          "t_2"
+         ],
+         [
+          "t_2",
+          "t_3"
+         ],
+         [
+          "t_4",
+          "t_5"
+         ],
+         [
+          "t_5",
+          "t_6"
+         ]
+        ],
+        "opening_hours": [
+         {
+          "weekday": "mon",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "tue",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "wed",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "thu",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "fri",
+          "opens": "08:00",
+          "closes": "23:00"
+         },
+         {
+          "weekday": "sat",
+          "opens": "08:00",
+          "closes": "23:00"
+         }
+        ],
+        "tables": [
+         {
+          "id": "t_1",
+          "label": "1",
+          "capacity": 2
+         },
+         {
+          "id": "t_2",
+          "label": "2",
+          "capacity": 2
+         },
+         {
+          "id": "t_3",
+          "label": "3",
+          "capacity": 2
+         },
+         {
+          "id": "t_4",
+          "label": "4",
+          "capacity": 4
+         },
+         {
+          "id": "t_5",
+          "label": "5",
+          "capacity": 2
+         },
+         {
+          "id": "t_6",
+          "label": "6",
+          "capacity": 4
+         }
+        ]
+       }
+      ],
+      "reservations": [
+       {
+        "id": "res_j",
+        "reference": "RESJJJ01",
+        "user_id": "u_d1",
+        "restaurant_id": "r_seat",
+        "table_id": "t_1",
+        "starts_at_local": "2026-10-08T18:00",
+        "party_size": 2
+       },
+       {
+        "id": "res_k",
+        "reference": "RESKKK01",
+        "user_id": "u_d2",
+        "restaurant_id": "r_seat",
+        "table_id": "t_2",
+        "starts_at_local": "2026-10-08T18:00",
+        "party_size": 2
+       }
+      ]
+     }
+    },
+    "expect": {
+     "status": 204
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "d1@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tok1": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "d2@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tok2": "$.token"
+    }
+   },
+   {
+    "request": {
+     "method": "POST",
+     "path": "/auth/login",
+     "json": {
+      "email": "mgr@example.com",
+      "password": "correct horse"
+     }
+    },
+    "expect": {
+     "status": 200,
+     "json": {
+      "$.token": {
+       "type": "string"
+      }
+     }
+    },
+    "save": {
+     "tokm": "$.token"
+    }
+   }
+  ],
+  "steps": [
+   {
+    "request": {
+     "method": "POST",
+     "path": "/restaurants/r_seat/replans",
+     "headers": {
+      "Authorization": "Bearer {{tokm}}",
+      "Idempotency-Key": "ik-rep12a"
+     },
+     "json": {
+      "table_id": "t_1",
+      "from": "2026-10-08T18:00:00+02:00",
+      "to": "2026-10-08T20:00:00+02:00"
+     }
+    },
+    "expect": {
+     "status": 201,
+     "json": {
+      "$.assignments": {
+       "len": 1
+      },
+      "$.assignments[0].reference": "RESJJJ01",
+      "$.assignments[0].table_ids": {
+       "ne": [
+        "t_2"
+       ]
+      }
+     }
+    }
+   }
+  ]
+ },
+ "expected": "every expectation in the replay holds",
+ "observed": "step 1 POST /restaurants/r_seat/replans: $.assignments: expected length 1, observed [{\"reference\": \"RESJJJ01\", \"table_ids\": [\"t_3\"], \"changed\": true}, {\"reference\": \"RESKKK01\", \"table_ids\": [\"t_2\"], \"changed\": false}]",
+ "status": "withdrawn",
+ "at": "2026-10-05T11:08:32+00:00",
+ "trail": [
+  {
+   "request": {
+    "method": "POST",
+    "path": "/auth/login",
+    "json": {
+     "email": "d2@example.com",
+     "password": "[masked]"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"user_id\": \"u_d2\", \"display_name\": \"D2\", \"token\": \"{{tok2}}\"}"
+   }
+  },
+  {
+   "request": {
+    "method": "POST",
+    "path": "/auth/login",
+    "json": {
+     "email": "mgr@example.com",
+     "password": "[masked]"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "{\"user_id\": \"u_mgr\", \"display_name\": \"Mgr\", \"token\": \"{{tokm}}\"}"
+   }
+  },
+  {
+   "request": {
+    "method": "POST",
+    "path": "/restaurants/r_seat/replans",
+    "headers": {
+     "Authorization": "Bearer {{tokm}}",
+     "Idempotency-Key": "ik-rep12a"
+    },
+    "json": {
+     "table_id": "t_1",
+     "from": "2026-10-08T18:00:00+02:00",
+     "to": "2026-10-08T20:00:00+02:00"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": "{\"plan_id\": \"plan_cbea1fe14e26e4f5db46\", \"restaurant_revision\": 0, \"closure\": {\"table_id\": \"t_1\", \"from\": \"2026-10-08T18:00:00+02:00\", \"to\": \"2026-10-08T20:00:00+02:00\"}, \"assignments\": [{\"reference\": \"RESJJJ01\", \"table_ids\": [\"t_3\"], \"changed\": true}, {\"reference\": \"RESKKK01\", \"table_ids\": [\"t_2\"], \"changed\": false}], \"moved_count\": 1, \"unused_seats\": 0}"
+   }
+  }
+ ],
+ "withdrawn_reason": "my own check expected only 1 considered booking, but the spec counts every booking overlapping the closure's time window regardless of table - a second, non-closing booking on the same window is correctly considered too and correctly stays unmoved",
+ "withdrawn_at": "2026-10-05T11:25:21+00:00"
+}
