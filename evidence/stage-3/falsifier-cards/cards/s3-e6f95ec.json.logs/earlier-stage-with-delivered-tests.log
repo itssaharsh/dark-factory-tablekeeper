@@ -1,0 +1,615 @@
+........................................................................ [ 38%]
+........................................................................ [ 76%]
+......FFFFFFFFFFFFF.FFF.FFFFF.FFFFFFFFFFFFFF                             [100%]
+=================================== FAILURES ===================================
+____________________ test_non_manager_cannot_publish_policy ____________________
+
+reset = <function reset.<locals>._reset at 0x78b8c461fa60>
+anon = <httpclient.Client object at 0x78b8c4676090>
+
+    def test_non_manager_cannot_publish_policy(reset, anon):
+        fixture = _managed_fixture()
+        reset(fixture)
+        bob = _login(anon, "bob@example.com")
+        resp = bob.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2020-01-01", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 60, "opening_hours": all_week(), "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert resp.status == 403 and resp.error_code == "forbidden", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 403)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:39: AssertionError
+______________________ test_publish_policy_requires_token ______________________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f4b80>
+anon = <httpclient.Client object at 0x78b8c4580710>
+
+    def test_publish_policy_requires_token(reset, anon):
+        reset(_managed_fixture())
+        resp = anon.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2020-01-01", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 60, "opening_hours": all_week(), "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert resp.status == 401, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 401
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:48: AssertionError
+_______________ test_manager_can_publish_and_version_increments ________________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f4e00>
+anon = <httpclient.Client object at 0x78b8c46770e0>
+
+    def test_manager_can_publish_and_version_increments(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        body = {
+            "effective_from": "2020-01-01", "slot_minutes": 15, "reservation_duration_minutes": 60,
+            "cancellation_cutoff_minutes": 30, "opening_hours": all_week("12:00", "22:00"),
+            "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }
+        first = ada.post("/restaurants/r_anker/policies", json_body=body, idempotency_key=new_key())
+>       assert first.status == 201 and first.body["policy_version"] == 1, first
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 201)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:60: AssertionError
+_____________ test_policy_capacities_must_name_exactly_the_tables ______________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f51c0>
+anon = <httpclient.Client object at 0x78b8c4677e30>
+
+    def test_policy_capacities_must_name_exactly_the_tables(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        resp = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2020-01-01", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 60, "opening_hours": all_week(), "capacities": {"t_1": 2, "t_2": 4},
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:77: AssertionError
+__________ test_policy_opening_hours_non_object_entry_is_422_not_5xx ___________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f4ea0>
+anon = <httpclient.Client object at 0x78b8c4674b30>
+
+    def test_policy_opening_hours_non_object_entry_is_422_not_5xx(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        resp = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2020-01-01", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 60, "opening_hours": ["not-an-object"],
+            "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:88: AssertionError
+_____________ test_policy_opening_hours_rejects_duplicate_weekday ______________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f56c0>
+anon = <httpclient.Client object at 0x78b8c4677710>
+
+    def test_policy_opening_hours_rejects_duplicate_weekday(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        resp = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2020-01-01", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 60,
+            "opening_hours": [{"weekday": "mon", "opens": "10:00", "closes": "14:00"},
+                               {"weekday": "mon", "opens": "18:00", "closes": "22:00"}],
+            "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 422)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:101: AssertionError
+_ test_selected_policy_picks_greatest_effective_from_not_later_than_date_ties_break_on_version _
+
+reset = <function reset.<locals>._reset at 0x78b8c45f5d00>
+anon = <httpclient.Client object at 0x78b8c45e6330>
+
+    def test_selected_policy_picks_greatest_effective_from_not_later_than_date_ties_break_on_version(reset, anon):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        far_future = (dt.date.today() + dt.timedelta(days=400)).isoformat()
+        ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2000-01-01", "slot_minutes": 60, "reservation_duration_minutes": 60,
+            "cancellation_cutoff_minutes": 60, "opening_hours": all_week(), "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+        second = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2000-01-01", "slot_minutes": 45, "reservation_duration_minutes": 45,
+            "cancellation_cutoff_minutes": 45, "opening_hours": all_week(), "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert second.body["policy_version"] == 2
+E       KeyError: 'policy_version'
+
+tests/test_stage3.py:116: KeyError
+__________ test_policy_publication_does_not_change_existing_bookings ___________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f5ee0>
+anon = <httpclient.Client object at 0x78b8c45e74d0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4675c40>, bob=<httpclient.Client object at 0x78b8c4506720>)
+book = <function book.<locals>._book at 0x78b8c45f65c0>
+
+    def test_policy_publication_does_not_change_existing_bookings(reset, anon, world, book):
+        resp = book(at="19:00")
+        assert resp.status == 201
+        original_end = resp.body["ends_at"]
+>       original_terms = resp.body["accepted_terms"]
+E       KeyError: 'accepted_terms'
+
+tests/test_stage3.py:129: KeyError
+_________ test_create_reservation_has_revision_one_and_accepted_terms __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4675d60>, bob=<httpclient.Client object at 0x78b8c45e7140>)
+book = <function book.<locals>._book at 0x78b8c45f67a0>
+
+    def test_create_reservation_has_revision_one_and_accepted_terms(world, book):
+        resp = book(at="19:00")
+        assert resp.status == 201
+>       assert resp.body["revision"] == 1
+E       KeyError: 'revision'
+
+tests/test_stage3.py:147: KeyError
+__________ test_real_amendment_increments_revision_and_replaces_terms __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e77a0>, bob=<httpclient.Client object at 0x78b8c45e70e0>)
+book = <function book.<locals>._book at 0x78b8c45f6c00>
+
+    def test_real_amendment_increments_revision_and_replaces_terms(world, book):
+        ref = book(at="19:00").body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={"party_size": 2})
+        assert resp.status == 200
+>       assert resp.body["revision"] == 2
+E       KeyError: 'revision'
+
+tests/test_stage3.py:158: KeyError
+__________ test_noop_amendment_leaves_revision_and_history_untouched ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e4590>, bob=<httpclient.Client object at 0x78b8c4581df0>)
+book = <function book.<locals>._book at 0x78b8c45f6f20>
+
+    def test_noop_amendment_leaves_revision_and_history_untouched(world, book):
+        ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={
+            "table_id": "t_2", "starts_at_local": f"{world.date}T19:00", "party_size": 4})
+>       assert resp.status == 200 and resp.body["revision"] == 1
+E       KeyError: 'revision'
+
+tests/test_stage3.py:165: KeyError
+____________________ test_reversed_pair_is_not_an_amendment ____________________
+
+reset = <function reset.<locals>._reset at 0x78b8c45f6e80>
+anon = <httpclient.Client object at 0x78b8c415db50>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4674a70>, bob=<httpclient.Client object at 0x78b8c415c9e0>)
+
+    def test_reversed_pair_is_not_an_amendment(reset, anon, world):
+        fixture = {
+            "users": world.fixture["users"],
+            "restaurants": [make_restaurant(combinable=[["t_1", "t_2"]])],
+            "reservations": [],
+        }
+        reset(fixture)
+        ada = _login(anon)
+        created = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 5,
+        }, idempotency_key=new_key())
+        assert created.status == 201
+        ref = created.body["reference"]
+        resp = ada.patch(f"/reservations/{ref}", json_body={"table_ids": ["t_2", "t_1"]})
+>       assert resp.status == 200 and resp.body["revision"] == 1
+E       KeyError: 'revision'
+
+tests/test_stage3.py:185: KeyError
+________ test_cancel_increments_revision_once_repeated_cancel_does_not _________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4505460>, bob=<httpclient.Client object at 0x78b8c415ea80>)
+book = <function book.<locals>._book at 0x78b8c45f7060>
+
+    def test_cancel_increments_revision_once_repeated_cancel_does_not(world, book):
+        ref = book(at="19:00").body["reference"]
+        first = world.ada.post(f"/reservations/{ref}/cancel")
+>       assert first.status == 200 and first.body["revision"] == 2
+E       KeyError: 'revision'
+
+tests/test_stage3.py:191: KeyError
+_____________________ test_stale_expected_revision_is_409 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e7d40>, bob=<httpclient.Client object at 0x78b8c45e57f0>)
+book = <function book.<locals>._book at 0x78b8c45f71a0>
+
+    def test_stale_expected_revision_is_409(world, book):
+        ref = book(at="19:00").body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={"party_size": 2, "expected_revision": 5})
+>       assert resp.status == 409 and resp.error_code == "stale_revision", resp
+E       AssertionError: Response(200, {'reservation_id': 'res_1cf0dd5925572a851f0c', 'reference': '8VCJTUD1', 'restaurant_id': 'r_anker', 'tab...19:00:00+02:00', 'ends_at': '2026-10-10T20:30:00+02:00', 'created_at': '2026-10-05T09:10:41+00:00', 'table_id': 't_2'})
+E       assert (200 == 409)
+E        +  where 200 = Response(200, {'reservation_id': 'res_1cf0dd5925572a851f0c', 'reference': '8VCJTUD1', 'restaurant_id': 'r_anker', 'tab...19:00:00+02:00', 'ends_at': '2026-10-10T20:30:00+02:00', 'created_at': '2026-10-05T09:10:41+00:00', 'table_id': 't_2'}).status
+
+tests/test_stage3.py:224: AssertionError
+_________________ test_invalid_expected_revision_shape_is_422 __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c44c0b90>, bob=<httpclient.Client object at 0x78b8c44c1340>)
+book = <function book.<locals>._book at 0x78b8c45f7ba0>
+
+    def test_invalid_expected_revision_shape_is_422(world, book):
+        ref = book(at="19:00").body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={"party_size": 2, "expected_revision": -1})
+>       assert resp.status == 422 and resp.error_code == "validation_failed", resp
+E       AssertionError: Response(200, {'reservation_id': 'res_b91ce54c8840b31d58f6', 'reference': 'JF4HWHPN', 'restaurant_id': 'r_anker', 'tab...19:00:00+02:00', 'ends_at': '2026-10-10T20:30:00+02:00', 'created_at': '2026-10-05T09:10:41+00:00', 'table_id': 't_2'})
+E       assert (200 == 422)
+E        +  where 200 = Response(200, {'reservation_id': 'res_b91ce54c8840b31d58f6', 'reference': 'JF4HWHPN', 'restaurant_id': 'r_anker', 'tab...19:00:00+02:00', 'ends_at': '2026-10-10T20:30:00+02:00', 'created_at': '2026-10-05T09:10:41+00:00', 'table_id': 't_2'}).status
+
+tests/test_stage3.py:230: AssertionError
+___________________ test_matching_expected_revision_succeeds ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c47a5a00>, bob=<httpclient.Client object at 0x78b8c475fa10>)
+book = <function book.<locals>._book at 0x78b8c45f7e20>
+
+    def test_matching_expected_revision_succeeds(world, book):
+        ref = book(at="19:00").body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={"party_size": 2, "expected_revision": 1})
+>       assert resp.status == 200 and resp.body["revision"] == 2, resp
+E       KeyError: 'revision'
+
+tests/test_stage3.py:238: KeyError
+______________________ test_explain_invalid_value_is_422 _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e6b40>, bob=<httpclient.Client object at 0x78b8c45e4a10>)
+anon = <httpclient.Client object at 0x78b8c45e48c0>
+
+    def test_explain_invalid_value_is_422(world, anon):
+        for bad in ("false", "1", ""):
+            resp = anon.get("/availability", params={
+                "restaurant_id": world.rid, "date": world.date, "party_size": 2, "explain": bad})
+>           assert resp.status == 422 and resp.error_code == "validation_failed", (bad, resp)
+E           AssertionError: ('false', Response(200, {'restaurant_id': 'r_anker', 'date': '2026-10-10', 'timezone': 'Europe/Berlin', 'slots': [{'st...table_ids': ['t_1'], 'capacity': 2}, {'table_ids': ['t_2'], 'capacity': 4}, {'table_ids': ['t_3'], 'capacity': 6}]}]}))
+E           assert (200 == 422)
+E            +  where 200 = Response(200, {'restaurant_id': 'r_anker', 'date': '2026-10-10', 'timezone': 'Europe/Berlin', 'slots': [{'starts_at_lo...'table_ids': ['t_1'], 'capacity': 2}, {'table_ids': ['t_2'], 'capacity': 4}, {'table_ids': ['t_3'], 'capacity': 6}]}]}).status
+
+tests/test_stage3.py:255: AssertionError
+_____________ test_explain_true_lists_every_table_with_both_rules ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e58b0>, bob=<httpclient.Client object at 0x78b8c45e5880>)
+anon = <httpclient.Client object at 0x78b8c459f0e0>
+book = <function book.<locals>._book at 0x78b8c45f7a60>
+
+    def test_explain_true_lists_every_table_with_both_rules(world, anon, book):
+        book(table_id="t_2", at="19:00", party_size=4)
+        resp = anon.get("/availability", params={
+            "restaurant_id": world.rid, "date": world.date, "party_size": 4, "explain": "true"})
+        assert resp.status == 200
+        slot = next(s for s in resp.body["slots"] if s["starts_at_local"].endswith("19:00"))
+>       explain = {e["table_id"]: e for e in slot["explain"]}
+E       KeyError: 'explain'
+
+tests/test_stage3.py:264: KeyError
+_______________________ test_history_created_entry_shape _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45a73e0>, bob=<httpclient.Client object at 0x78b8c459f680>)
+book = <function book.<locals>._book at 0x78b8c45f67a0>
+
+    def test_history_created_entry_shape(world, book):
+        ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+        resp = world.ada.get(f"/reservations/{ref}/history")
+>       assert resp.status == 200
+E       AssertionError: assert 404 == 200
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:283: AssertionError
+________ test_history_changed_entry_names_only_changed_fields_in_order _________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4572e10>, bob=<httpclient.Client object at 0x78b8c46a3410>)
+book = <function book.<locals>._book at 0x78b8c45f7560>
+
+    def test_history_changed_entry_names_only_changed_fields_in_order(world, book):
+        ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+        world.ada.patch(f"/reservations/{ref}", json_body={"party_size": 2})
+        resp = world.ada.get(f"/reservations/{ref}/history")
+>       entries = resp.body["entries"]
+E       KeyError: 'entries'
+
+tests/test_stage3.py:298: KeyError
+__________ test_history_cancelled_entry_has_empty_changes_and_is_last __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4582ae0>, bob=<httpclient.Client object at 0x78b8c4583b60>)
+book = <function book.<locals>._book at 0x78b8c45f56c0>
+
+    def test_history_cancelled_entry_has_empty_changes_and_is_last(world, book):
+        ref = book(at="19:00").body["reference"]
+        world.ada.post(f"/reservations/{ref}/cancel")
+        resp = world.ada.get(f"/reservations/{ref}/history")
+>       entries = resp.body["entries"]
+E       KeyError: 'entries'
+
+tests/test_stage3.py:310: KeyError
+_________ test_decision_endpoint_owner_only_and_survives_cancellation __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e4bc0>, bob=<httpclient.Client object at 0x78b8c45077a0>)
+book = <function book.<locals>._book at 0x78b8c41702c0>
+
+    def test_decision_endpoint_owner_only_and_survives_cancellation(world, book):
+        ref = book(at="19:00").body["reference"]
+        world.ada.post(f"/reservations/{ref}/cancel")
+        resp = world.ada.get(f"/reservations/{ref}/decision")
+>       assert resp.status == 200
+E       AssertionError: assert 404 == 200
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:327: AssertionError
+__________________ test_combined_table_history_uses_table_ids __________________
+
+reset = <function reset.<locals>._reset at 0x78b8c4170180>
+anon = <httpclient.Client object at 0x78b8c4674380>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4506840>, bob=<httpclient.Client object at 0x78b8c45e5d60>)
+
+    def test_combined_table_history_uses_table_ids(reset, anon, world):
+        fixture = {
+            "users": world.fixture["users"],
+            "restaurants": [make_restaurant(combinable=[["t_1", "t_2"]])],
+            "reservations": [],
+        }
+        reset(fixture)
+        ada = _login(anon)
+        created = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_id": "t_2",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key())
+        ref = created.body["reference"]
+        changed = ada.patch(f"/reservations/{ref}", json_body={"table_ids": ["t_1", "t_2"], "party_size": 5})
+        assert changed.status == 200, changed
+        history = ada.get(f"/reservations/{ref}/history")
+>       entry = history.body["entries"][-1]
+E       KeyError: 'entries'
+
+tests/test_stage3.py:349: KeyError
+__________ test_replaying_idempotent_create_records_no_extra_history ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c46749b0>, bob=<httpclient.Client object at 0x78b8c46770e0>)
+book = <function book.<locals>._book at 0x78b8c4170720>
+
+    def test_replaying_idempotent_create_records_no_extra_history(world, book):
+        key = new_key()
+        first = book(key=key, table_id="t_2", at="19:00", party_size=4)
+        assert first.status == 201
+        replay = book(key=key, table_id="t_2", at="19:00", party_size=4)
+        assert replay.status == 200
+        history = world.ada.get(f"/reservations/{first.body['reference']}/history")
+>       assert len(history.body["entries"]) == 1
+E       KeyError: 'entries'
+
+tests/test_stage3.py:361: KeyError
+_____________ test_create_series_adopts_anchor_as_occurrence_zero ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c459d250>, bob=<httpclient.Client object at 0x78b8c4677c20>)
+book = <function book.<locals>._book at 0x78b8c41700e0>
+
+    def test_create_series_adopts_anchor_as_occurrence_zero(world, book):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        resp = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+>       assert resp.status == 201, resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:373: AssertionError
+__________________ test_series_count_and_interval_validation ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45a7560>, bob=<httpclient.Client object at 0x78b8c4676600>)
+book = <function book.<locals>._book at 0x78b8c4170c20>
+
+    def test_series_count_and_interval_validation(world, book):
+        anchor = book(at="19:00").body
+        for bad_count in (1, 13, True, "3"):
+            resp = world.ada.post("/series", json_body={
+                "anchor_reference": anchor["reference"], "count": bad_count, "interval_weeks": 1,
+            }, idempotency_key=new_key())
+>           assert resp.status == 422, (bad_count, resp)
+E           AssertionError: (1, Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}))
+E           assert 404 == 422
+E            +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:394: AssertionError
+______________________ test_already_adopted_anchor_is_409 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4677cb0>, bob=<httpclient.Client object at 0x78b8c4674aa0>)
+book = <function book.<locals>._book at 0x78b8c45f5120>
+
+    def test_already_adopted_anchor_is_409(world, book):
+        anchor = book(at="19:00").body
+        first = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+>       assert first.status == 201
+E       AssertionError: assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:402: AssertionError
+____________ test_series_creation_is_atomic_on_a_failing_occurrence ____________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4573ec0>, bob=<httpclient.Client object at 0x78b8c4504b30>)
+book = <function book.<locals>._book at 0x78b8c45f7a60>
+anon = <httpclient.Client object at 0x78b8c4581430>
+
+    def test_series_creation_is_atomic_on_a_failing_occurrence(world, book, anon):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        anchor_date = dt.date.fromisoformat(world.date)
+        blocking_date = (anchor_date + dt.timedelta(days=7)).isoformat()
+        # Block occurrence index 1 by pre-booking t_2 at the same slot under another user.
+        world.bob.post("/reservations", json_body={
+            "restaurant_id": world.rid, "table_id": "t_2",
+            "starts_at_local": f"{blocking_date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key())
+        resp = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+>       assert resp.status == 409 and resp.error_code == "table_unavailable", resp
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert (404 == 409)
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:421: AssertionError
+________________________ test_get_series_is_owner_only _________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c55dc260>, bob=<httpclient.Client object at 0x78b8c46742f0>)
+book = <function book.<locals>._book at 0x78b8c4170b80>
+
+    def test_get_series_is_owner_only(world, book):
+        anchor = book(at="19:00").body
+        created = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+>       series_id = created.body["series_id"]
+E       KeyError: 'series_id'
+
+tests/test_stage3.py:432: KeyError
+______ test_patch_on_occurrence_marks_exception_and_bumps_series_revision ______
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4677680>, bob=<httpclient.Client object at 0x78b8c459e540>)
+book = <function book.<locals>._book at 0x78b8c4171620>
+
+    def test_patch_on_occurrence_marks_exception_and_bumps_series_revision(world, book):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        created = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+>       series_id = created.body["series_id"]
+E       KeyError: 'series_id'
+
+tests/test_stage3.py:444: KeyError
+_______________ test_cancelling_anchor_does_not_cancel_siblings ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4713c80>, bob=<httpclient.Client object at 0x78b8c4713e90>)
+book = <function book.<locals>._book at 0x78b8c4170d60>
+
+    def test_cancelling_anchor_does_not_cancel_siblings(world, book):
+        anchor = book(at="19:00").body
+        created = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+        world.ada.post(f"/reservations/{anchor['reference']}/cancel")
+>       sibling_ref = created.body["occurrences"][1]["reference"]
+E       KeyError: 'occurrences'
+
+tests/test_stage3.py:461: KeyError
+_________________ test_series_replay_returns_original_response _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c475fa10>, bob=<httpclient.Client object at 0x78b8c45a72c0>)
+book = <function book.<locals>._book at 0x78b8c4171440>
+
+    def test_series_replay_returns_original_response(world, book):
+        anchor = book(at="19:00").body
+        key = new_key()
+        first = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=key)
+        replay = world.ada.post("/series", json_body={
+            "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=key)
+>       assert replay.status == 200
+E       AssertionError: assert 404 == 200
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:475: AssertionError
+____ test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions _____
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4571340>, bob=<httpclient.Client object at 0x78b8c44c0410>)
+book = <function book.<locals>._book at 0x78b8c4171940>
+
+    def test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions(world, book):
+        anchor_a = book(table_id="t_1", at="19:00", party_size=2).body
+        series_a = world.ada.post("/series", json_body={
+            "anchor_reference": anchor_a["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key()).body
+>       occ_a1 = series_a["occurrences"][1]["reference"]
+E       KeyError: 'occurrences'
+
+tests/test_stage3.py:488: KeyError
+________________ test_moves_noop_item_retains_terms_and_history ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c45e5c40>, bob=<httpclient.Client object at 0x78b8c4675ac0>)
+book = <function book.<locals>._book at 0x78b8c4171760>
+
+    def test_moves_noop_item_retains_terms_and_history(world, book):
+        ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+        body = {"moves": [{"reference": ref, "table_id": "t_2", "party_size": 4}]}
+        resp = world.ada.post("/reservation-moves", json_body=body, idempotency_key=new_key())
+        assert resp.status == 201
+>       assert resp.body["reservations"][0]["revision"] == 1
+E       KeyError: 'revision'
+
+tests/test_stage3.py:505: KeyError
+______ test_export_import_round_trip_preserves_policy_history_and_series _______
+
+reset = <function reset.<locals>._reset at 0x78b8c4171d00>
+anon = <httpclient.Client object at 0x78b8c415c560>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x78b8c4581b50>, bob=<httpclient.Client object at 0x78b8c415d520>)
+book = <function book.<locals>._book at 0x78b8c4170180>
+
+    def test_export_import_round_trip_preserves_policy_history_and_series(reset, anon, world, book):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        published = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2000-01-01", "slot_minutes": 20, "reservation_duration_minutes": 60,
+            "cancellation_cutoff_minutes": 30, "opening_hours": all_week(),
+            "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+>       assert published.status == 201, published
+E       AssertionError: Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}})
+E       assert 404 == 201
+E        +  where 404 = Response(404, {'error': {'code': 'not_found', 'message': 'no such route'}}).status
+
+tests/test_stage3.py:522: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_stage3.py::test_non_manager_cannot_publish_policy - Asserti...
+FAILED tests/test_stage3.py::test_publish_policy_requires_token - AssertionEr...
+FAILED tests/test_stage3.py::test_manager_can_publish_and_version_increments
+FAILED tests/test_stage3.py::test_policy_capacities_must_name_exactly_the_tables
+FAILED tests/test_stage3.py::test_policy_opening_hours_non_object_entry_is_422_not_5xx
+FAILED tests/test_stage3.py::test_policy_opening_hours_rejects_duplicate_weekday
+FAILED tests/test_stage3.py::test_selected_policy_picks_greatest_effective_from_not_later_than_date_ties_break_on_version
+FAILED tests/test_stage3.py::test_policy_publication_does_not_change_existing_bookings
+FAILED tests/test_stage3.py::test_create_reservation_has_revision_one_and_accepted_terms
+FAILED tests/test_stage3.py::test_real_amendment_increments_revision_and_replaces_terms
+FAILED tests/test_stage3.py::test_noop_amendment_leaves_revision_and_history_untouched
+FAILED tests/test_stage3.py::test_reversed_pair_is_not_an_amendment - KeyErro...
+FAILED tests/test_stage3.py::test_cancel_increments_revision_once_repeated_cancel_does_not
+FAILED tests/test_stage3.py::test_stale_expected_revision_is_409 - AssertionE...
+FAILED tests/test_stage3.py::test_invalid_expected_revision_shape_is_422 - As...
+FAILED tests/test_stage3.py::test_matching_expected_revision_succeeds - KeyEr...
+FAILED tests/test_stage3.py::test_explain_invalid_value_is_422 - AssertionErr...
+FAILED tests/test_stage3.py::test_explain_true_lists_every_table_with_both_rules
+FAILED tests/test_stage3.py::test_history_created_entry_shape - AssertionErro...
+FAILED tests/test_stage3.py::test_history_changed_entry_names_only_changed_fields_in_order
+FAILED tests/test_stage3.py::test_history_cancelled_entry_has_empty_changes_and_is_last
+FAILED tests/test_stage3.py::test_decision_endpoint_owner_only_and_survives_cancellation
+FAILED tests/test_stage3.py::test_combined_table_history_uses_table_ids - Key...
+FAILED tests/test_stage3.py::test_replaying_idempotent_create_records_no_extra_history
+FAILED tests/test_stage3.py::test_create_series_adopts_anchor_as_occurrence_zero
+FAILED tests/test_stage3.py::test_series_count_and_interval_validation - Asse...
+FAILED tests/test_stage3.py::test_already_adopted_anchor_is_409 - AssertionEr...
+FAILED tests/test_stage3.py::test_series_creation_is_atomic_on_a_failing_occurrence
+FAILED tests/test_stage3.py::test_get_series_is_owner_only - KeyError: 'serie...
+FAILED tests/test_stage3.py::test_patch_on_occurrence_marks_exception_and_bumps_series_revision
+FAILED tests/test_stage3.py::test_cancelling_anchor_does_not_cancel_siblings
+FAILED tests/test_stage3.py::test_series_replay_returns_original_response - A...
+FAILED tests/test_stage3.py::test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions
+FAILED tests/test_stage3.py::test_moves_noop_item_retains_terms_and_history
+FAILED tests/test_stage3.py::test_export_import_round_trip_preserves_policy_history_and_series
+35 failed, 153 passed in 75.14s (0:01:15)

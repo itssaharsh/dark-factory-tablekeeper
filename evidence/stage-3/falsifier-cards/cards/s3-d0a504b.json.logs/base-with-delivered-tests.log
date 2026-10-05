@@ -1,0 +1,39 @@
+........................................................................ [ 37%]
+........................................................................ [ 75%]
+.......................FF.....................                           [100%]
+=================================== FAILURES ===================================
+__________ test_stale_expected_revision_wins_over_invalid_party_size ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x783630990380>, bob=<httpclient.Client object at 0x783630997290>)
+book = <function book.<locals>._book at 0x783630b53ce0>
+
+    def test_stale_expected_revision_wins_over_invalid_party_size(world, book):
+        """stage-3 §Policies: stale_revision precedes cutoff/validation -- even a field's own
+        type/range check, not just cutoff and occupancy. Regression for verifier S3-POL.39a."""
+        ref = book(at="19:00").body["reference"]
+        resp = world.ada.patch(f"/reservations/{ref}", json_body={"expected_revision": 99, "party_size": -5})
+>       assert resp.status == 409 and resp.error_code == "stale_revision", resp
+E       AssertionError: Response(422, {'error': {'code': 'validation_failed', 'message': 'party_size must be at least 1'}})
+E       assert (422 == 409)
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'party_size must be at least 1'}}).status
+
+tests/test_stage3.py:246: AssertionError
+_______ test_moves_stale_expected_revision_wins_over_invalid_party_size ________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x783630bc9c40>, bob=<httpclient.Client object at 0x783630a947d0>)
+book = <function book.<locals>._book at 0x783630ab0d60>
+
+    def test_moves_stale_expected_revision_wins_over_invalid_party_size(world, book):
+        ref = book(at="19:00").body["reference"]
+        body = {"moves": [{"reference": ref, "expected_revision": 99, "party_size": -5}]}
+        resp = world.ada.post("/reservation-moves", json_body=body, idempotency_key=new_key())
+>       assert resp.status == 409 and resp.error_code == "stale_revision", resp
+E       AssertionError: Response(422, {'error': {'code': 'validation_failed', 'message': 'party_size must be at least 1'}})
+E       assert (422 == 409)
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'party_size must be at least 1'}}).status
+
+tests/test_stage3.py:253: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_stage3.py::test_stale_expected_revision_wins_over_invalid_party_size
+FAILED tests/test_stage3.py::test_moves_stale_expected_revision_wins_over_invalid_party_size
+2 failed, 188 passed in 72.06s (0:01:12)

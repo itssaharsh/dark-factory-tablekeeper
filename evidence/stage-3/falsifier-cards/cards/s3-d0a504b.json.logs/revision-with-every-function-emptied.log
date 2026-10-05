@@ -1,0 +1,1943 @@
+..............FFFFFFFFFFFFFF..FF.FF..FFFF........FF..F.FFFF............. [ 37%]
+..FFFFF.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..FFFFFFF.FFFF.FFFFFFFFFF....... [ 75%]
+..F..........FFFFFFFFFFFF..FFFFFFFFFFFFFFFFFFF                           [100%]
+=================================== FAILURES ===================================
+____________ test_booking_a_pair_returns_table_ids_without_table_id ____________
+
+reset = <function reset.<locals>._reset at 0x77a2a68834c0>
+anon = <httpclient.Client object at 0x77a2a6a91bb0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69fa000>, bob=<httpclient.Client object at 0x77a2a6a93a70>)
+
+    def test_booking_a_pair_returns_table_ids_without_table_id(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_2", "t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 6}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:65: AssertionError
+______________ test_booking_a_single_table_still_returns_table_id ______________
+
+reset = <function reset.<locals>._reset at 0x77a2a6883b00>
+anon = <httpclient.Client object at 0x77a2a68c2c00>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b80e0>, bob=<httpclient.Client object at 0x77a2a68c0c50>)
+
+    def test_booking_a_single_table_still_returns_table_id(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_3",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:77: AssertionError
+_______________ test_undeclared_pair_is_combination_not_allowed ________________
+
+reset = <function reset.<locals>._reset at 0x77a2a6883d80>
+anon = <httpclient.Client object at 0x77a2a687b7d0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6878500>, bob=<httpclient.Client object at 0x77a2a68797f0>)
+
+    def test_undeclared_pair_is_combination_not_allowed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_3"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:89: AssertionError
+_______________________ test_combining_is_not_transitive _______________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8040>
+anon = <httpclient.Client object at 0x77a2a687a1e0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c05c0>, bob=<httpclient.Client object at 0x77a2a687b3e0>)
+
+    def test_combining_is_not_transitive(reset, anon, world):
+        """[t_1,t_2] and [t_2,t_3] declared does not make {t_1,t_3} bookable."""
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_3", "t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:101: AssertionError
+_____________ test_more_than_two_tables_is_combination_not_allowed _____________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8860>
+anon = <httpclient.Client object at 0x77a2a687b440>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6879a60>, bob=<httpclient.Client object at 0x77a2a6878320>)
+
+    def test_more_than_two_tables_is_combination_not_allowed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2", "t_3"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:112: AssertionError
+_____________ test_duplicate_table_id_in_set_is_validation_failed ______________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8180>
+anon = <httpclient.Client object at 0x77a2a687acc0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c09e0>, bob=<httpclient.Client object at 0x77a2a68786e0>)
+
+    def test_duplicate_table_id_in_set_is_validation_failed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:123: AssertionError
+____________ test_both_table_id_and_table_ids_is_validation_failed _____________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a80e0>
+anon = <httpclient.Client object at 0x77a2a67cbfe0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6878fe0>, bob=<httpclient.Client object at 0x77a2a687bd10>)
+
+    def test_both_table_id_and_table_ids_is_validation_failed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.request("POST", "/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1", "table_ids": ["t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:134: AssertionError
+______________________ test_party_size_vs_summed_capacity ______________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8ae0>
+anon = <httpclient.Client object at 0x77a2a67c8830>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687bad0>, bob=<httpclient.Client object at 0x77a2a67ca7e0>)
+
+    def test_party_size_vs_summed_capacity(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        ok = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],  # capacities 2+4=6
+            "starts_at_local": f"{world.date}T19:00", "party_size": 6}, idempotency_key=new_key())
+>       assert ok.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_combinable_tables.py:145: AssertionError
+____________ test_single_table_within_a_booked_pair_is_unavailable _____________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8cc0>
+anon = <httpclient.Client object at 0x77a2a67ca2d0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68ba630>, bob=<httpclient.Client object at 0x77a2a67c8200>)
+
+    def test_single_table_within_a_booked_pair_is_unavailable(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+>       assert client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <bound method Client.post of <httpclient.Client object at 0x77a2a68c0860>>('/reservations', json_body={'party_size': 4, 'restaurant_id': 'r_anker', 'starts_at_local': '2026-10-10T19:00', 'table_ids': ['t_1', 't_2']}, idempotency_key='76737c2f0f783902')
+E        +      where <bound method Client.post of <httpclient.Client object at 0x77a2a68c0860>> = <httpclient.Client object at 0x77a2a68c0860>.post
+E        +      and   '76737c2f0f783902' = new_key()
+
+tests/test_combinable_tables.py:157: AssertionError
+_____________ test_pair_overlapping_a_booked_single_is_unavailable _____________
+
+reset = <function reset.<locals>._reset at 0x77a2a68836a0>
+anon = <httpclient.Client object at 0x77a2a687b260>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687aa20>, bob=<httpclient.Client object at 0x77a2a6879850>)
+
+    def test_pair_overlapping_a_booked_single_is_unavailable(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+>       assert client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_2",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <bound method Client.post of <httpclient.Client object at 0x77a2a687a780>>('/reservations', json_body={'party_size': 2, 'restaurant_id': 'r_anker', 'starts_at_local': '2026-10-10T19:00', 'table_id': 't_2'}, idempotency_key='6d8b0e1ce64f6fec')
+E        +      where <bound method Client.post of <httpclient.Client object at 0x77a2a687a780>> = <httpclient.Client object at 0x77a2a687a780>.post
+E        +      and   '6d8b0e1ce64f6fec' = new_key()
+
+tests/test_combinable_tables.py:171: AssertionError
+___________________ test_cancel_frees_every_table_in_the_set ___________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8f40>
+anon = <httpclient.Client object at 0x77a2a6878200>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6879ca0>, bob=<httpclient.Client object at 0x77a2a6879280>)
+
+    def test_cancel_frees_every_table_in_the_set(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).body
+>       client.post(f"/reservations/{booked['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:188: KeyError
+____________________ test_patch_can_change_to_a_combination ____________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a91c0>
+anon = <httpclient.Client object at 0x77a2a68792b0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a7bd3860>, bob=<httpclient.Client object at 0x77a2a68b9e20>)
+
+    def test_patch_can_change_to_a_combination(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+>       resp = client.patch(f"/reservations/{booked['reference']}", json_body={
+            "table_ids": ["t_2", "t_3"], "party_size": 10})
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:202: KeyError
+_____________________ test_moves_accept_table_ids_per_move _____________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a8400>
+anon = <httpclient.Client object at 0x77a2a68c0c20>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69f9250>, bob=<httpclient.Client object at 0x77a2a69fb8c0>)
+
+    def test_moves_accept_table_ids_per_move(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        a = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        resp = client.post("/reservation-moves", json_body={
+>           "moves": [{"reference": a["reference"], "table_ids": ["t_1", "t_2"], "party_size": 6}]},
+            idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:217: KeyError
+_________ test_moves_reject_overlap_among_resulting_combined_bookings __________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a9800>
+anon = <httpclient.Client object at 0x77a2a67c8380>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c1940>, bob=<httpclient.Client object at 0x77a2a687b890>)
+
+    def test_moves_reject_overlap_among_resulting_combined_bookings(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        a = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        b = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_3",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        # move a onto [t_2,t_3] -- overlaps b (t_3) which is also in this batch
+        resp = client.post("/reservation-moves", json_body={"moves": [
+>           {"reference": a["reference"], "table_ids": ["t_2", "t_3"], "party_size": 6},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:235: KeyError
+____________ test_export_import_preserves_combinable_and_table_ids _____________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a9da0>
+anon = <httpclient.Client object at 0x77a2a67cbf50>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6879fd0>, bob=<httpclient.Client object at 0x77a2a68ba540>)
+
+    def test_export_import_preserves_combinable_and_table_ids(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).body
+        snapshot = anon.get("/_test/export").body
+        reset({"users": [], "restaurants": [], "reservations": []})
+        restored = anon.post("/_test/import", json_body=snapshot)
+        assert restored.status == 204
+>       refetched = client.get(f"/reservations/{booked['reference']}")
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:311: KeyError
+________ test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner ________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a9c60>
+anon = <httpclient.Client object at 0x77a2a68aae10>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6878ad0>, bob=<httpclient.Client object at 0x77a2a67c9fa0>)
+
+    def test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner(reset, anon, world):
+        users = [{"id": f"u_race_{i}", "email": f"race{i}@example.com",
+                  "password": "correct horse", "display_name": "R"} for i in range(10)]
+        reset({**world.fixture, "users": world.fixture["users"] + users})
+        clients = []
+        for u in users:
+            token = anon.post("/auth/login", json_body={
+                "email": u["email"], "password": "correct horse"}).body["token"]
+            clients.append(anon.with_token(token))
+    
+        body = {"restaurant_id": world.rid, "table_id": "t_2",
+                "starts_at_local": f"{world.date}T19:00", "party_size": 4}
+    
+        def attempt(i):
+            return clients[i].post("/reservations", json_body=body, idempotency_key=new_key())
+    
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            results = list(pool.map(attempt, range(10)))
+    
+        counts = Counter(r.status for r in results)
+>       assert counts[201] == 1, counts
+E       AssertionError: Counter({500: 10})
+E       assert 0 == 1
+
+tests/test_concurrency.py:30: AssertionError
+_______________ test_concurrent_cancel_and_rebook_is_consistent ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687be30>, bob=<httpclient.Client object at 0x77a2a78f78c0>)
+book = <function book.<locals>._book at 0x77a2a69abec0>
+
+    def test_concurrent_cancel_and_rebook_is_consistent(world, book):
+        created = book(table_id="t_2", at="19:00", party_size=4).body
+>       ref = created["reference"]
+E       KeyError: 'reference'
+
+tests/test_concurrency.py:54: KeyError
+____________________ test_spring_forward_gap_booking_is_422 ____________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69abba0>
+anon = <httpclient.Client object at 0x77a2a67f62a0>
+
+    def test_spring_forward_gap_booking_is_422(reset, anon):
+        """Europe/Berlin, 2026-03-29 02:00 -> 03:00; 02:30 never existed."""
+        _reset_dst_restaurant(reset)
+        client = _client(anon)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_dst", "table_id": "t_1",
+            "starts_at_local": "2026-03-29T02:30", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_dst.py:34: AssertionError
+______ test_booking_fall_back_repeated_hour_resolves_to_first_occurrence _______
+
+reset = <function reset.<locals>._reset at 0x77a2a69aa660>
+anon = <httpclient.Client object at 0x77a2a68c0740>
+
+    def test_booking_fall_back_repeated_hour_resolves_to_first_occurrence(reset, anon):
+        _reset_dst_restaurant(reset)
+        client = _client(anon)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_dst", "table_id": "t_1",
+            "starts_at_local": "2026-10-25T02:30", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_dst.py:65: AssertionError
+_______________ test_duration_is_absolute_time_across_fall_back ________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a0220>
+anon = <httpclient.Client object at 0x77a2a6a60da0>
+
+    def test_duration_is_absolute_time_across_fall_back(reset, anon):
+        """A 90-minute booking at 01:30 on the fall-back night ends at local 02:00, not 03:00."""
+        _reset_dst_restaurant(reset)
+        client = _client(anon)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_dst", "table_id": "t_1",
+            "starts_at_local": "2026-10-25T01:30", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_dst.py:76: AssertionError
+___________________ test_new_york_spring_forward_gap_is_422 ____________________
+
+reset = <function reset.<locals>._reset at 0x77a2a69ab100>
+anon = <httpclient.Client object at 0x77a2a6a92390>
+
+    def test_new_york_spring_forward_gap_is_422(reset, anon):
+        """America/New_York, 2026-03-08 02:00 -> 03:00; 02:30 never existed."""
+        _reset_dst_restaurant(reset, rid="r_ny", timezone="America/New_York")
+        client = _client(anon)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_ny", "table_id": "t_1",
+            "starts_at_local": "2026-03-08T02:30", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_dst.py:88: AssertionError
+______________ test_new_york_fall_back_resolves_to_earlier_offset ______________
+
+reset = <function reset.<locals>._reset at 0x77a2a69abba0>
+anon = <httpclient.Client object at 0x77a2a6a93380>
+
+    def test_new_york_fall_back_resolves_to_earlier_offset(reset, anon):
+        """America/New_York, 2026-11-01 02:00 -> 01:00; 01:30 happens twice."""
+        _reset_dst_restaurant(reset, rid="r_ny2", timezone="America/New_York")
+        client = _client(anon)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_ny2", "table_id": "t_1",
+            "starts_at_local": "2026-11-01T01:30", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_dst.py:99: AssertionError
+___________ test_booking_in_the_past_is_not_rejected_solely_for_that ___________
+
+reset = <function reset.<locals>._reset at 0x77a2a69a91c0>
+anon = <httpclient.Client object at 0x77a2a68c31a0>
+
+    def test_booking_in_the_past_is_not_rejected_solely_for_that(reset, anon):
+        import datetime as dt
+    
+        reset({
+            "users": [{"id": "u_p", "email": "past@example.com",
+                       "password": "correct horse", "display_name": "P"}],
+            "restaurants": [{
+                "id": "r_past", "name": "Past", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:30"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+            "reservations": [],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "past@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        yesterday = (dt.date.today() - dt.timedelta(days=2)).isoformat()
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_past", "table_id": "t_1",
+            "starts_at_local": f"{yesterday}T10:00", "party_size": 2}, idempotency_key="past-1")
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_errors_general.py:80: AssertionError
+_____________ test_idempotency_key_header_name_is_case_insensitive _____________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f6c30>, bob=<httpclient.Client object at 0x77a2a67f54c0>)
+
+    def test_idempotency_key_header_name_is_case_insensitive(world):
+        import http.client
+        import json as json_mod
+    
+        conn = http.client.HTTPConnection("127.0.0.1", world.ada.port, timeout=5)
+        body = {"restaurant_id": world.rid, "table_id": "t_2",
+                "starts_at_local": f"{world.date}T19:00", "party_size": 4}
+        conn.request("POST", "/reservations", body=json_mod.dumps(body).encode(), headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {world.ada.token}",
+            "idempotency-key": "lowercase-header",
+        })
+        resp = conn.getresponse()
+        resp.read()
+        conn.close()
+>       assert resp.status == 201
+E       assert 500 == 201
+E        +  where 500 = <http.client.HTTPResponse object at 0x77a2a67f5ed0>.status
+
+tests/test_errors_general.py:98: AssertionError
+____________________ test_import_restores_a_booking_receipt ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a7904890>, bob=<httpclient.Client object at 0x77a2a687a300>)
+book = <function book.<locals>._book at 0x77a2a69840e0>
+reset = <function reset.<locals>._reset at 0x77a2a69ab6a0>
+anon = <httpclient.Client object at 0x77a2a67cb560>
+
+    def test_import_restores_a_booking_receipt(world, book, reset, anon):
+        created = book(table_id="t_2", at="19:00", party_size=4).body
+        snapshot = world.ada.get("/_test/export").body
+        reset({"users": [], "restaurants": [], "reservations": []})
+>       assert world.ada.get(f"/reservations/{created['reference']}").status == 401
+E       KeyError: 'reference'
+
+tests/test_export_import.py:25: KeyError
+__________________ test_import_preserves_idempotency_receipts __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a9820>, bob=<httpclient.Client object at 0x77a2a68abad0>)
+book = <function book.<locals>._book at 0x77a2a69845e0>
+reset = <function reset.<locals>._reset at 0x77a2a6984900>
+anon = <httpclient.Client object at 0x77a2a67c8f50>
+
+    def test_import_preserves_idempotency_receipts(world, book, reset, anon):
+        key = new_key()
+        first = book(table_id="t_2", at="19:00", key=key)
+        snapshot = world.ada.get("/_test/export").body
+        reset({"users": [], "restaurants": [], "reservations": []})
+        anon.post("/_test/import", json_body=snapshot)
+        replay = book(table_id="t_2", at="19:00", key=key)
+>       assert replay.status == 200
+E       AssertionError: assert 500 == 200
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_export_import.py:52: AssertionError
+_____________________ test_import_is_replacement_not_merge _____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687a450>, bob=<httpclient.Client object at 0x77a2a68b8e00>)
+book = <function book.<locals>._book at 0x77a2a6984c20>
+reset = <function reset.<locals>._reset at 0x77a2a6984a40>
+anon = <httpclient.Client object at 0x77a2a68a8ce0>
+
+    def test_import_is_replacement_not_merge(world, book, reset, anon):
+        created = book(table_id="t_2", at="19:00").body
+        snapshot = world.ada.get("/_test/export").body
+        # seed something extra that import must wipe out
+        reset({
+            "users": [{"id": "u_extra", "email": "extra@example.com",
+                       "password": "correct horse", "display_name": "E"}],
+            "restaurants": [], "reservations": [],
+        })
+        anon.post("/_test/import", json_body=snapshot)
+        login = anon.post("/auth/login", json_body={"email": "extra@example.com", "password": "correct horse"})
+        assert login.status == 401, "import must remove data that was not part of the export"
+>       fetched = world.ada.get(f"/reservations/{created['reference']}")
+E       KeyError: 'reference'
+
+tests/test_export_import.py:68: KeyError
+___________________ test_repeated_import_does_not_duplicate ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a8e60>, bob=<httpclient.Client object at 0x77a2a68a98e0>)
+book = <function book.<locals>._book at 0x77a2a6985260>
+anon = <httpclient.Client object at 0x77a2a69021b0>
+
+    def test_repeated_import_does_not_duplicate(world, book, anon):
+        book(table_id="t_2", at="19:00")
+        snapshot = world.ada.get("/_test/export").body
+        anon.post("/_test/import", json_body=snapshot)
+        anon.post("/_test/import", json_body=snapshot)
+        reservations = world.ada.get("/reservations").body["reservations"]
+>       assert len(reservations) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests/test_export_import.py:78: AssertionError
+___________________ test_export_is_a_point_in_time_snapshot ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68ab320>, bob=<httpclient.Client object at 0x77a2a67ca270>)
+book = <function book.<locals>._book at 0x77a2a6985440>
+anon = <httpclient.Client object at 0x77a2a6900b90>
+
+    def test_export_is_a_point_in_time_snapshot(world, book, anon):
+        book(table_id="t_2", at="19:00")
+        snapshot = world.ada.get("/_test/export").body
+        book(table_id="t_1", at="19:00", party_size=2)
+>       assert len(snapshot["state"]["reservations"]) == 1
+E       assert 0 == 1
+E        +  where 0 = len({})
+
+tests/test_export_import.py:85: AssertionError
+______________ test_first_use_is_201_replay_is_200_with_same_body ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c34a0>, bob=<httpclient.Client object at 0x77a2a68f3800>)
+book = <function book.<locals>._book at 0x77a2a6986b60>
+
+    def test_first_use_is_201_replay_is_200_with_same_body(world, book):
+        key = new_key()
+        first = book(table_id="t_2", at="19:00", key=key)
+>       assert first.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_idempotency.py:13: AssertionError
+_____________________ test_same_key_different_body_is_409 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68aa240>, bob=<httpclient.Client object at 0x77a2a68f1cd0>)
+book = <function book.<locals>._book at 0x77a2a6987100>
+
+    def test_same_key_different_body_is_409(world, book):
+        key = new_key()
+>       assert book(table_id="t_2", at="19:00", key=key).status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <function book.<locals>._book at 0x77a2a6987100>(table_id='t_2', at='19:00', key='8efcb61d61c18194')
+
+tests/test_idempotency.py:21: AssertionError
+_______________ test_key_reused_after_4xx_failure_is_a_first_use _______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6901d60>, bob=<httpclient.Client object at 0x77a2a69020c0>)
+book = <function book.<locals>._book at 0x77a2a69ab100>
+
+    def test_key_reused_after_4xx_failure_is_a_first_use(world, book):
+        key = new_key()
+        failed = book(table_id="t_1", party_size=99, key=key)  # exceeds capacity -> 422
+>       assert failed.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_idempotency.py:30: AssertionError
+_____________________ test_idempotency_key_scoped_to_user ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6902fc0>, bob=<httpclient.Client object at 0x77a2a6902c90>)
+book = <function book.<locals>._book at 0x77a2a6987420>
+
+    def test_idempotency_key_scoped_to_user(world, book):
+        key = "shared-key"
+        resp_ada = book(client=world.ada, table_id="t_1", at="19:00", party_size=2, key=key)
+        resp_bob = book(client=world.bob, table_id="t_2", at="19:00", party_size=2, key=key)
+>       assert resp_ada.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_idempotency.py:39: AssertionError
+_____________ test_same_key_different_path_is_a_different_request ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6900680>, bob=<httpclient.Client object at 0x77a2a6901dc0>)
+book = <function book.<locals>._book at 0x77a2a69872e0>
+
+    def test_same_key_different_path_is_a_different_request(world, book):
+        key = "cross-path-key"
+        created = book(table_id="t_2", at="19:00", key=key)
+>       assert created.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_idempotency.py:46: AssertionError
+______________ test_idempotency_resolved_before_field_validation _______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6e8f440>, bob=<httpclient.Client object at 0x77a2a6900d10>)
+book = <function book.<locals>._book at 0x77a2a6986d40>
+
+    def test_idempotency_resolved_before_field_validation(world, book):
+        """A used key with a different (and otherwise-invalid) body is still a conflict, not a field error."""
+        key = new_key()
+>       assert book(table_id="t_2", at="19:00", key=key).status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <function book.<locals>._book at 0x77a2a6986d40>(table_id='t_2', at='19:00', key='eaf0a9b4958effc6')
+
+tests/test_idempotency.py:62: AssertionError
+____________ test_concurrent_identical_requests_commit_exactly_once ____________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68aa0c0>, bob=<httpclient.Client object at 0x77a2a68ab8f0>)
+
+    def test_concurrent_identical_requests_commit_exactly_once(world):
+        key = new_key()
+        body = {"restaurant_id": world.rid, "table_id": "t_2",
+                "starts_at_local": f"{world.date}T19:00", "party_size": 4}
+    
+        def send(_):
+            return world.ada.post("/reservations", json_body=body, idempotency_key=key)
+    
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:
+            results = list(pool.map(send, range(12)))
+    
+        statuses = [r.status for r in results]
+>       assert statuses.count(201) == 1, statuses
+E       AssertionError: [500, 500, 500, 500, 500, 500, ...]
+E       assert 0 == 1
+E        +  where 0 = <built-in method count of list object at 0x77a2a63eea00>(201)
+E        +    where <built-in method count of list object at 0x77a2a63eea00> = [500, 500, 500, 500, 500, 500, ...].count
+
+tests/test_idempotency.py:80: AssertionError
+______________________ test_replay_survives_cancellation _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b69f0>, bob=<httpclient.Client object at 0x77a2a68b6780>)
+book = <function book.<locals>._book at 0x77a2a6984c20>
+
+    def test_replay_survives_cancellation(world, book):
+        key = new_key()
+        created = book(table_id="t_2", at="19:00", key=key)
+>       ref = created.body["reference"]
+E       KeyError: 'reference'
+
+tests/test_idempotency.py:93: KeyError
+______________________ test_single_move_changes_the_table ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6900350>, bob=<httpclient.Client object at 0x77a2a6a92750>)
+book = <function book.<locals>._book at 0x77a2a69854e0>
+
+    def test_single_move_changes_the_table(world, book):
+        created = book(table_id="t_1", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={
+>           "moves": [{"reference": created["reference"], "table_id": "t_2"}]},
+            idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:10: KeyError
+_______________ test_swap_two_bookings_between_tables_atomically _______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a93200>, bob=<httpclient.Client object at 0x77a2a67f41d0>)
+book = <function book.<locals>._book at 0x77a2a6987ec0>
+
+    def test_swap_two_bookings_between_tables_atomically(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        r2 = book(table_id="t_2", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_2"},
+            {"reference": r2["reference"], "table_id": "t_1"},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:22: KeyError
+______________________ test_unchanged_items_are_included _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c0080>, bob=<httpclient.Client object at 0x77a2a6a930e0>)
+book = <function book.<locals>._book at 0x77a2a69849a0>
+
+    def test_unchanged_items_are_included(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        r2 = book(table_id="t_2", at="19:30", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_3"},
+            {"reference": r2["reference"]},  # no change requested
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:37: KeyError
+_______________________ test_duplicate_references_is_422 _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6900830>, bob=<httpclient.Client object at 0x77a2a68f3a40>)
+book = <function book.<locals>._book at 0x77a2a63f4040>
+
+    def test_duplicate_references_is_422(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_2"},
+            {"reference": r1["reference"], "table_id": "t_3"},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:49: KeyError
+___________________________ test_empty_moves_is_422 ____________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a9040>, bob=<httpclient.Client object at 0x77a2a68a8fb0>)
+
+    def test_empty_moves_is_422(world):
+        resp = world.ada.post("/reservation-moves", json_body={"moves": []}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservation_moves.py:58: AssertionError
+__________________________ test_too_many_moves_is_422 __________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f0260>, bob=<httpclient.Client object at 0x77a2a68f30e0>)
+book = <function book.<locals>._book at 0x77a2a69854e0>
+
+    def test_too_many_moves_is_422(world, book):
+        # nine bookings on nine different dates so none of them can conflict with another
+>       refs = [book(table_id="t_1", at="19:00",
+                      starts_at_local=f"{world.date[:-2]}{10 + i:02d}T19:00",
+                      party_size=2).body["reference"] for i in range(9)]
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:63: KeyError
+________________________ test_unknown_reference_is_404 _________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b8e00>, bob=<httpclient.Client object at 0x77a2a6a92270>)
+book = <function book.<locals>._book at 0x77a2a6987880>
+
+    def test_unknown_reference_is_404(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_2"},
+            {"reference": "NOSUCHREF", "table_id": "t_3"},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:74: KeyError
+_____________________ test_someone_elses_reference_is_404 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f27e0>, bob=<httpclient.Client object at 0x77a2a68f0d10>)
+book = <function book.<locals>._book at 0x77a2a6986520>
+
+    def test_someone_elses_reference_is_404(world, book):
+        bobs = book(client=world.bob, table_id="t_1", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={
+>           "moves": [{"reference": bobs["reference"], "table_id": "t_2"}]},
+            idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:83: KeyError
+_____________________________ test_no_token_is_401 _____________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687b320>, bob=<httpclient.Client object at 0x77a2a6a61550>)
+book = <function book.<locals>._book at 0x77a2a6984ae0>
+anon = <httpclient.Client object at 0x77a2a6a61280>
+
+    def test_no_token_is_401(world, book, anon):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        resp = anon.post("/reservation-moves", json_body={
+>           "moves": [{"reference": r1["reference"], "table_id": "t_2"}]},
+            idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:91: KeyError
+____________________ test_cancelled_booking_in_batch_is_409 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f0d70>, bob=<httpclient.Client object at 0x77a2a67cbb60>)
+book = <function book.<locals>._book at 0x77a2a6985260>
+
+    def test_cancelled_booking_in_batch_is_409(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+>       world.ada.post(f"/reservations/{r1['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:98: KeyError
+________ test_overlap_with_unlisted_booking_is_409_and_nothing_changes _________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67c9fa0>, bob=<httpclient.Client object at 0x77a2a6a93b00>)
+book = <function book.<locals>._book at 0x77a2a6984cc0>
+
+    def test_overlap_with_unlisted_booking_is_409_and_nothing_changes(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        r2 = book(table_id="t_2", at="19:00", party_size=2).body  # unlisted, occupies t_2 at 19:00
+        resp = world.ada.post("/reservation-moves", json_body={
+>           "moves": [{"reference": r1["reference"], "table_id": "t_2"}]},
+            idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:110: KeyError
+_________________ test_overlap_among_resulting_bookings_is_409 _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a9b80>, bob=<httpclient.Client object at 0x77a2a68aa150>)
+book = <function book.<locals>._book at 0x77a2a69a2980>
+
+    def test_overlap_among_resulting_bookings_is_409(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        r2 = book(table_id="t_2", at="20:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_2"},
+            {"reference": r2["reference"], "starts_at_local": f"{world.date}T19:00"},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:126: KeyError
+______________________ test_different_restaurants_is_422 _______________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63f4360>
+anon = <httpclient.Client object at 0x77a2a6900200>
+
+    def test_different_restaurants_is_422(reset, anon):
+        reset({
+            "users": [{"id": "u_a", "email": "multi@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [
+                make_restaurant("r_one"),
+                make_restaurant("r_two", tables=[{"id": "t_x", "label": "X", "capacity": 2}]),
+            ],
+            "reservations": [],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "multi@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        date = booking_date()
+        r1 = client.post("/reservations", json_body={
+            "restaurant_id": "r_one", "table_id": "t_1",
+            "starts_at_local": f"{date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        r2 = client.post("/reservations", json_body={
+            "restaurant_id": "r_two", "table_id": "t_x",
+            "starts_at_local": f"{date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        resp = client.post("/reservation-moves", json_body={"moves": [
+>           {"reference": r1["reference"], "table_id": "t_2"},
+            {"reference": r2["reference"], "table_id": "t_x"},
+        ]}, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:159: KeyError
+______________________ test_idempotency_applies_to_moves _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f1280>, bob=<httpclient.Client object at 0x77a2a68c1040>)
+book = <function book.<locals>._book at 0x77a2a63f44a0>
+
+    def test_idempotency_applies_to_moves(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        key = new_key()
+>       body = {"moves": [{"reference": r1["reference"], "table_id": "t_2"}]}
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:169: KeyError
+_____________________ test_missing_idempotency_key_is_400 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c01d0>, bob=<httpclient.Client object at 0x77a2a6a92930>)
+book = <function book.<locals>._book at 0x77a2a63f4860>
+
+    def test_missing_idempotency_key_is_400(world, book):
+        r1 = book(table_id="t_1", at="19:00", party_size=2).body
+        resp = world.ada.post("/reservation-moves", json_body={
+>           "moves": [{"reference": r1["reference"], "table_id": "t_2"}]})
+E       KeyError: 'reference'
+
+tests/test_reservation_moves.py:180: KeyError
+_____________________ test_create_returns_documented_shape _____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f36e0>, bob=<httpclient.Client object at 0x77a2a68ab0e0>)
+book = <function book.<locals>._book at 0x77a2a63f4a40>
+
+    def test_create_returns_documented_shape(world, book):
+        resp = book(table_id="t_2", at="19:00", party_size=4)
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:13: AssertionError
+_____________________ test_ends_at_is_start_plus_duration ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a8ef0>, bob=<httpclient.Client object at 0x77a2a68f0590>)
+book = <function book.<locals>._book at 0x77a2a63f4c20>
+
+    def test_ends_at_is_start_plus_duration(world, book):
+        body = book(at="19:00").body
+>       assert body["starts_at"].startswith(f"{world.date}T19:00:00")
+E       KeyError: 'starts_at'
+
+tests/test_reservations_create.py:27: KeyError
+_________________ test_reference_is_unique_across_reservations _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69005c0>, bob=<httpclient.Client object at 0x77a2a6900650>)
+book = <function book.<locals>._book at 0x77a2a69840e0>
+
+    def test_reference_is_unique_across_reservations(world, book):
+>       refs = {book(table_id=t, at="19:00", party_size=2).body["reference"] for t in ("t_1", "t_2", "t_3")}
+E       KeyError: 'reference'
+
+tests/test_reservations_create.py:32: KeyError
+_______________ test_double_booking_same_table_same_slot_is_409 ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a62690>, bob=<httpclient.Client object at 0x77a2a6a61640>)
+book = <function book.<locals>._book at 0x77a2a6984ea0>
+
+    def test_double_booking_same_table_same_slot_is_409(world, book):
+>       assert book(table_id="t_2", at="19:00").status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <function book.<locals>._book at 0x77a2a6984ea0>(table_id='t_2', at='19:00')
+
+tests/test_reservations_create.py:37: AssertionError
+___________________ test_overlapping_but_offset_time_is_409 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a61550>, bob=<httpclient.Client object at 0x77a2a6a61070>)
+book = <function book.<locals>._book at 0x77a2a69842c0>
+
+    def test_overlapping_but_offset_time_is_409(world, book):
+>       assert book(table_id="t_2", at="19:00").status == 201  # occupies [19:00, 20:30)
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <function book.<locals>._book at 0x77a2a69842c0>(table_id='t_2', at='19:00')
+
+tests/test_reservations_create.py:44: AssertionError
+________________ test_adjacent_non_overlapping_booking_succeeds ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f5b20>, bob=<httpclient.Client object at 0x77a2a687ad20>)
+book = <function book.<locals>._book at 0x77a2a63f4b80>
+
+    def test_adjacent_non_overlapping_booking_succeeds(world, book):
+>       assert book(table_id="t_2", at="19:00").status == 201  # [19:00, 20:30)
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+E        +    where Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}) = <function book.<locals>._book at 0x77a2a63f4b80>(table_id='t_2', at='19:00')
+
+tests/test_reservations_create.py:51: AssertionError
+_________________________ test_not_on_slot_grid_is_422 _________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69fb0b0>, bob=<httpclient.Client object at 0x77a2a67c9610>)
+book = <function book.<locals>._book at 0x77a2a63f4e00>
+
+    def test_not_on_slot_grid_is_422(world, book):
+        resp = book(table_id="t_2", starts_at_local=f"{world.date}T19:15")
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:58: AssertionError
+_________________ test_before_opening_is_outside_opening_hours _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b26c0>, bob=<httpclient.Client object at 0x77a2a68c20c0>)
+book = <function book.<locals>._book at 0x77a2a63f4720>
+
+    def test_before_opening_is_outside_opening_hours(world, book):
+        resp = book(table_id="t_2", starts_at_local=f"{world.date}T17:30")
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:64: AssertionError
+______________ test_ending_after_closing_is_outside_opening_hours ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68a9010>, bob=<httpclient.Client object at 0x77a2a6a93f20>)
+book = <function book.<locals>._book at 0x77a2a63f44a0>
+
+    def test_ending_after_closing_is_outside_opening_hours(world, book):
+        # opens 18:00 closes 23:00, duration 90 -> 21:30 is the last valid start, 22:00 ends after close
+        resp = book(table_id="t_2", starts_at_local=f"{world.date}T22:00")
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:71: AssertionError
+_________________ test_closed_weekday_is_outside_opening_hours _________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63f4fe0>
+anon = <httpclient.Client object at 0x77a2a68e2fc0>
+
+    def test_closed_weekday_is_outside_opening_hours(reset, anon):
+        reset({
+            "users": [{"id": "u_a", "email": "a@example.com", "password": "correct horse", "display_name": "A"}],
+            "reservations": [],
+            "restaurants": [{
+                "id": "r_mon", "name": "Mon only", "timezone": "UTC",
+                "slot_minutes": 30, "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": "mon", "opens": "10:00", "closes": "14:00"}],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+            }],
+        })
+        token = anon.post("/auth/login", json_body={"email": "a@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        import datetime as dt
+        d = dt.date.today()
+        while d.weekday() != 1:  # Tuesday: always closed for this fixture
+            d += dt.timedelta(days=1)
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": "r_mon", "table_id": "t_1",
+            "starts_at_local": f"{d.isoformat()}T11:00", "party_size": 2}, idempotency_key="k")
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:95: AssertionError
+___________________ test_party_size_exceeds_capacity_is_422 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f38c0>, bob=<httpclient.Client object at 0x77a2a68b5eb0>)
+book = <function book.<locals>._book at 0x77a2a63f4360>
+
+    def test_party_size_exceeds_capacity_is_422(world, book):
+        resp = book(table_id="t_1", party_size=3)  # t_1 capacity is 2
+>       assert resp.status == 422
+E       AssertionError: assert 500 == 422
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:101: AssertionError
+________________________ test_unknown_restaurant_is_404 ________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e4bf0>, bob=<httpclient.Client object at 0x77a2a63e49e0>)
+book = <function book.<locals>._book at 0x77a2a63f5c60>
+
+    def test_unknown_restaurant_is_404(world, book):
+        resp = book(restaurant_id="nope")
+>       assert resp.status == 404
+E       AssertionError: assert 500 == 404
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:107: AssertionError
+__________________________ test_unknown_table_is_404 ___________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f7cb0>, bob=<httpclient.Client object at 0x77a2a63e5bb0>)
+book = <function book.<locals>._book at 0x77a2a63f60c0>
+
+    def test_unknown_table_is_404(world, book):
+        resp = book(table_id="nope")
+>       assert resp.status == 404
+E       AssertionError: assert 500 == 404
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:113: AssertionError
+__________________ test_table_from_another_restaurant_is_404 ___________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63f6160>
+anon = <httpclient.Client object at 0x77a2a63e7980>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e7020>, bob=<httpclient.Client object at 0x77a2a63e6e70>)
+
+    def test_table_from_another_restaurant_is_404(reset, anon, world):
+        reset({
+            **world.fixture,
+            "restaurants": world.fixture["restaurants"] + [{
+                "id": "r_other", "name": "Other", "timezone": "UTC",
+                "slot_minutes": 30, "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [], "tables": [{"id": "t_other", "label": "O", "capacity": 2}],
+            }],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "ada@example.com", "password": "correct horse"}).body["token"]
+        resp = anon.with_token(token).post("/reservations", json_body={
+            "restaurant_id": world.rid, "table_id": "t_other",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key="k")
+>       assert resp.status == 404
+E       AssertionError: assert 500 == 404
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:131: AssertionError
+__________________ test_party_size_wrong_type_is_422_not_400 ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a7904890>, bob=<httpclient.Client object at 0x77a2a7905100>)
+book = <function book.<locals>._book at 0x77a2a63f6020>
+
+    def test_party_size_wrong_type_is_422_not_400(world, book):
+        for bad in ("4", True, 4.0, None):
+            resp = book(party_size=bad, key=f"k-{bad}")
+>           assert resp.status == 422, f"{bad!r} -> {resp}"
+E           AssertionError: '4' -> Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}})
+E           assert 500 == 422
+E            +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:153: AssertionError
+___________________ test_party_size_zero_or_negative_is_422 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a687a090>, bob=<httpclient.Client object at 0x77a2a68c38c0>)
+book = <function book.<locals>._book at 0x77a2a63f6200>
+
+    def test_party_size_zero_or_negative_is_422(world, book):
+        for bad in (0, -1):
+            resp = book(party_size=bad, key=f"k-{bad}")
+>           assert resp.status == 422
+E           AssertionError: assert 500 == 422
+E            +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:160: AssertionError
+____________________ test_starts_at_local_bad_format_is_422 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a60ef0>, bob=<httpclient.Client object at 0x77a2a67c9d30>)
+book = <function book.<locals>._book at 0x77a2a63f59e0>
+
+    def test_starts_at_local_bad_format_is_422(world, book):
+        for bad in ("19:00", f"{world.date} 19:00", f"{world.date}T19:00:00", "not-a-date"):
+            resp = book(starts_at_local=bad, key=f"k-{bad}")
+>           assert resp.status == 422
+E           AssertionError: assert 500 == 422
+E            +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:167: AssertionError
+_________________ test_starts_at_local_wrong_json_type_is_400 __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c0410>, bob=<httpclient.Client object at 0x77a2a6a61640>)
+book = <function book.<locals>._book at 0x77a2a63f4860>
+
+    def test_starts_at_local_wrong_json_type_is_400(world, book):
+        resp = book(starts_at_local=12345, key="k-type")
+>       assert resp.status == 400
+E       AssertionError: assert 500 == 400
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:173: AssertionError
+_____________________ test_table_id_wrong_json_type_is_400 _____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68abc20>, bob=<httpclient.Client object at 0x77a2a6903f80>)
+book = <function book.<locals>._book at 0x77a2a63f5260>
+
+    def test_table_id_wrong_json_type_is_400(world, book):
+        resp = book(table_id=123, key="k-table-type")
+>       assert resp.status == 400
+E       AssertionError: assert 500 == 400
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:179: AssertionError
+_______________________ test_unknown_fields_are_ignored ________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f6030>, bob=<httpclient.Client object at 0x77a2a63e46e0>)
+book = <function book.<locals>._book at 0x77a2a63f4b80>
+
+    def test_unknown_fields_are_ignored(world, book):
+        resp = book(table_id="t_2", at="19:00", extra_junk="ignored me", key="k-extra")
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:185: AssertionError
+_________ test_same_table_id_in_different_restaurants_does_not_collide _________
+
+reset = <function reset.<locals>._reset at 0x77a2a63f5580>
+anon = <httpclient.Client object at 0x77a2a63e4470>
+
+    def test_same_table_id_in_different_restaurants_does_not_collide(reset, anon):
+        """Table ids are only unique within a restaurant: two restaurants may both have a t_2."""
+        import datetime as dt
+    
+        weekdays = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+        restaurant = {
+            "timezone": "Europe/Berlin", "slot_minutes": 30, "reservation_duration_minutes": 90,
+            "cancellation_cutoff_minutes": 0,
+            "opening_hours": [{"weekday": d, "opens": "18:00", "closes": "23:00"} for d in weekdays],
+            "tables": [{"id": "t_2", "label": "2", "capacity": 4}],
+        }
+        reset({
+            "users": [{"id": "u_a", "email": "two-zones@example.com",
+                       "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{"id": "r_one", "name": "One", **restaurant},
+                             {"id": "r_two", "name": "Two", **restaurant}],
+            "reservations": [],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "two-zones@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        date = (dt.date.today() + dt.timedelta(days=5)).isoformat()
+        first = client.post("/reservations", json_body={
+            "restaurant_id": "r_one", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-1")
+        second = client.post("/reservations", json_body={
+            "restaurant_id": "r_two", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4}, idempotency_key="iso-2")
+>       assert first.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_create.py:216: AssertionError
+__________________ test_list_contains_confirmed_and_cancelled __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a93290>, bob=<httpclient.Client object at 0x77a2a68aa540>)
+book = <function book.<locals>._book at 0x77a2a63f6980>
+
+    def test_list_contains_confirmed_and_cancelled(world, book):
+>       ref1 = book(table_id="t_1", at="19:00", party_size=2).body["reference"]
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:14: KeyError
+_________________ test_list_is_ordered_by_starts_at_descending _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68e0530>, bob=<httpclient.Client object at 0x77a2a67cb2c0>)
+book = <function book.<locals>._book at 0x77a2a63f6840>
+
+    def test_list_is_ordered_by_starts_at_descending(world, book):
+        early = book(table_id="t_1", at="18:00", party_size=2).body
+        late = book(table_id="t_2", at="20:00", party_size=2).body
+        refs = [r["reference"] for r in world.ada.get("/reservations").body["reservations"]]
+>       assert refs.index(late["reference"]) < refs.index(early["reference"])
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:25: KeyError
+____________________________ test_get_by_reference _____________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e5e50>, bob=<httpclient.Client object at 0x77a2a641f620>)
+book = <function book.<locals>._book at 0x77a2a63f7240>
+
+    def test_get_by_reference(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       fetched = world.ada.get(f"/reservations/{created['reference']}").body
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:30: KeyError
+__________________ test_get_someone_elses_reservation_is_404 ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641e150>, bob=<httpclient.Client object at 0x77a2a641c8c0>)
+book = <function book.<locals>._book at 0x77a2a63f6fc0>
+
+    def test_get_someone_elses_reservation_is_404(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       resp = world.bob.get(f"/reservations/{created['reference']}")
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:36: KeyError
+_________________ test_cancel_sets_status_and_frees_the_table __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f7fb0>, bob=<httpclient.Client object at 0x77a2a63e4770>)
+book = <function book.<locals>._book at 0x77a2a63f79c0>
+anon = <httpclient.Client object at 0x77a2a641f470>
+
+    def test_cancel_sets_status_and_frees_the_table(world, book, anon):
+        created = book(table_id="t_2", at="19:00", party_size=4).body
+>       resp = world.ada.post(f"/reservations/{created['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:48: KeyError
+______________________ test_cancel_twice_is_not_an_error _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641cec0>, bob=<httpclient.Client object at 0x77a2a641f6b0>)
+book = <function book.<locals>._book at 0x77a2a63f7b00>
+
+    def test_cancel_twice_is_not_an_error(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       first = world.ada.post(f"/reservations/{created['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:61: KeyError
+_________________ test_cancel_someone_elses_reservation_is_404 _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641e4e0>, bob=<httpclient.Client object at 0x77a2a641d610>)
+book = <function book.<locals>._book at 0x77a2a63f6fc0>
+
+    def test_cancel_someone_elses_reservation_is_404(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       resp = world.bob.post(f"/reservations/{created['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:70: KeyError
+_______________________ test_cancel_within_cutoff_is_409 _______________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63f7240>
+anon = <httpclient.Client object at 0x77a2a63e5be0>
+
+    def test_cancel_within_cutoff_is_409(reset, anon):
+        restaurant = {
+            "id": "r_soon", "name": "Soon", "timezone": "UTC", "slot_minutes": 30,
+            "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 120,
+            "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:30"}
+                               for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+            "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+        }
+        target = dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=45)
+        target = target.replace(minute=(target.minute // 30) * 30, second=0, microsecond=0)
+        local = target.strftime("%Y-%m-%dT%H:%M")
+        reset({
+            "users": [{"id": "u_a", "email": "soon@example.com", "password": "correct horse", "display_name": "A"}],
+            "restaurants": [restaurant], "reservations": [],
+        })
+        token = anon.post("/auth/login", json_body={
+            "email": "soon@example.com", "password": "correct horse"}).body["token"]
+        client = anon.with_token(token)
+        created = client.post("/reservations", json_body={
+            "restaurant_id": "r_soon", "table_id": "t_1", "starts_at_local": local, "party_size": 2},
+            idempotency_key=new_key())
+>       assert created.status == 201, created
+E       AssertionError: Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}})
+E       assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_reservations_read_cancel_amend.py:95: AssertionError
+__________________ test_patch_changes_table_and_frees_old_one __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641d070>, bob=<httpclient.Client object at 0x77a2a63e4380>)
+book = <function book.<locals>._book at 0x77a2a63f7ce0>
+anon = <httpclient.Client object at 0x77a2a63e5f70>
+
+    def test_patch_changes_table_and_frees_old_one(world, book, anon):
+        created = book(table_id="t_2", at="19:00", party_size=4).body
+>       resp = world.ada.patch(f"/reservations/{created['reference']}", json_body={"table_id": "t_3"})
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:103: KeyError
+___________________________ test_patch_changes_time ____________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68aa450>, bob=<httpclient.Client object at 0x77a2a63e4140>)
+book = <function book.<locals>._book at 0x77a2a63f4fe0>
+
+    def test_patch_changes_time(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       resp = world.ada.patch(f"/reservations/{created['reference']}",
+                                json_body={"starts_at_local": f"{world.date}T20:00"})
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:118: KeyError
+_____ test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged _____
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a93920>, bob=<httpclient.Client object at 0x77a2a68785f0>)
+book = <function book.<locals>._book at 0x77a2a63f4e00>
+
+    def test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged(world, book):
+        created = book(table_id="t_2", at="19:00").body
+        book(table_id="t_3", at="19:00")  # occupy t_3 at the same time
+>       resp = world.ada.patch(f"/reservations/{created['reference']}", json_body={"table_id": "t_3"})
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:127: KeyError
+___________________ test_patch_cancelled_reservation_is_409 ____________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67c9670>, bob=<httpclient.Client object at 0x77a2a69f8770>)
+book = <function book.<locals>._book at 0x77a2a63f6020>
+
+    def test_patch_cancelled_reservation_is_409(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       world.ada.post(f"/reservations/{created['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:137: KeyError
+_________________ test_patch_someone_elses_reservation_is_404 __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641d850>, bob=<httpclient.Client object at 0x77a2a6a92b40>)
+book = <function book.<locals>._book at 0x77a2a63b80e0>
+
+    def test_patch_someone_elses_reservation_is_404(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       resp = world.bob.patch(f"/reservations/{created['reference']}", json_body={"table_id": "t_3"})
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:145: KeyError
+______________________ test_patch_invalid_new_time_is_422 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69035f0>, bob=<httpclient.Client object at 0x77a2a68f0ce0>)
+book = <function book.<locals>._book at 0x77a2a63b8220>
+
+    def test_patch_invalid_new_time_is_422(world, book):
+        created = book(table_id="t_2", at="19:00").body
+>       resp = world.ada.patch(f"/reservations/{created['reference']}",
+                                json_body={"starts_at_local": f"{world.date}T19:15"})
+E       KeyError: 'reference'
+
+tests/test_reservations_read_cancel_amend.py:151: KeyError
+_______________ test_slot_with_no_free_table_still_appears_empty _______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68f2870>, bob=<httpclient.Client object at 0x77a2a6901b20>)
+anon = <httpclient.Client object at 0x77a2a63b1e80>
+book = <function book.<locals>._book at 0x77a2a63b8fe0>
+
+    def test_slot_with_no_free_table_still_appears_empty(world, anon, book):
+        book(table_id="t_1", at="18:00", party_size=2)
+        book(table_id="t_2", at="18:00", party_size=2)
+        book(table_id="t_3", at="18:00", party_size=2)
+        body = anon.get("/availability", params={
+            "restaurant_id": world.rid, "date": world.date, "party_size": 2}).body
+        slot = next(s for s in body["slots"] if s["starts_at_local"].endswith("18:00"))
+>       assert slot["available_table_ids"] == []
+E       AssertionError: assert ['t_1', 't_2', 't_3'] == []
+E         Left contains 3 more items, first extra item: 't_1'
+E         Use -v to get more diff
+
+tests/test_restaurants_and_availability.py:90: AssertionError
+__________ test_policy_publication_does_not_change_existing_bookings ___________
+
+reset = <function reset.<locals>._reset at 0x77a2a63ba020>
+anon = <httpclient.Client object at 0x77a2a64776b0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e67e0>, bob=<httpclient.Client object at 0x77a2a6475df0>)
+book = <function book.<locals>._book at 0x77a2a63b9e40>
+
+    def test_policy_publication_does_not_change_existing_bookings(reset, anon, world, book):
+        resp = book(at="19:00")
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_stage3.py:127: AssertionError
+_________ test_create_reservation_has_revision_one_and_accepted_terms __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641e1b0>, bob=<httpclient.Client object at 0x77a2a63e5fd0>)
+book = <function book.<locals>._book at 0x77a2a63bb420>
+
+    def test_create_reservation_has_revision_one_and_accepted_terms(world, book):
+        resp = book(at="19:00")
+>       assert resp.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_stage3.py:146: AssertionError
+__________ test_real_amendment_increments_revision_and_replaces_terms __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68e38c0>, bob=<httpclient.Client object at 0x77a2a68f27b0>)
+book = <function book.<locals>._book at 0x77a2a63bb7e0>
+
+    def test_real_amendment_increments_revision_and_replaces_terms(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:155: KeyError
+__________ test_noop_amendment_leaves_revision_and_history_untouched ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b86e0>, bob=<httpclient.Client object at 0x77a2a67cad20>)
+book = <function book.<locals>._book at 0x77a2a63bb4c0>
+
+    def test_noop_amendment_leaves_revision_and_history_untouched(world, book):
+>       ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:162: KeyError
+____________________ test_reversed_pair_is_not_an_amendment ____________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63bb9c0>
+anon = <httpclient.Client object at 0x77a2a6903080>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6a91730>, bob=<httpclient.Client object at 0x77a2a68f3440>)
+
+    def test_reversed_pair_is_not_an_amendment(reset, anon, world):
+        fixture = {
+            "users": world.fixture["users"],
+            "restaurants": [make_restaurant(combinable=[["t_1", "t_2"]])],
+            "reservations": [],
+        }
+        reset(fixture)
+        ada = _login(anon)
+        created = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 5,
+        }, idempotency_key=new_key())
+>       assert created.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_stage3.py:182: AssertionError
+________ test_cancel_increments_revision_once_repeated_cancel_does_not _________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68aa750>, bob=<httpclient.Client object at 0x77a2a68a9bb0>)
+book = <function book.<locals>._book at 0x77a2a63bbd80>
+
+    def test_cancel_increments_revision_once_repeated_cancel_does_not(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:189: KeyError
+__________ test_amendment_cutoff_uses_accepted_terms_not_live_policy ___________
+
+reset = <function reset.<locals>._reset at 0x77a2a63bbf60>
+anon = <httpclient.Client object at 0x77a2a641cce0>
+
+    def test_amendment_cutoff_uses_accepted_terms_not_live_policy(reset, anon):
+        """A newly-published shorter cutoff must not retroactively free up an already-accepted booking."""
+        fixture = _managed_fixture(cancellation_cutoff_minutes=1)
+        reset(fixture)
+        ada = _login(anon)
+        date = booking_date()
+        created = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key())
+>       ref = created.body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:206: KeyError
+_____________________ test_stale_expected_revision_is_409 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e63f0>, bob=<httpclient.Client object at 0x77a2a7904890>)
+book = <function book.<locals>._book at 0x77a2a63f6c00>
+
+    def test_stale_expected_revision_is_409(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:222: KeyError
+_________________ test_invalid_expected_revision_shape_is_422 __________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67f74a0>, bob=<httpclient.Client object at 0x77a2a67f7e60>)
+book = <function book.<locals>._book at 0x77a2a63f7ec0>
+
+    def test_invalid_expected_revision_shape_is_422(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:228: KeyError
+___________________ test_matching_expected_revision_succeeds ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641ca10>, bob=<httpclient.Client object at 0x77a2a68b5880>)
+book = <function book.<locals>._book at 0x77a2a63f4720>
+
+    def test_matching_expected_revision_succeeds(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:236: KeyError
+__________ test_stale_expected_revision_wins_over_invalid_party_size ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6900f20>, bob=<httpclient.Client object at 0x77a2a6901130>)
+book = <function book.<locals>._book at 0x77a2a63f59e0>
+
+    def test_stale_expected_revision_wins_over_invalid_party_size(world, book):
+        """stage-3 §Policies: stale_revision precedes cutoff/validation -- even a field's own
+        type/range check, not just cutoff and occupancy. Regression for verifier S3-POL.39a."""
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:244: KeyError
+_______ test_moves_stale_expected_revision_wins_over_invalid_party_size ________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6900fe0>, bob=<httpclient.Client object at 0x77a2a67ca900>)
+book = <function book.<locals>._book at 0x77a2a63f5260>
+
+    def test_moves_stale_expected_revision_wins_over_invalid_party_size(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:250: KeyError
+_____________ test_explain_true_lists_every_table_with_both_rules ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e4590>, bob=<httpclient.Client object at 0x77a2a6878170>)
+anon = <httpclient.Client object at 0x77a2a63b0080>
+book = <function book.<locals>._book at 0x77a2a6494540>
+
+    def test_explain_true_lists_every_table_with_both_rules(world, anon, book):
+        book(table_id="t_2", at="19:00", party_size=4)
+        resp = anon.get("/availability", params={
+            "restaurant_id": world.rid, "date": world.date, "party_size": 4, "explain": "true"})
+        assert resp.status == 200
+        slot = next(s for s in resp.body["slots"] if s["starts_at_local"].endswith("19:00"))
+        explain = {e["table_id"]: e for e in slot["explain"]}
+        assert set(explain) == {"t_1", "t_2", "t_3"}
+        assert explain["t_1"]["available"] is False  # capacity 2 < party_size 4
+        rules = {r["rule"]: r["holds"] for r in explain["t_1"]["rules"]}
+        assert rules == {"capacity": False, "no_overlap": True}
+>       assert explain["t_2"]["available"] is False  # capacity ok but taken
+E       assert True is False
+
+tests/test_stage3.py:284: AssertionError
+_______________________ test_history_created_entry_shape _______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67ca750>, bob=<httpclient.Client object at 0x77a2a68f0c50>)
+book = <function book.<locals>._book at 0x77a2a6494680>
+
+    def test_history_created_entry_shape(world, book):
+>       ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:296: KeyError
+________ test_history_changed_entry_names_only_changed_fields_in_order _________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63b28d0>, bob=<httpclient.Client object at 0x77a2a63b1850>)
+book = <function book.<locals>._book at 0x77a2a63f6480>
+
+    def test_history_changed_entry_names_only_changed_fields_in_order(world, book):
+>       ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:310: KeyError
+__________ test_history_cancelled_entry_has_empty_changes_and_is_last __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68b26c0>, bob=<httpclient.Client object at 0x77a2a63b3980>)
+book = <function book.<locals>._book at 0x77a2a63b8fe0>
+
+    def test_history_cancelled_entry_has_empty_changes_and_is_last(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:322: KeyError
+________ test_history_is_owner_only_404_for_other_user_and_for_no_token ________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6476a50>, bob=<httpclient.Client object at 0x77a2a6475340>)
+book = <function book.<locals>._book at 0x77a2a63bbd80>
+
+    def test_history_is_owner_only_404_for_other_user_and_for_no_token(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:331: KeyError
+_________ test_decision_endpoint_owner_only_and_survives_cancellation __________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63b1130>, bob=<httpclient.Client object at 0x77a2a69fb0b0>)
+book = <function book.<locals>._book at 0x77a2a63bb4c0>
+
+    def test_decision_endpoint_owner_only_and_survives_cancellation(world, book):
+>       ref = book(at="19:00").body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:339: KeyError
+__________________ test_combined_table_history_uses_table_ids __________________
+
+reset = <function reset.<locals>._reset at 0x77a2a63ba5c0>
+anon = <httpclient.Client object at 0x77a2a6900650>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a641f890>, bob=<httpclient.Client object at 0x77a2a6474320>)
+
+    def test_combined_table_history_uses_table_ids(reset, anon, world):
+        fixture = {
+            "users": world.fixture["users"],
+            "restaurants": [make_restaurant(combinable=[["t_1", "t_2"]])],
+            "reservations": [],
+        }
+        reset(fixture)
+        ada = _login(anon)
+        created = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_id": "t_2",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key())
+>       ref = created.body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:360: KeyError
+__________ test_replaying_idempotent_create_records_no_extra_history ___________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68bb920>, bob=<httpclient.Client object at 0x77a2a67cbb00>)
+book = <function book.<locals>._book at 0x77a2a64949a0>
+
+    def test_replaying_idempotent_create_records_no_extra_history(world, book):
+        key = new_key()
+        first = book(key=key, table_id="t_2", at="19:00", party_size=4)
+>       assert first.status == 201
+E       AssertionError: assert 500 == 201
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/test_stage3.py:372: AssertionError
+_____________ test_create_series_adopts_anchor_as_occurrence_zero ______________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a6902000>, bob=<httpclient.Client object at 0x77a2a68b86e0>)
+book = <function book.<locals>._book at 0x77a2a6494040>
+
+    def test_create_series_adopts_anchor_as_occurrence_zero(world, book):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        resp = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:386: KeyError
+__________________ test_series_count_and_interval_validation ___________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c04a0>, bob=<httpclient.Client object at 0x77a2a68c0560>)
+book = <function book.<locals>._book at 0x77a2a64940e0>
+
+    def test_series_count_and_interval_validation(world, book):
+        anchor = book(at="19:00").body
+        for bad_count in (1, 13, True, "3"):
+            resp = world.ada.post("/series", json_body={
+>               "anchor_reference": anchor["reference"], "count": bad_count, "interval_weeks": 1,
+            }, idempotency_key=new_key())
+E           KeyError: 'reference'
+
+tests/test_stage3.py:407: KeyError
+______________________ test_already_adopted_anchor_is_409 ______________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63b09b0>, bob=<httpclient.Client object at 0x77a2a6a92030>)
+book = <function book.<locals>._book at 0x77a2a6494c20>
+
+    def test_already_adopted_anchor_is_409(world, book):
+        anchor = book(at="19:00").body
+        first = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:415: KeyError
+____________ test_series_creation_is_atomic_on_a_failing_occurrence ____________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a67c8980>, bob=<httpclient.Client object at 0x77a2a68c2a20>)
+book = <function book.<locals>._book at 0x77a2a6494fe0>
+anon = <httpclient.Client object at 0x77a2a64ab8c0>
+
+    def test_series_creation_is_atomic_on_a_failing_occurrence(world, book, anon):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        anchor_date = dt.date.fromisoformat(world.date)
+        blocking_date = (anchor_date + dt.timedelta(days=7)).isoformat()
+        # Block occurrence index 1 by pre-booking t_2 at the same slot under another user.
+        world.bob.post("/reservations", json_body={
+            "restaurant_id": world.rid, "table_id": "t_2",
+            "starts_at_local": f"{blocking_date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key())
+        resp = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:434: KeyError
+________________________ test_get_series_is_owner_only _________________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68c0da0>, bob=<httpclient.Client object at 0x77a2a63b3050>)
+book = <function book.<locals>._book at 0x77a2a64951c0>
+
+    def test_get_series_is_owner_only(world, book):
+        anchor = book(at="19:00").body
+        created = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:445: KeyError
+______ test_patch_on_occurrence_marks_exception_and_bumps_series_revision ______
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63b0500>, bob=<httpclient.Client object at 0x77a2a68f0680>)
+book = <function book.<locals>._book at 0x77a2a64954e0>
+
+    def test_patch_on_occurrence_marks_exception_and_bumps_series_revision(world, book):
+        anchor = book(table_id="t_2", at="19:00", party_size=4).body
+        created = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 3, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:457: KeyError
+_______________ test_cancelling_anchor_does_not_cancel_siblings ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a64abe30>, bob=<httpclient.Client object at 0x77a2a64a9220>)
+book = <function book.<locals>._book at 0x77a2a69ab920>
+
+    def test_cancelling_anchor_does_not_cancel_siblings(world, book):
+        anchor = book(at="19:00").body
+        created = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key())
+E       KeyError: 'reference'
+
+tests/test_stage3.py:473: KeyError
+_________________ test_series_replay_returns_original_response _________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a68e3fe0>, bob=<httpclient.Client object at 0x77a2a68f0470>)
+book = <function book.<locals>._book at 0x77a2a63f6520>
+
+    def test_series_replay_returns_original_response(world, book):
+        anchor = book(at="19:00").body
+        key = new_key()
+        first = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=key)
+E       KeyError: 'reference'
+
+tests/test_stage3.py:485: KeyError
+____ test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions _____
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e4a70>, bob=<httpclient.Client object at 0x77a2a68f38c0>)
+book = <function book.<locals>._book at 0x77a2a64956c0>
+
+    def test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions(world, book):
+        anchor_a = book(table_id="t_1", at="19:00", party_size=2).body
+        series_a = world.ada.post("/series", json_body={
+>           "anchor_reference": anchor_a["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key()).body
+E       KeyError: 'reference'
+
+tests/test_stage3.py:501: KeyError
+________________ test_moves_noop_item_retains_terms_and_history ________________
+
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a69fb0b0>, bob=<httpclient.Client object at 0x77a2a67cb0b0>)
+book = <function book.<locals>._book at 0x77a2a6495440>
+
+    def test_moves_noop_item_retains_terms_and_history(world, book):
+>       ref = book(table_id="t_2", at="19:00", party_size=4).body["reference"]
+E       KeyError: 'reference'
+
+tests/test_stage3.py:516: KeyError
+______ test_export_import_round_trip_preserves_policy_history_and_series _______
+
+reset = <function reset.<locals>._reset at 0x77a2a6494540>
+anon = <httpclient.Client object at 0x77a2a63e6960>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-10', ada=<httpclient.Client object at 0x77a2a63e50a0>, bob=<httpclient.Client object at 0x77a2a641e4e0>)
+book = <function book.<locals>._book at 0x77a2a6495a80>
+
+    def test_export_import_round_trip_preserves_policy_history_and_series(reset, anon, world, book):
+        reset(_managed_fixture())
+        ada = _login(anon)
+        published = ada.post("/restaurants/r_anker/policies", json_body={
+            "effective_from": "2000-01-01", "slot_minutes": 20, "reservation_duration_minutes": 60,
+            "cancellation_cutoff_minutes": 30, "opening_hours": all_week(),
+            "capacities": {"t_1": 2, "t_2": 4, "t_3": 6},
+        }, idempotency_key=new_key())
+        assert published.status == 201, published
+        date = booking_date()
+        anchor = ada.post("/reservations", json_body={
+            "restaurant_id": "r_anker", "table_id": "t_2",
+            "starts_at_local": f"{date}T19:00", "party_size": 4,
+        }, idempotency_key=new_key()).body
+        series = ada.post("/series", json_body={
+>           "anchor_reference": anchor["reference"], "count": 2, "interval_weeks": 1,
+        }, idempotency_key=new_key()).body
+E       KeyError: 'reference'
+
+tests/test_stage3.py:544: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_combinable_tables.py::test_booking_a_pair_returns_table_ids_without_table_id
+FAILED tests/test_combinable_tables.py::test_booking_a_single_table_still_returns_table_id
+FAILED tests/test_combinable_tables.py::test_undeclared_pair_is_combination_not_allowed
+FAILED tests/test_combinable_tables.py::test_combining_is_not_transitive - As...
+FAILED tests/test_combinable_tables.py::test_more_than_two_tables_is_combination_not_allowed
+FAILED tests/test_combinable_tables.py::test_duplicate_table_id_in_set_is_validation_failed
+FAILED tests/test_combinable_tables.py::test_both_table_id_and_table_ids_is_validation_failed
+FAILED tests/test_combinable_tables.py::test_party_size_vs_summed_capacity - ...
+FAILED tests/test_combinable_tables.py::test_single_table_within_a_booked_pair_is_unavailable
+FAILED tests/test_combinable_tables.py::test_pair_overlapping_a_booked_single_is_unavailable
+FAILED tests/test_combinable_tables.py::test_cancel_frees_every_table_in_the_set
+FAILED tests/test_combinable_tables.py::test_patch_can_change_to_a_combination
+FAILED tests/test_combinable_tables.py::test_moves_accept_table_ids_per_move
+FAILED tests/test_combinable_tables.py::test_moves_reject_overlap_among_resulting_combined_bookings
+FAILED tests/test_combinable_tables.py::test_export_import_preserves_combinable_and_table_ids
+FAILED tests/test_concurrency.py::test_ten_racing_bookings_for_one_slot_yield_exactly_one_winner
+FAILED tests/test_concurrency.py::test_concurrent_cancel_and_rebook_is_consistent
+FAILED tests/test_dst.py::test_spring_forward_gap_booking_is_422 - AssertionE...
+FAILED tests/test_dst.py::test_booking_fall_back_repeated_hour_resolves_to_first_occurrence
+FAILED tests/test_dst.py::test_duration_is_absolute_time_across_fall_back - A...
+FAILED tests/test_dst.py::test_new_york_spring_forward_gap_is_422 - Assertion...
+FAILED tests/test_dst.py::test_new_york_fall_back_resolves_to_earlier_offset
+FAILED tests/test_errors_general.py::test_booking_in_the_past_is_not_rejected_solely_for_that
+FAILED tests/test_errors_general.py::test_idempotency_key_header_name_is_case_insensitive
+FAILED tests/test_export_import.py::test_import_restores_a_booking_receipt - ...
+FAILED tests/test_export_import.py::test_import_preserves_idempotency_receipts
+FAILED tests/test_export_import.py::test_import_is_replacement_not_merge - Ke...
+FAILED tests/test_export_import.py::test_repeated_import_does_not_duplicate
+FAILED tests/test_export_import.py::test_export_is_a_point_in_time_snapshot
+FAILED tests/test_idempotency.py::test_first_use_is_201_replay_is_200_with_same_body
+FAILED tests/test_idempotency.py::test_same_key_different_body_is_409 - Asser...
+FAILED tests/test_idempotency.py::test_key_reused_after_4xx_failure_is_a_first_use
+FAILED tests/test_idempotency.py::test_idempotency_key_scoped_to_user - Asser...
+FAILED tests/test_idempotency.py::test_same_key_different_path_is_a_different_request
+FAILED tests/test_idempotency.py::test_idempotency_resolved_before_field_validation
+FAILED tests/test_idempotency.py::test_concurrent_identical_requests_commit_exactly_once
+FAILED tests/test_idempotency.py::test_replay_survives_cancellation - KeyErro...
+FAILED tests/test_reservation_moves.py::test_single_move_changes_the_table - ...
+FAILED tests/test_reservation_moves.py::test_swap_two_bookings_between_tables_atomically
+FAILED tests/test_reservation_moves.py::test_unchanged_items_are_included - K...
+FAILED tests/test_reservation_moves.py::test_duplicate_references_is_422 - Ke...
+FAILED tests/test_reservation_moves.py::test_empty_moves_is_422 - AssertionEr...
+FAILED tests/test_reservation_moves.py::test_too_many_moves_is_422 - KeyError...
+FAILED tests/test_reservation_moves.py::test_unknown_reference_is_404 - KeyEr...
+FAILED tests/test_reservation_moves.py::test_someone_elses_reference_is_404
+FAILED tests/test_reservation_moves.py::test_no_token_is_401 - KeyError: 'ref...
+FAILED tests/test_reservation_moves.py::test_cancelled_booking_in_batch_is_409
+FAILED tests/test_reservation_moves.py::test_overlap_with_unlisted_booking_is_409_and_nothing_changes
+FAILED tests/test_reservation_moves.py::test_overlap_among_resulting_bookings_is_409
+FAILED tests/test_reservation_moves.py::test_different_restaurants_is_422 - K...
+FAILED tests/test_reservation_moves.py::test_idempotency_applies_to_moves - K...
+FAILED tests/test_reservation_moves.py::test_missing_idempotency_key_is_400
+FAILED tests/test_reservations_create.py::test_create_returns_documented_shape
+FAILED tests/test_reservations_create.py::test_ends_at_is_start_plus_duration
+FAILED tests/test_reservations_create.py::test_reference_is_unique_across_reservations
+FAILED tests/test_reservations_create.py::test_double_booking_same_table_same_slot_is_409
+FAILED tests/test_reservations_create.py::test_overlapping_but_offset_time_is_409
+FAILED tests/test_reservations_create.py::test_adjacent_non_overlapping_booking_succeeds
+FAILED tests/test_reservations_create.py::test_not_on_slot_grid_is_422 - Asse...
+FAILED tests/test_reservations_create.py::test_before_opening_is_outside_opening_hours
+FAILED tests/test_reservations_create.py::test_ending_after_closing_is_outside_opening_hours
+FAILED tests/test_reservations_create.py::test_closed_weekday_is_outside_opening_hours
+FAILED tests/test_reservations_create.py::test_party_size_exceeds_capacity_is_422
+FAILED tests/test_reservations_create.py::test_unknown_restaurant_is_404 - As...
+FAILED tests/test_reservations_create.py::test_unknown_table_is_404 - Asserti...
+FAILED tests/test_reservations_create.py::test_table_from_another_restaurant_is_404
+FAILED tests/test_reservations_create.py::test_party_size_wrong_type_is_422_not_400
+FAILED tests/test_reservations_create.py::test_party_size_zero_or_negative_is_422
+FAILED tests/test_reservations_create.py::test_starts_at_local_bad_format_is_422
+FAILED tests/test_reservations_create.py::test_starts_at_local_wrong_json_type_is_400
+FAILED tests/test_reservations_create.py::test_table_id_wrong_json_type_is_400
+FAILED tests/test_reservations_create.py::test_unknown_fields_are_ignored - A...
+FAILED tests/test_reservations_create.py::test_same_table_id_in_different_restaurants_does_not_collide
+FAILED tests/test_reservations_read_cancel_amend.py::test_list_contains_confirmed_and_cancelled
+FAILED tests/test_reservations_read_cancel_amend.py::test_list_is_ordered_by_starts_at_descending
+FAILED tests/test_reservations_read_cancel_amend.py::test_get_by_reference - ...
+FAILED tests/test_reservations_read_cancel_amend.py::test_get_someone_elses_reservation_is_404
+FAILED tests/test_reservations_read_cancel_amend.py::test_cancel_sets_status_and_frees_the_table
+FAILED tests/test_reservations_read_cancel_amend.py::test_cancel_twice_is_not_an_error
+FAILED tests/test_reservations_read_cancel_amend.py::test_cancel_someone_elses_reservation_is_404
+FAILED tests/test_reservations_read_cancel_amend.py::test_cancel_within_cutoff_is_409
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_changes_table_and_frees_old_one
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_changes_time
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_onto_conflicting_slot_is_409_and_leaves_booking_unchanged
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_cancelled_reservation_is_409
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_someone_elses_reservation_is_404
+FAILED tests/test_reservations_read_cancel_amend.py::test_patch_invalid_new_time_is_422
+FAILED tests/test_restaurants_and_availability.py::test_slot_with_no_free_table_still_appears_empty
+FAILED tests/test_stage3.py::test_policy_publication_does_not_change_existing_bookings
+FAILED tests/test_stage3.py::test_create_reservation_has_revision_one_and_accepted_terms
+FAILED tests/test_stage3.py::test_real_amendment_increments_revision_and_replaces_terms
+FAILED tests/test_stage3.py::test_noop_amendment_leaves_revision_and_history_untouched
+FAILED tests/test_stage3.py::test_reversed_pair_is_not_an_amendment - Asserti...
+FAILED tests/test_stage3.py::test_cancel_increments_revision_once_repeated_cancel_does_not
+FAILED tests/test_stage3.py::test_amendment_cutoff_uses_accepted_terms_not_live_policy
+FAILED tests/test_stage3.py::test_stale_expected_revision_is_409 - KeyError: ...
+FAILED tests/test_stage3.py::test_invalid_expected_revision_shape_is_422 - Ke...
+FAILED tests/test_stage3.py::test_matching_expected_revision_succeeds - KeyEr...
+FAILED tests/test_stage3.py::test_stale_expected_revision_wins_over_invalid_party_size
+FAILED tests/test_stage3.py::test_moves_stale_expected_revision_wins_over_invalid_party_size
+FAILED tests/test_stage3.py::test_explain_true_lists_every_table_with_both_rules
+FAILED tests/test_stage3.py::test_history_created_entry_shape - KeyError: 're...
+FAILED tests/test_stage3.py::test_history_changed_entry_names_only_changed_fields_in_order
+FAILED tests/test_stage3.py::test_history_cancelled_entry_has_empty_changes_and_is_last
+FAILED tests/test_stage3.py::test_history_is_owner_only_404_for_other_user_and_for_no_token
+FAILED tests/test_stage3.py::test_decision_endpoint_owner_only_and_survives_cancellation
+FAILED tests/test_stage3.py::test_combined_table_history_uses_table_ids - Key...
+FAILED tests/test_stage3.py::test_replaying_idempotent_create_records_no_extra_history
+FAILED tests/test_stage3.py::test_create_series_adopts_anchor_as_occurrence_zero
+FAILED tests/test_stage3.py::test_series_count_and_interval_validation - KeyE...
+FAILED tests/test_stage3.py::test_already_adopted_anchor_is_409 - KeyError: '...
+FAILED tests/test_stage3.py::test_series_creation_is_atomic_on_a_failing_occurrence
+FAILED tests/test_stage3.py::test_get_series_is_owner_only - KeyError: 'refer...
+FAILED tests/test_stage3.py::test_patch_on_occurrence_marks_exception_and_bumps_series_revision
+FAILED tests/test_stage3.py::test_cancelling_anchor_does_not_cancel_siblings
+FAILED tests/test_stage3.py::test_series_replay_returns_original_response - K...
+FAILED tests/test_stage3.py::test_moves_batch_bumps_each_affected_series_once_and_marks_exceptions
+FAILED tests/test_stage3.py::test_moves_noop_item_retains_terms_and_history
+FAILED tests/test_stage3.py::test_export_import_round_trip_preserves_policy_history_and_series
+119 failed, 71 passed in 69.53s (0:01:09)

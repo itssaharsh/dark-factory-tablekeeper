@@ -1,0 +1,92 @@
+{
+ "card": "verdict",
+ "stage": 3,
+ "from": "falsifier",
+ "to": "implementer,coordinator",
+ "revision": "d0a504bf8cb87c675b18208ec33912d3ec4b944e",
+ "base": "e6f95ec7f482eadb59206709df587ee2683909e3",
+ "runs": [
+  {
+   "tree": "revision",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 75.71,
+   "log": "cards/s3-d0a504b.json.logs/revision.log",
+   "runner": "pytest",
+   "tests_run": 190,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base as it was",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 77.45,
+   "log": "cards/s3-d0a504b.json.logs/base-as-it-was.log",
+   "runner": "pytest",
+   "tests_run": 188,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base with delivered tests",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 79.41,
+   "log": "cards/s3-d0a504b.json.logs/base-with-delivered-tests.log",
+   "runner": "pytest",
+   "tests_run": 190,
+   "tests_left_out": 0,
+   "tests_failed": 2,
+   "could_not_load": ""
+  },
+  {
+   "tree": "revision with implementation reverted",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 75.97,
+   "log": "cards/s3-d0a504b.json.logs/revision-with-implementation-reverted.log",
+   "runner": "pytest",
+   "tests_run": 190,
+   "tests_left_out": 0,
+   "tests_failed": 2,
+   "could_not_load": ""
+  },
+  {
+   "tree": "revision with every function emptied",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 76.79,
+   "log": "cards/s3-d0a504b.json.logs/revision-with-every-function-emptied.log",
+   "runner": "pytest",
+   "tests_run": 190,
+   "tests_left_out": 0,
+   "tests_failed": 119,
+   "could_not_load": ""
+  }
+ ],
+ "findings": [],
+ "verdict": "ACCEPT",
+ "at": "2026-10-05T09:39:40+00:00",
+ "notes": [
+  "a plain re-run of the listed command on the posted revision exits 0",
+  "the base is e6f95ec7f482eadb59206709df587ee2683909e3: the ledger accepted.jsonl holds it as the last accepted revision (stage 3)",
+  "the frozen tests are those of stage 2, read in stage-2 at 7737dd4bbe8622d13dcbc7d818b2dbdd39410422: the ledger accepted.jsonl holds it as the last revision accepted for that stage",
+  "the work also changed 13 file(s) outside stage-3, which this check did not judge: evidence/stage-3/cards/S3-EX.11.json, evidence/stage-3/cards/S3-EX.13.json, evidence/stage-3/cards/S3-EX.14.json, evidence/stage-3/cards/S3-EX.2.json, evidence/stage-3/cards/S3-EX.8.json, evidence/stage-3/cards/S3-MV.1.json and 7 more",
+  "on the revision with every function emptied 119 of 190 test(s) failed; emptied were stage-3/app/handlers.py: _reservation_fields, stage-3/app/handlers.py: _raw_amendment_fields, stage-3/app/handlers.py: patch_reservation, stage-3/app/handlers.py: _validate_moves_shape, stage-3/app/store.py: Store.amend_reservation, stage-3/app/store.py: Store.reservation_moves, stage-3/app/validation.py: parse_patch_changes; log cards/s3-d0a504b.json.logs/revision-with-every-function-emptied.log",
+  "that the delivered tests can fail was shown by: test_moves_stale_expected_revision_wins_over_invalid_party_size, test_stale_expected_revision_wins_over_invalid_party_size failed while they ran on the base with delivered tests; test_moves_stale_expected_revision_wins_over_invalid_party_size, test_stale_expected_revision_wins_over_invalid_party_size failed while they ran on the revision with implementation reverted; test_moves_stale_expected_revision_wins_over_invalid_party_size, test_stale_expected_revision_wins_over_invalid_party_size failed while they ran on the revision with every function emptied"
+ ],
+ "frozen_ref": "7737dd4bbe8622d13dcbc7d818b2dbdd39410422",
+ "frozen_dir": "stage-2",
+ "emptied": [
+  "stage-3/app/handlers.py: _reservation_fields",
+  "stage-3/app/handlers.py: _raw_amendment_fields",
+  "stage-3/app/handlers.py: patch_reservation",
+  "stage-3/app/handlers.py: _validate_moves_shape",
+  "stage-3/app/store.py: Store.amend_reservation",
+  "stage-3/app/store.py: Store.reservation_moves",
+  "stage-3/app/validation.py: parse_patch_changes"
+ ]
+}
