@@ -1,0 +1,113 @@
+{
+ "card": "verdict",
+ "stage": 2,
+ "from": "falsifier",
+ "to": "implementer,coordinator",
+ "revision": "0eed3696a7d73c0e7f8499aac042ccbcfac7c62e",
+ "base": "9140db0b4b02f8f2e2e56b7d92419d61e164dd73",
+ "runs": [
+  {
+   "tree": "revision",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 67.36,
+   "log": "cards/s2-0eed369.json.logs/revision.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base with delivered tests",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 4,
+   "seconds": 1.12,
+   "log": "cards/s2-0eed369.json.logs/base-with-delivered-tests.log",
+   "runner": null,
+   "tests_run": null,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": "ConftestImportFailure: ModuleNotFoundError: No module named 'app' (from /tmp/falsify-yn9f0f9x/base/stage-2/tests/conftest.py)"
+  },
+  {
+   "tree": "revision with implementation reverted",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 4,
+   "seconds": 0.91,
+   "log": "cards/s2-0eed369.json.logs/revision-with-implementation-reverted.log",
+   "runner": null,
+   "tests_run": null,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": "ConftestImportFailure: ModuleNotFoundError: No module named 'app.server' (from /tmp/falsify-yn9f0f9x/reverted/stage-2/tests/conftest.py)"
+  },
+  {
+   "tree": "earlier stage with delivered tests",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 1,
+   "seconds": 67.16,
+   "log": "cards/s2-0eed369.json.logs/earlier-stage-with-delivered-tests.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 18,
+   "could_not_load": ""
+  },
+  {
+   "tree": "revision with every function emptied",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 124,
+   "seconds": 674.02,
+   "log": "cards/s2-0eed369.json.logs/revision-with-every-function-emptied.log",
+   "runner": null,
+   "tests_run": null,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": "",
+   "stopped_after": 674
+  }
+ ],
+ "findings": [
+  "frozen test changed without a spec-change note: stage-2/tests/test_idempotency.py: the body of test_concurrent_identical_requests_commit_exactly_once is not the one that was accepted"
+ ],
+ "verdict": "REJECT",
+ "at": "2026-10-04T15:39:51+00:00",
+ "notes": [
+  "a plain re-run of the listed command on the posted revision exits 0: the findings are what a plain re-run does not show",
+  "the base is 9140db0b4b02f8f2e2e56b7d92419d61e164dd73: the ledger accepted.jsonl holds it as the last accepted revision (stage 1)",
+  "the frozen tests are those of stage 1, read in stage-1 at 9140db0b4b02f8f2e2e56b7d92419d61e164dd73: the ledger accepted.jsonl holds it as the last revision accepted for that stage",
+  "the base holds no folder stage-2, so there was no run on the base as it was, and the numbers of tests were compared with nothing",
+  "the work also changed 26 file(s) outside stage-2, which this check did not judge: evidence/stage-1/cards/S1-4.2-opening-hours-no-midnight-cross.json, evidence/stage-1/cards/S1-8.30-patch-atomic-release-and-reserve.json, evidence/stage-1/stage-1.jsonl, evidence/stage-1/falsifier-cards/accepted.jsonl, evidence/stage-1/falsifier-cards/cards/s1-706e508.json, evidence/stage-1/falsifier-cards/cards/s1-706e508.json.logs/base-with-delivered-tests.log and 20 more",
+  "the run on the revision with every function emptied was stopped after 674 s, where the posted revision took 67.36 s: tests that wait on code which no longer answers count as failing",
+  "on the base with delivered tests the tests could not load (ConftestImportFailure: ModuleNotFoundError: No module named 'app' (from /tmp/falsify-yn9f0f9x/base/stage-2/tests/conftest.py)): no test got as far as failing, so this run does not show that the delivered tests can fail; log cards/s2-0eed369.json.logs/base-with-delivered-tests.log",
+  "on the revision with implementation reverted the tests could not load (ConftestImportFailure: ModuleNotFoundError: No module named 'app.server' (from /tmp/falsify-yn9f0f9x/reverted/stage-2/tests/conftest.py)): no test got as far as failing, so this run does not show that the delivered tests can fail; log cards/s2-0eed369.json.logs/revision-with-implementation-reverted.log",
+  "that the delivered tests can fail was shown by: test_available_options_excludes_undersized_pairs, test_available_options_lists_singles_then_pairs_in_combinable_order, test_booking_a_pair_returns_table_ids_without_table_id, test_booking_a_single_table_still_returns_table_id, test_both_table_id_and_table_ids_is_validation_failed, test_cancel_frees_every_table_in_the_set and 12 more failed while they ran on the earlier stage with delivered tests"
+ ],
+ "frozen_ref": "9140db0b4b02f8f2e2e56b7d92419d61e164dd73",
+ "frozen_dir": "stage-1",
+ "emptied": [
+  "stage-2/app/errors.py: combination_not_allowed",
+  "stage-2/app/handlers.py: _reservation_fields",
+  "stage-2/app/handlers.py: create_reservation",
+  "stage-2/app/handlers.py: _validate_moves_shape",
+  "stage-2/app/server.py: RequestHandler._serve_file",
+  "stage-2/app/server.py: RequestHandler._try_serve_web",
+  "stage-2/app/server.py: RequestHandler._dispatch",
+  "stage-2/app/store.py: _checked_combinable",
+  "stage-2/app/store.py: _seeded_table_ids",
+  "stage-2/app/store.py: Restaurant.combination_for",
+  "stage-2/app/store.py: Restaurant.to_detail_json",
+  "stage-2/app/store.py: Reservation.to_json",
+  "stage-2/app/store.py: Store.reset",
+  "stage-2/app/store.py: Store.export_state",
+  "stage-2/app/store.py: Store.import_state",
+  "stage-2/app/store.py: Store.availability",
+  "stage-2/app/store.py: Store._overlapping",
+  "stage-2/app/store.py: Store._resolve_and_validate",
+  "stage-2/app/store.py: Store.create_reservation",
+  "stage-2/app/store.py: Store.amend_reservation",
+  "stage-2/app/store.py: Store.reservation_moves",
+  "stage-2/app/validation.py: table_ids_field"
+ ]
+}

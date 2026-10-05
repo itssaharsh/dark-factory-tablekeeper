@@ -1,0 +1,414 @@
+............FFFFFFF.FFFFFFFFFFF......................................... [ 48%]
+........................................................................ [ 96%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_____ test_available_options_lists_singles_then_pairs_in_combinable_order ______
+
+reset = <function reset.<locals>._reset at 0x7425443c5800>
+anon = <httpclient.Client object at 0x742544271850>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544900860>, bob=<httpclient.Client object at 0x742544273290>)
+
+    def test_available_options_lists_singles_then_pairs_in_combinable_order(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        date = world.date
+        body = anon.get("/availability", params={
+            "restaurant_id": rid, "date": date, "party_size": 6}).body
+        slot = body["slots"][0]
+        assert slot["available_table_ids"] == ["t_3"]
+>       assert slot["available_options"] == [
+            {"table_ids": ["t_3"], "capacity": 6},
+            {"table_ids": ["t_1", "t_2"], "capacity": 6},
+            {"table_ids": ["t_2", "t_3"], "capacity": 10},
+        ]
+E       KeyError: 'available_options'
+
+tests/test_combinable_tables.py:37: KeyError
+_______________ test_available_options_excludes_undersized_pairs _______________
+
+reset = <function reset.<locals>._reset at 0x7425443c6200>
+anon = <httpclient.Client object at 0x742544270d40>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544501bb0>, bob=<httpclient.Client object at 0x742544272720>)
+
+    def test_available_options_excludes_undersized_pairs(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        body = anon.get("/availability", params={
+            "restaurant_id": rid, "date": world.date, "party_size": 7}).body
+        slot = body["slots"][0]
+        # only t_2+t_3 (capacity 10) is big enough; t_1+t_2 (capacity 6) is not
+>       assert slot["available_options"] == [{"table_ids": ["t_2", "t_3"], "capacity": 10}]
+E       KeyError: 'available_options'
+
+tests/test_combinable_tables.py:51: KeyError
+____________ test_booking_a_pair_returns_table_ids_without_table_id ____________
+
+reset = <function reset.<locals>._reset at 0x7425443c6340>
+anon = <httpclient.Client object at 0x742544273110>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544273320>, bob=<httpclient.Client object at 0x742544273bc0>)
+
+    def test_booking_a_pair_returns_table_ids_without_table_id(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_2", "t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 6}, idempotency_key=new_key())
+>       assert resp.status == 201
+E       AssertionError: assert 422 == 201
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'table_id is required'}}).status
+
+tests/test_combinable_tables.py:65: AssertionError
+______________ test_booking_a_single_table_still_returns_table_id ______________
+
+reset = <function reset.<locals>._reset at 0x7425443c6480>
+anon = <httpclient.Client object at 0x742544273fb0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544272e40>, bob=<httpclient.Client object at 0x742544272060>)
+
+    def test_booking_a_single_table_still_returns_table_id(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_3",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+        assert resp.status == 201
+>       assert resp.body["table_ids"] == ["t_3"]
+E       KeyError: 'table_ids'
+
+tests/test_combinable_tables.py:78: KeyError
+_______________ test_undeclared_pair_is_combination_not_allowed ________________
+
+reset = <function reset.<locals>._reset at 0x7425443c6340>
+anon = <httpclient.Client object at 0x7425442730b0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544503320>, bob=<httpclient.Client object at 0x7425442704d0>)
+
+    def test_undeclared_pair_is_combination_not_allowed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_3"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+        assert resp.status == 422
+>       assert resp.error_code == "combination_not_allowed"
+E       AssertionError: assert 'validation_failed' == 'combination_not_allowed'
+E         - combination_not_allowed
+E         + validation_failed
+
+tests/test_combinable_tables.py:90: AssertionError
+_______________________ test_combining_is_not_transitive _______________________
+
+reset = <function reset.<locals>._reset at 0x7425443c5bc0>
+anon = <httpclient.Client object at 0x742544270fb0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425442727b0>, bob=<httpclient.Client object at 0x7425442720c0>)
+
+    def test_combining_is_not_transitive(reset, anon, world):
+        """[t_1,t_2] and [t_2,t_3] declared does not make {t_1,t_3} bookable."""
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_3", "t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+        assert resp.status == 422
+>       assert resp.error_code == "combination_not_allowed"
+E       AssertionError: assert 'validation_failed' == 'combination_not_allowed'
+E         - combination_not_allowed
+E         + validation_failed
+
+tests/test_combinable_tables.py:102: AssertionError
+_____________ test_more_than_two_tables_is_combination_not_allowed _____________
+
+reset = <function reset.<locals>._reset at 0x7425443c6ca0>
+anon = <httpclient.Client object at 0x7425442731d0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x742544270b60>, bob=<httpclient.Client object at 0x7425442710a0>)
+
+    def test_more_than_two_tables_is_combination_not_allowed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2", "t_3"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+        assert resp.status == 422
+>       assert resp.error_code == "combination_not_allowed"
+E       AssertionError: assert 'validation_failed' == 'combination_not_allowed'
+E         - combination_not_allowed
+E         + validation_failed
+
+tests/test_combinable_tables.py:113: AssertionError
+____________ test_both_table_id_and_table_ids_is_validation_failed _____________
+
+reset = <function reset.<locals>._reset at 0x7425443c7420>
+anon = <httpclient.Client object at 0x7425443eaba0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443ea750>, bob=<httpclient.Client object at 0x7425443e8f20>)
+
+    def test_both_table_id_and_table_ids_is_validation_failed(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        resp = client.request("POST", "/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1", "table_ids": ["t_1"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key())
+>       assert resp.status == 422
+E       AssertionError: assert 201 == 422
+E        +  where 201 = Response(201, {'reservation_id': 'res_24231472bf5c727c6c89', 'reference': '73R79E40', 'restaurant_id': 'r_anker', 'tab...s_at': '2026-10-09T19:00:00+02:00', 'ends_at': '2026-10-09T20:30:00+02:00', 'created_at': '2026-10-04T15:53:00+00:00'}).status
+
+tests/test_combinable_tables.py:134: AssertionError
+______________________ test_party_size_vs_summed_capacity ______________________
+
+reset = <function reset.<locals>._reset at 0x7425443c6e80>
+anon = <httpclient.Client object at 0x7425443ea4e0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443eb890>, bob=<httpclient.Client object at 0x7425443e96d0>)
+
+    def test_party_size_vs_summed_capacity(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        ok = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],  # capacities 2+4=6
+            "starts_at_local": f"{world.date}T19:00", "party_size": 6}, idempotency_key=new_key())
+>       assert ok.status == 201
+E       AssertionError: assert 422 == 201
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'table_id is required'}}).status
+
+tests/test_combinable_tables.py:145: AssertionError
+____________ test_single_table_within_a_booked_pair_is_unavailable _____________
+
+reset = <function reset.<locals>._reset at 0x7425443c7880>
+anon = <httpclient.Client object at 0x7425443eb470>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443eb140>, bob=<httpclient.Client object at 0x7425443e80b0>)
+
+    def test_single_table_within_a_booked_pair_is_unavailable(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+>       assert client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).status == 201
+E       AssertionError: assert 422 == 201
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'table_id is required'}}).status
+E        +    where Response(422, {'error': {'code': 'validation_failed', 'message': 'table_id is required'}}) = <bound method Client.post of <httpclient.Client object at 0x742544270230>>('/reservations', json_body={'party_size': 4, 'restaurant_id': 'r_anker', 'starts_at_local': '2026-10-09T19:00', 'table_ids': ['t_1', 't_2']}, idempotency_key='d20b730dc50224f6')
+E        +      where <bound method Client.post of <httpclient.Client object at 0x742544270230>> = <httpclient.Client object at 0x742544270230>.post
+E        +      and   'd20b730dc50224f6' = new_key()
+
+tests/test_combinable_tables.py:157: AssertionError
+_____________ test_pair_overlapping_a_booked_single_is_unavailable _____________
+
+reset = <function reset.<locals>._reset at 0x7425443c79c0>
+anon = <httpclient.Client object at 0x7425443ea120>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443e8500>, bob=<httpclient.Client object at 0x7425443ebb30>)
+
+    def test_pair_overlapping_a_booked_single_is_unavailable(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        assert client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_2",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).status == 201
+        conflict = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key())
+>       assert conflict.status == 409
+E       AssertionError: assert 422 == 409
+E        +  where 422 = Response(422, {'error': {'code': 'validation_failed', 'message': 'table_id is required'}}).status
+
+tests/test_combinable_tables.py:177: AssertionError
+___________________ test_cancel_frees_every_table_in_the_set ___________________
+
+reset = <function reset.<locals>._reset at 0x7425443c7e20>
+anon = <httpclient.Client object at 0x7425443fd0a0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443eb920>, bob=<httpclient.Client object at 0x7425443ebad0>)
+
+    def test_cancel_frees_every_table_in_the_set(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).body
+>       client.post(f"/reservations/{booked['reference']}/cancel")
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:188: KeyError
+____________________ test_patch_can_change_to_a_combination ____________________
+
+reset = <function reset.<locals>._reset at 0x7425442e84a0>
+anon = <httpclient.Client object at 0x7425443fdc10>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443feed0>, bob=<httpclient.Client object at 0x7425443fe840>)
+
+    def test_patch_can_change_to_a_combination(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        resp = client.patch(f"/reservations/{booked['reference']}", json_body={
+            "table_ids": ["t_2", "t_3"], "party_size": 10})
+>       assert resp.status == 200
+E       assert 422 == 200
+E        +  where 422 = Response(422, {'error': {'code': 'party_exceeds_capacity', 'message': "party_size exceeds the table's capacity"}}).status
+
+tests/test_combinable_tables.py:204: AssertionError
+_____________________ test_moves_accept_table_ids_per_move _____________________
+
+reset = <function reset.<locals>._reset at 0x7425442e8900>
+anon = <httpclient.Client object at 0x7425443fef30>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443fd070>, bob=<httpclient.Client object at 0x7425443fd100>)
+
+    def test_moves_accept_table_ids_per_move(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        a = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        resp = client.post("/reservation-moves", json_body={
+            "moves": [{"reference": a["reference"], "table_ids": ["t_1", "t_2"], "party_size": 6}]},
+            idempotency_key=new_key())
+>       assert resp.status == 201
+E       assert 422 == 201
+E        +  where 422 = Response(422, {'error': {'code': 'party_exceeds_capacity', 'message': "party_size exceeds the table's capacity"}}).status
+
+tests/test_combinable_tables.py:219: AssertionError
+_________ test_moves_reject_overlap_among_resulting_combined_bookings __________
+
+reset = <function reset.<locals>._reset at 0x7425442e8ea0>
+anon = <httpclient.Client object at 0x7425443fd5e0>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443fd610>, bob=<httpclient.Client object at 0x7425443ff800>)
+
+    def test_moves_reject_overlap_among_resulting_combined_bookings(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        a = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_1",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        b = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_id": "t_3",
+            "starts_at_local": f"{world.date}T19:00", "party_size": 2}, idempotency_key=new_key()).body
+        # move a onto [t_2,t_3] -- overlaps b (t_3) which is also in this batch
+        resp = client.post("/reservation-moves", json_body={"moves": [
+            {"reference": a["reference"], "table_ids": ["t_2", "t_3"], "party_size": 6},
+        ]}, idempotency_key=new_key())
+>       assert resp.status == 409
+E       assert 422 == 409
+E        +  where 422 = Response(422, {'error': {'code': 'party_exceeds_capacity', 'message': "party_size exceeds the table's capacity"}}).status
+
+tests/test_combinable_tables.py:237: AssertionError
+_______________ test_fixture_may_seed_reservation_with_table_ids _______________
+
+reset = <function reset.<locals>._reset at 0x7425442e8220>
+anon = <httpclient.Client object at 0x7425442a5a30>
+
+    def test_fixture_may_seed_reservation_with_table_ids(reset, anon):
+>       reset({
+            "users": [{"id": "u_a", "email": "a@example.com", "password": "correct horse", "display_name": "A"}],
+            "restaurants": [{
+                "id": "r_x", "name": "X", "timezone": "UTC", "slot_minutes": 30,
+                "reservation_duration_minutes": 60, "cancellation_cutoff_minutes": 0,
+                "opening_hours": [{"weekday": d, "opens": "00:00", "closes": "23:00"}
+                                   for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun")],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}, {"id": "t_2", "label": "2", "capacity": 2}],
+                "combinable": [["t_1", "t_2"]],
+            }],
+            "reservations": [{
+                "id": "res_seed", "reference": "SEEDREF1", "user_id": "u_a",
+                "restaurant_id": "r_x", "table_ids": ["t_1", "t_2"],
+                "starts_at_local": "2026-01-05T10:00", "party_size": 4,
+            }],
+        })
+
+tests/test_combinable_tables.py:242: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fixture = {'reservations': [{'id': 'res_seed', 'party_size': 4, 'reference': 'SEEDREF1', 'restaurant_id': 'r_x', ...}], 'restaur...ame': 'X', ...}], 'users': [{'display_name': 'A', 'email': 'a@example.com', 'id': 'u_a', 'password': 'correct horse'}]}
+
+    def _reset(fixture: dict) -> dict:
+        resp = anon.post("/_test/reset", json_body=fixture)
+>       assert resp.status == 204, resp
+E       AssertionError: Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}})
+E       assert 500 == 204
+E        +  where 500 = Response(500, {'error': {'code': 'internal_error', 'message': 'unexpected server error'}}).status
+
+tests/conftest.py:41: AssertionError
+_________________ test_import_accepts_a_stage_1_shaped_export __________________
+
+reset = <function reset.<locals>._reset at 0x7425443c7100>
+anon = <httpclient.Client object at 0x7425443e8980>
+
+    def test_import_accepts_a_stage_1_shaped_export(reset, anon):
+        """A stage-1 export has no `combinable` and a singular `table_id` per reservation."""
+        stage1_state = {
+            "users": {"u_ada": {"id": "u_ada", "email": "ada@example.com",
+                                 "password_hash": "scrypt$16384$8$1$00$00", "display_name": "Ada"}},
+            "tokens": {"tok-ada": "u_ada"},
+            "restaurants": {"r_anker": {
+                "id": "r_anker", "name": "Zum Anker", "timezone": "Europe/Berlin",
+                "slot_minutes": 30, "reservation_duration_minutes": 90, "cancellation_cutoff_minutes": 120,
+                "opening_hours": [{"weekday": "mon", "opens": "18:00", "closes": "23:00"}],
+                "tables": [{"id": "t_1", "label": "1", "capacity": 2}],
+                # no "combinable" key at all -- this is the stage-1 shape
+            }},
+            "reservations": {"res_1": {
+                "id": "res_1", "reference": "OLDREF01", "user_id": "u_ada",
+                "restaurant_id": "r_anker", "table_id": "t_1",  # singular, no table_ids
+                "party_size": 2, "status": "confirmed", "starts_at_local": "2026-01-05T19:00",
+                "starts_at": "2026-01-05T18:00:00+00:00", "ends_at": "2026-01-05T19:30:00+00:00",
+                "created_at": "2026-01-01T00:00:00+00:00",
+            }},
+            "idempotency": [],
+        }
+        reset({"users": [], "restaurants": [], "reservations": []})
+        resp = anon.post("/_test/import", json_body={
+            "track": "tablekeeper", "format_version": 1, "state": stage1_state})
+        assert resp.status == 204
+        fetched = anon.with_token("tok-ada").get("/reservations/OLDREF01")
+        assert fetched.status == 200
+>       assert fetched.body["table_ids"] == ["t_1"]
+E       KeyError: 'table_ids'
+
+tests/test_combinable_tables.py:294: KeyError
+____________ test_export_import_preserves_combinable_and_table_ids _____________
+
+reset = <function reset.<locals>._reset at 0x7425443c6520>
+anon = <httpclient.Client object at 0x7425443e8470>
+world = namespace(fixture={'users': [{'id': 'u_ada', 'email': 'ada@example.com', 'password': 'correct horse', 'display_name': ... date='2026-10-09', ada=<httpclient.Client object at 0x7425443e8a40>, bob=<httpclient.Client object at 0x7425443e88f0>)
+
+    def test_export_import_preserves_combinable_and_table_ids(reset, anon, world):
+        fixture = _reset_combinable(reset)
+        rid = fixture["restaurants"][0]["id"]
+        client = anon.with_token(_login(anon, "ada@example.com"))
+        booked = client.post("/reservations", json_body={
+            "restaurant_id": rid, "table_ids": ["t_1", "t_2"],
+            "starts_at_local": f"{world.date}T19:00", "party_size": 4}, idempotency_key=new_key()).body
+        snapshot = anon.get("/_test/export").body
+        reset({"users": [], "restaurants": [], "reservations": []})
+        restored = anon.post("/_test/import", json_body=snapshot)
+        assert restored.status == 204
+>       refetched = client.get(f"/reservations/{booked['reference']}")
+E       KeyError: 'reference'
+
+tests/test_combinable_tables.py:311: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_combinable_tables.py::test_available_options_lists_singles_then_pairs_in_combinable_order
+FAILED tests/test_combinable_tables.py::test_available_options_excludes_undersized_pairs
+FAILED tests/test_combinable_tables.py::test_booking_a_pair_returns_table_ids_without_table_id
+FAILED tests/test_combinable_tables.py::test_booking_a_single_table_still_returns_table_id
+FAILED tests/test_combinable_tables.py::test_undeclared_pair_is_combination_not_allowed
+FAILED tests/test_combinable_tables.py::test_combining_is_not_transitive - As...
+FAILED tests/test_combinable_tables.py::test_more_than_two_tables_is_combination_not_allowed
+FAILED tests/test_combinable_tables.py::test_both_table_id_and_table_ids_is_validation_failed
+FAILED tests/test_combinable_tables.py::test_party_size_vs_summed_capacity - ...
+FAILED tests/test_combinable_tables.py::test_single_table_within_a_booked_pair_is_unavailable
+FAILED tests/test_combinable_tables.py::test_pair_overlapping_a_booked_single_is_unavailable
+FAILED tests/test_combinable_tables.py::test_cancel_frees_every_table_in_the_set
+FAILED tests/test_combinable_tables.py::test_patch_can_change_to_a_combination
+FAILED tests/test_combinable_tables.py::test_moves_accept_table_ids_per_move
+FAILED tests/test_combinable_tables.py::test_moves_reject_overlap_among_resulting_combined_bookings
+FAILED tests/test_combinable_tables.py::test_fixture_may_seed_reservation_with_table_ids
+FAILED tests/test_combinable_tables.py::test_import_accepts_a_stage_1_shaped_export
+FAILED tests/test_combinable_tables.py::test_export_import_preserves_combinable_and_table_ids
+18 failed, 132 passed in 66.74s (0:01:06)

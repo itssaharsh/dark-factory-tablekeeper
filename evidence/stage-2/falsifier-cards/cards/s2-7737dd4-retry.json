@@ -1,0 +1,49 @@
+{
+ "card": "verdict",
+ "stage": 2,
+ "from": "falsifier",
+ "to": "implementer,coordinator",
+ "revision": "7737dd4bbe8622d13dcbc7d818b2dbdd39410422",
+ "base": "f4668cdce76fe73136c1989dd57351ffc44055ce",
+ "runs": [
+  {
+   "tree": "revision",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 211.78,
+   "log": "cards/s2-7737dd4-retry.json.logs/revision.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base as it was",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 207.88,
+   "log": "cards/s2-7737dd4-retry.json.logs/base-as-it-was.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  }
+ ],
+ "findings": [],
+ "verdict": "ACCEPT",
+ "at": "2026-10-04T17:02:05+00:00",
+ "spec_change_notes": [
+  "stage-2/tests/test_idempotency.py: stage-2.md's POST /reservations says responses always carry table_ids (a list); stage-1's tuple(sorted(r.body.items())) dedup is unhashable against a list value, so the test compares json.dumps(r.body, sort_keys=True) instead, same intent (every concurrent response body identical). This change was already made and accepted on revision f4668cd (the current base); this revision (7737dd4) changed no test files at all."
+ ],
+ "notes": [
+  "a plain re-run of the listed command on the posted revision exits 0",
+  "the base is f4668cdce76fe73136c1989dd57351ffc44055ce: the ledger accepted.jsonl holds it as the last accepted revision (stage 2)",
+  "the frozen tests are those of stage 1, read in stage-1 at 9140db0b4b02f8f2e2e56b7d92419d61e164dd73: the ledger accepted.jsonl holds it as the last revision accepted for that stage",
+  "the work also changed 3 file(s) outside stage-2, which this check did not judge: evidence/stage-2/cards/BROWSER-PRIMARY-BUTTON.json, evidence/stage-2/stage-2-browser.py, evidence/stage-2/stage-2.jsonl",
+  "the work changed no test file, so the runs that ask whether delivered tests can fail were not made: on the base with delivered tests, on the revision with implementation reverted, on the revision with every function emptied"
+ ],
+ "frozen_ref": "9140db0b4b02f8f2e2e56b7d92419d61e164dd73",
+ "frozen_dir": "stage-1"
+}

@@ -1,0 +1,48 @@
+{
+ "card": "verdict",
+ "stage": 2,
+ "from": "falsifier",
+ "to": "implementer,coordinator",
+ "revision": "7737dd4bbe8622d13dcbc7d818b2dbdd39410422",
+ "base": "f4668cdce76fe73136c1989dd57351ffc44055ce",
+ "runs": [
+  {
+   "tree": "revision",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 61.9,
+   "log": "cards/s2-7737dd4.json.logs/revision.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  },
+  {
+   "tree": "base as it was",
+   "cmd": "python3 -m pytest -q",
+   "exit_code": 0,
+   "seconds": 64.36,
+   "log": "cards/s2-7737dd4.json.logs/base-as-it-was.log",
+   "runner": "pytest",
+   "tests_run": 150,
+   "tests_left_out": 0,
+   "tests_failed": 0,
+   "could_not_load": ""
+  }
+ ],
+ "findings": [
+  "frozen test changed without a spec-change note: stage-2/tests/test_idempotency.py: the body of test_concurrent_identical_requests_commit_exactly_once is not the one that was accepted"
+ ],
+ "verdict": "REJECT",
+ "at": "2026-10-04T16:33:09+00:00",
+ "notes": [
+  "a plain re-run of the listed command on the posted revision exits 0: the findings are what a plain re-run does not show",
+  "the base is f4668cdce76fe73136c1989dd57351ffc44055ce: the ledger accepted.jsonl holds it as the last accepted revision (stage 2)",
+  "the frozen tests are those of stage 1, read in stage-1 at 9140db0b4b02f8f2e2e56b7d92419d61e164dd73: the ledger accepted.jsonl holds it as the last revision accepted for that stage",
+  "the work also changed 3 file(s) outside stage-2, which this check did not judge: evidence/stage-2/cards/BROWSER-PRIMARY-BUTTON.json, evidence/stage-2/stage-2-browser.py, evidence/stage-2/stage-2.jsonl",
+  "the work changed no test file, so the runs that ask whether delivered tests can fail were not made: on the base with delivered tests, on the revision with implementation reverted, on the revision with every function emptied"
+ ],
+ "frozen_ref": "9140db0b4b02f8f2e2e56b7d92419d61e164dd73",
+ "frozen_dir": "stage-1"
+}
