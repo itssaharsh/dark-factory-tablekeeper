@@ -9,8 +9,11 @@
  "revision": "f4668cdce76fe73136c1989dd57351ffc44055ce",
  "expected": "holds, through the browser: Primary actions must be easy to identify.",
  "observed": "2 filled buttons visible on screen at once (['search-button', 'booking-submit']); the design brief calls for one filled button per screen",
- "status": "open",
+ "status": "closed",
  "at": "2026-10-04T16:20:55.116332+00:00",
+ "closed_at": "2026-10-05T08:30:41+00:00",
+ "closed_on_revision": "7737dd4bbe8622d13dcbc7d818b2dbdd39410422",
+ "observed_on_close": "search-button now carries class btn-ghost (not btn-fill) once a cell is chosen; booking-submit is the only btn-fill button visible. Confirmed by replaying `python3 checks/stage-2-browser.py --base-url <url> --only BROWSER-PRIMARY-BUTTON` 3 times in a row (PASS each run) against a freshly built-and-started container of revision 7737dd4bbe8622d13dcbc7d818b2dbdd39410422 (content-hash verified against git HEAD before running), and again as part of a full 27/27 browser-check and 170/170 HTTP-check run against the same container",
  "replay": {
   "steps": [
    {

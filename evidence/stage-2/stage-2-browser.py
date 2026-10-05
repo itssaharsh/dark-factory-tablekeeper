@@ -541,11 +541,21 @@ def _(page, base_url):
             }""", loc.element_handle())
         if not labelled:
             raise Finding(f"[data-testid={tid}] has no associated <label>, aria-label or aria-labelledby")
+    # A programmatic .focus() does not reliably trigger :focus-visible (it's the
+    # browser's own keyboard-vs-pointer heuristic); a real Tab keypress does, and
+    # is what the brief's "keyboard focus must be apparent" is actually about.
     search = page.locator('[data-testid="search-button"]')
-    search.focus()
-    outline = page.evaluate("(el) => getComputedStyle(el).outlineStyle", search.element_handle())
+    page.locator("body").click(position={"x": 1, "y": 1})
+    for _ in range(20):
+        active_testid = page.evaluate("() => document.activeElement && document.activeElement.getAttribute('data-testid')")
+        if active_testid == "search-button":
+            break
+        page.keyboard.press("Tab")
+    else:
+        raise Finding("could not reach search-button by tabbing through the page")
+    outline = page.evaluate("() => getComputedStyle(document.activeElement).outlineStyle")
     if outline == "none":
-        raise Finding("search-button has outlineStyle:none when focused; keyboard focus is not apparent")
+        raise Finding("search-button has outlineStyle:none when reached by keyboard Tab; keyboard focus is not apparent")
 
 
 # ---------------------------------------------------------------- primary action / combo labels
