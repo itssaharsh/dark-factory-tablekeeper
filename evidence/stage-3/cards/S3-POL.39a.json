@@ -248,7 +248,7 @@
  },
  "expected": "every expectation in the replay holds",
  "observed": "step 2 PATCH /reservations/CQK9T9NL: status: expected 409, observed 422; step 2 PATCH /reservations/CQK9T9NL: $.error.code: expected \"stale_revision\", observed \"validation_failed\"",
- "status": "open",
+ "status": "closed",
  "at": "2026-10-05T09:20:34+00:00",
  "trail": [
   {
@@ -302,5 +302,7 @@
     "body": "{\"error\": {\"code\": \"validation_failed\", \"message\": \"party_size must be at least 1\"}}"
    }
   }
- ]
+ ],
+ "closed_at": "2026-10-05T09:41:59+00:00",
+ "observed_on_close": "every expectation in the replay held"
 }
