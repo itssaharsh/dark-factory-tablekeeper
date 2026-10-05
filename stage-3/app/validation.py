@@ -124,6 +124,26 @@ def expected_revision_field(body: dict, *, name: str = "expected_revision") -> i
     return value
 
 
+def parse_patch_changes(raw: dict) -> dict:
+    """Validate the optional amendment fields already extracted from a request body.
+
+    Deliberately separate from request parsing so callers (store.amend_reservation,
+    store.reservation_moves) can run `expected_revision`'s stale-revision check first and
+    only then validate table_id/table_ids/starts_at_local/party_size -- stage-3 §Policies:
+    a stale `expected_revision` must win over the resulting fields' own validation.
+    """
+    out = {}
+    if "table_id" in raw or "table_ids" in raw:
+        table_ids = table_ids_field(raw, required=False)
+        if table_ids is not None:
+            out["table_ids"] = table_ids
+    if "starts_at_local" in raw:
+        out["starts_at_local"] = string_field(raw, "starts_at_local")
+    if "party_size" in raw:
+        out["party_size"] = party_size_field(raw)
+    return out
+
+
 def bounded_int_field(body: dict, name: str, lo: int, hi: int, *, required: bool = True) -> int | None:
     if name not in body or body[name] is None:
         if required:

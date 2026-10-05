@@ -238,6 +238,21 @@ def test_matching_expected_revision_succeeds(world, book):
     assert resp.status == 200 and resp.body["revision"] == 2, resp
 
 
+def test_stale_expected_revision_wins_over_invalid_party_size(world, book):
+    """stage-3 §Policies: stale_revision precedes cutoff/validation -- even a field's own
+    type/range check, not just cutoff and occupancy. Regression for verifier S3-POL.39a."""
+    ref = book(at="19:00").body["reference"]
+    resp = world.ada.patch(f"/reservations/{ref}", json_body={"expected_revision": 99, "party_size": -5})
+    assert resp.status == 409 and resp.error_code == "stale_revision", resp
+
+
+def test_moves_stale_expected_revision_wins_over_invalid_party_size(world, book):
+    ref = book(at="19:00").body["reference"]
+    body = {"moves": [{"reference": ref, "expected_revision": 99, "party_size": -5}]}
+    resp = world.ada.post("/reservation-moves", json_body=body, idempotency_key=new_key())
+    assert resp.status == 409 and resp.error_code == "stale_revision", resp
+
+
 # ---------------------------------------------------------------------------
 # Availability explanations
 # ---------------------------------------------------------------------------

@@ -106,7 +106,7 @@ def availability(store: Store, params: dict) -> tuple[int, dict]:
 # -- reservations ---------------------------------------------------------
 
 def _reservation_fields(body: dict, *, require_all: bool) -> dict:
-    """Validate the ordinary create/amend fields that are present in `body`."""
+    """Validate the ordinary create fields that are present in `body`."""
     out = {}
     if require_all or "restaurant_id" in body:
         out["restaurant_id"] = validation.string_field(body, "restaurant_id", required=require_all)
@@ -117,6 +117,25 @@ def _reservation_fields(body: dict, *, require_all: bool) -> dict:
     if require_all or "party_size" in body:
         out["party_size"] = validation.party_size_field(body, required=require_all)
     return {k: v for k, v in out.items() if v is not None}
+
+
+def _raw_amendment_fields(body: dict) -> dict:
+    """Extract the optional amendment fields present in `body`, unvalidated.
+
+    Validation is deferred to the store, which must check a stale `expected_revision`
+    before validating these fields (stage-3 §Policies: stale_revision "before
+    cutoff/validation") -- so this layer must not reject a bad party_size etc. first.
+    """
+    raw = {}
+    if "table_id" in body and body["table_id"] is not None:
+        raw["table_id"] = body["table_id"]
+    if "table_ids" in body and body["table_ids"] is not None:
+        raw["table_ids"] = body["table_ids"]
+    if "starts_at_local" in body and body["starts_at_local"] is not None:
+        raw["starts_at_local"] = body["starts_at_local"]
+    if "party_size" in body and body["party_size"] is not None:
+        raw["party_size"] = body["party_size"]
+    return raw
 
 
 def create_reservation(store: Store, user: User, headers, body: dict) -> tuple[int, dict]:
@@ -167,15 +186,21 @@ def cancel_reservation(store: Store, user: User, reference: str) -> tuple[int, d
 
 
 def patch_reservation(store: Store, user: User, reference: str, body: dict) -> tuple[int, dict]:
-    changes = _reservation_fields(body, require_all=False)
     expected_revision = validation.expected_revision_field(body)
-    reservation, restaurant = store.amend_reservation(user, reference, changes, expected_revision)
+    raw_changes = _raw_amendment_fields(body)
+    reservation, restaurant = store.amend_reservation(user, reference, raw_changes, expected_revision)
     return 200, reservation.to_json(restaurant.zone())
 
 
 # -- reservation moves ----------------------------------------------------
 
 def _validate_moves_shape(body: dict) -> list[dict]:
+    """Validate the `moves` array's own shape; leave each item's resulting fields raw.
+
+    Field validation (table_id/table_ids/starts_at_local/party_size) is deferred to the
+    store, which must check each item's `expected_revision` against its current revision
+    before validating those fields (same precedence rule as a single PATCH).
+    """
     moves = body.get("moves")
     if not isinstance(moves, list) or not (1 <= len(moves) <= MAX_MOVES):
         raise errors.validation_failed("moves must hold 1..8 items")
@@ -190,14 +215,7 @@ def _validate_moves_shape(body: dict) -> list[dict]:
         if reference in seen:
             raise errors.validation_failed("move references must be distinct")
         seen.add(reference)
-        move = {"reference": reference}
-        table_ids = validation.table_ids_field(item, required=False)
-        if table_ids is not None:
-            move["table_ids"] = table_ids
-        if "starts_at_local" in item and item["starts_at_local"] is not None:
-            move["starts_at_local"] = validation.string_field(item, "starts_at_local")
-        if "party_size" in item and item["party_size"] is not None:
-            move["party_size"] = validation.party_size_field(item)
+        move = {"reference": reference, "raw": _raw_amendment_fields(item)}
         expected_revision = validation.expected_revision_field(item)
         if expected_revision is not None:
             move["expected_revision"] = expected_revision

@@ -25,7 +25,7 @@ import threading
 from dataclasses import dataclass, field
 from zoneinfo import ZoneInfo
 
-from . import auth, errors, timeutil
+from . import auth, errors, timeutil, validation
 
 ID_MAX_LEN = 64
 _REFERENCE_RE = re.compile(r"^[A-Z0-9]{6,12}$")
@@ -923,7 +923,7 @@ class Store:
                         occ["exception"] = True
                         break
 
-    def amend_reservation(self, user: User, reference: str, changes: dict,
+    def amend_reservation(self, user: User, reference: str, raw_fields: dict,
                            expected_revision: int | None = None):
         with self.lock:
             reservation = self._find_owned(user, reference)
@@ -933,6 +933,9 @@ class Store:
             if expected_revision is not None and expected_revision != reservation.revision:
                 raise errors.stale_revision()
 
+            # Only now -- after the stale-revision gate -- validate the resulting fields
+            # themselves (stage-3 §Policies: stale_revision precedes cutoff/validation).
+            changes = validation.parse_patch_changes(raw_fields)
             raw_table_ids = changes.get("table_ids", reservation.table_ids)
             raw_starts_at_local = changes.get("starts_at_local", reservation.starts_at_local)
             raw_party_size = changes.get("party_size", reservation.party_size)
@@ -971,9 +974,11 @@ class Store:
                 expected_revision = m.get("expected_revision")
                 if expected_revision is not None and expected_revision != reservation.revision:
                     raise errors.stale_revision()
-                raw_table_ids = m.get("table_ids", reservation.table_ids)
-                raw_starts_at_local = m.get("starts_at_local", reservation.starts_at_local)
-                raw_party_size = m.get("party_size", reservation.party_size)
+                # Only now -- after the stale-revision gate -- validate this item's fields.
+                changes = validation.parse_patch_changes(m.get("raw", {}))
+                raw_table_ids = changes.get("table_ids", reservation.table_ids)
+                raw_starts_at_local = changes.get("starts_at_local", reservation.starts_at_local)
+                raw_party_size = changes.get("party_size", reservation.party_size)
                 if self._is_noop(reservation, raw_table_ids, raw_starts_at_local, raw_party_size):
                     planned.append({"reservation": reservation, "noop": True})
                     continue
