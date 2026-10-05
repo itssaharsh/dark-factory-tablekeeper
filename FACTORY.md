@@ -384,11 +384,11 @@ factory equipment, like the seat instruction files.
 
 No file under `stage-1/` to `stage-4/` was written or edited by hand:
 `git log --format='%an' -- stage-1 stage-2 stage-3 stage-4` returns `implementer` for all nine
-commits that touch a stage folder, and no other author appears. Across the whole repository there
-are twenty-five commits: nine by `implementer`, eleven by `verifier`, four by `falsifier`, and one
-by the human - the first commit, which laid down `README.md`, `FACTORY.md`, `mandates/`,
-`dispatch/`, `tools/` and `run/` before the band started. The run fields in this file and in
-`README.md` were filled in by the human after the run, as this section says they are.
+commits that touch a stage folder, and no other author appears there. The seats' commits across
+the whole repository are nine by `implementer`, eleven by `verifier` and four by `falsifier`. The
+human's are the first commit, which laid down `README.md`, `FACTORY.md`, `mandates/`, `dispatch/`,
+`tools/` and `run/` before the band started, and the commits made after the run that filled the
+run fields in this file and in `README.md`. None of them touches a stage folder.
 `git log --merges` is empty and the reflog holds no rebase: the history is as the seats made it.
 
 ## Point it at another problem
