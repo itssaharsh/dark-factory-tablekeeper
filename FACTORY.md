@@ -1,6 +1,8 @@
 # Factory
 
-[FILL FROM THE RUN: one line with the stage reached, the hours it took and the model spend]
+All four stages, every one accepted: 9 h 42 m of running time from the first dispatch to the
+last commit (25 h 04 m wall clock, of which a single 15.4-hour overnight stall), on six human
+messages. Model spend: [add from the Claude account].
 
 This factory has four seats. One coordinates, one builds and two check. The checking seats
 take nothing on the builder's word. One re-runs every committed revision on its own copy and tries to make
@@ -116,7 +118,7 @@ were rejected, and a base that was not the last accepted revision was refused.
 
 | Choice | Why | Cost |
 |---|---|---|
-| A checking seat on a second model family | a seat that checks with the model that built shares its blind spots | one more runtime to stand up: the verifier runs on an open-weights model through OpenCode, the others on Claude Code |
+| A checking seat on a second model family | a seat that checks with the model that built shares its blind spots | one more runtime to stand up, and it did not survive the run: the verifier was tried on an open-weights model (MiniMax-M2.5 through OpenCode), which passed its runtime test and answered in the practice room but could not finish a single turn on a full-size stage task in an hour, so the seat was moved back to Claude Code. The blind-spot argument stands; this second family did not. All four seats in the submitted run are Claude Code on claude-sonnet-5, as `mandates/` says |
 | Two of four seats only check | the builder's own tests are the weakest evidence, and most of each stage's checks are held back | every revision is handled by three seats; minutes per stage are in the table below |
 | The falsifier works on its own copy | a result pasted by the builder is a claim | one fresh clone and up to four test runs per revision |
 | The falsifier judges everything since the last revision it accepted | the builder commits often, and a deleted test can hide behind a later commit or behind a rejected one | the first handoff needs the starting revision on the card; one more test run per check |
@@ -134,10 +136,10 @@ were rejected, and a base that was not the last accepted revision was refused.
 
 | Stage | Minutes | Handoffs | Rejections | Findings opened | Findings closed by replay | Model spend |
 |---|---|---|---|---|---|---|
-| 1 | [FILL FROM THE RUN: minutes] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: spend] |
-| 2 | [FILL FROM THE RUN: minutes] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: spend] |
-| 3 | [FILL FROM THE RUN: minutes] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: spend] |
-| 4 | [FILL FROM THE RUN: minutes] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: count] | [FILL FROM THE RUN: spend] |
+| 1 | 173 | 6 | 0 | 5 | 3 | [add from the account] |
+| 2 | 1157 (233 without the overnight stall) | 3 | 2 | 1 | 1 | [add from the account] |
+| 3 | 73 | 2 | 0 | 12 | 1 | [add from the account] |
+| 4 | 100 | 1 | 0 | 22 | 0 | [add from the account] |
 
 [FILL FROM THE RUN: the table per seat that `tools/preflight.py` prints]
 
@@ -147,9 +149,41 @@ the provider's usage page. Delete the rows for stages that were not reached.
 
 ## What the run caught
 
-[FILL FROM THE RUN: each rejection and each finding, with its check id, what it said and the revision that fixed it]
+Two rejections, both in stage 2, and five findings the verifier opened and then closed on replay.
 
-Faults planted or staged to make a check fire: [FILL FROM THE RUN: "none", if every final report says so]
+**The rejections.** Both came from the same check: a test frozen by an earlier accepted stage may
+not change unless a note names the requirement that forced it.
+
+- `0eed3696` (2026-10-04 15:39 UTC) — REJECT, *frozen test changed without a spec-change note*.
+  The body of `test_concurrent_identical_requests_commit_exactly_once` in
+  `stage-2/tests/test_idempotency.py` was not the body accepted for stage 1, and nothing in
+  `stage-2.md` or the design brief asked for the change. The suite itself was green: a plain
+  `python3 -m pytest -q` on the posted revision exited 0, so only the comparison with the frozen
+  stage-1 test showed it. The implementer restored the accepted body and `f4668cdc` was accepted
+  at 16:04 UTC.
+- `7737dd4b` (16:33 UTC) — REJECT on the same check, and this time the change was justified.
+  Stage 2 makes `table_ids` a list, which is unhashable, so stage 1's
+  `tuple(sorted(r.body.items()))` could not dedupe the concurrent responses; the test compared
+  `json.dumps(r.body, sort_keys=True)` instead, with the same intent. The implementer gave that
+  as a spec-change note, the falsifier re-ran the check with the note, and **the same revision
+  `7737dd4b` was accepted** at 17:02 UTC. A frozen test may change. It may not change silently.
+
+**The findings.** Each was raised against a revision, replayed after the fix, and closed only when
+every expectation in the replay held.
+
+| check id | what it said | found on | closed |
+|---|---|---|---|
+| `S1-1.1b-restaurant-scope` | a table id in one restaurant collided with the same id in another: the second booking got 409 `table_unavailable` where 201 was due | `706e5085` | 2026-10-04 12:57 UTC |
+| `S1-8.POST-reservations-reference-shape-on-reset` | a seeded reference outside 6-12 characters of A-Z0-9 was accepted: reset answered 204 where 422 was due | `706e5085` | 2026-10-04 12:57 UTC |
+| `S1-4.2-opening-hours-no-midnight-cross` | opening hours that cross midnight were accepted: reset answered 204 where 422 was due | `933db32b` | 2026-10-04 13:13 UTC |
+| `BROWSER-PRIMARY-BUTTON` | two filled buttons on one screen (`search-button`, `booking-submit`) against the design brief's one | `7737dd4b` | 2026-10-05 08:30 UTC |
+| `S3-POL.39a` | a stale revision number answered 422 `validation_failed` where 409 `stale_revision` was due: precedence between the two checks was the wrong way round | `e6f95ec7` | 2026-10-05 09:41 UTC |
+
+Thirty-five further cards were opened and then withdrawn by the verifier itself, most of them in
+stage 4, when a replay showed the fault was in its own `series_setup` test helper rather than in
+the service. The withdrawal reason is on each card.
+
+Faults planted or staged to make a check fire: **none**. Nothing was broken on purpose to give a checking seat something to find. Every rejection and every finding above came out of the written requirements against the code the implementer actually wrote.
 
 ## What failed
 
@@ -255,7 +289,40 @@ These happened while the tools were built and tested, before any seat ran:
   design were shown stills of a mock, one after another. They found two buttons that both seemed to book, "Taken" on tables that were only too
   small, and messages too pale to notice. The brief in `dispatch/stage-2.md` was rewritten.
 
-In the run: [FILL FROM THE RUN: what did not work, including anything a seat gave up on, and any earlier run that was replaced by this one]
+In the run:
+
+- **The second model family did not survive.** The verifier was meant to check on a different
+  model from the one that built. It was set up on MiniMax-M2.5 through OpenCode, passed its
+  runtime test and answered in the practice room, but could not finish a single turn on a
+  full-size stage task in an hour. The seat was moved back to Claude Code before the submitted
+  run, so all four seats are Claude Code on claude-sonnet-5.
+- **The room went quiet twice, and both times a human had to restart the seats.** A seat finished
+  a turn whose message never reached the room, so everyone waited on it: 88 minutes on 4 October
+  and fifteen hours overnight into 5 October. The two process notes in the room are those
+  restarts. Nothing was lost - each seat's work was already on disk in its own folder, and the
+  notes asked the seat to report it rather than redo it - but the factory cannot yet notice its
+  own silence from inside. `run/` now carries a watchdog that restarts a seat when the room has
+  had no message for thirty minutes.
+- **The verifier spent a stage arguing with its own tooling.** All twenty-two stage-4 cards were
+  withdrawn once it traced the failures to a conditional save in its own `series_setup` helper
+  rather than to the service. It caught that itself, before anyone acted on the cards, which is
+  the right failure - but thirty-five of forty findings across the run were withdrawn, and that
+  is not free.
+- **The checks are API-level, and a browser defect got through.** On every screen the navigation
+  shows "Log in" and "Sign up" beside "Log out" while a user is signed in, because
+  `renderHeader()` sets the `hidden` attribute on those links while `.nav-link { display: flex }`
+  in `app.css` overrides it and no `[hidden] { display: none }` rule exists. The verifier wrote
+  itself a browser companion when its own tool could not see a page, and used it to catch two
+  filled buttons against the design brief - but it checks the brief's rules, not an HTML
+  attribute losing to a CSS declaration. The defect is still in the accepted build, deliberately:
+  a stage file a human edits stops counting.
+- **The organisers' harness would not run in host mode on this machine.** Every run, by every
+  seat, is `--mode isolated`, which is the mode the entry is graded in. The cause was Docker
+  Desktop's Windows-to-Linux port relay wedging, not the port range; it cleared after Docker
+  Desktop was restarted, and both modes work now.
+
+Earlier runs on the real track, made while the factory was still being built, are not this run
+and are not submitted. The practice run on the toy track is described above.
 
 ## Limits
 
@@ -316,7 +383,13 @@ assistant, and tested against a practice counter. The band did not write them. T
 factory equipment, like the seat instruction files.
 
 No file under `stage-1/` to `stage-4/` was written or edited by hand:
-[FILL FROM THE RUN: confirm from the Git history that every commit under the stage folders carries a seat's name as author, and say which commits are the human's]
+`git log --format='%an' -- stage-1 stage-2 stage-3 stage-4` returns `implementer` for all nine
+commits that touch a stage folder, and no other author appears. Across the whole repository there
+are twenty-five commits: nine by `implementer`, eleven by `verifier`, four by `falsifier`, and one
+by the human - the first commit, which laid down `README.md`, `FACTORY.md`, `mandates/`,
+`dispatch/`, `tools/` and `run/` before the band started. The run fields in this file and in
+`README.md` were filled in by the human after the run, as this section says they are.
+`git log --merges` is empty and the reflog holds no rebase: the history is as the seats made it.
 
 ## Point it at another problem
 

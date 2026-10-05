@@ -1,19 +1,26 @@
-# [FILL FROM THE RUN: team name] - Dark Factory entry
+# Saharsh Tibrewala - Dark Factory entry
 
 | | |
 |---|---|
 | Event | WeAreDevelopers x BAND, Dark Factory (hackathon edition) |
 | Track | tablekeeper |
-| Stage reached | [FILL FROM THE RUN: highest stage folder that claims its stage on the supplied checks] |
+| Stage reached | **4** - `python -m harness run --track tablekeeper --repo <fresh clone> --all --mode isolated` prints `claimed stage: 4 on the shipped checks` |
 | Seats | coordinator, implementer, falsifier, verifier |
-| Video | [FILL FROM THE RUN: link] |
-| Presentation | [FILL FROM THE RUN: link] |
+| Video | [add the link once uploaded] |
+| Presentation | [add the link once uploaded] |
 
 ## How the code was made
 
-- [FILL FROM THE RUN: "Every file under the stage folders was written by the four seats in one BAND Desktop room", once the Git authors confirm it]
-- [FILL FROM THE RUN: "The human sent one message per stage and nothing else", once `tools/preflight.py` counts one human message per stage folder; otherwise say what else was sent]
-- [FILL FROM THE RUN: "The history is as the seats made it: nothing was amended, rebased or squashed", or say what was changed and why]
+- Every file under the stage folders was written by the four seats in one BAND Desktop room.
+  `git log --format=%an -- stage-1 stage-2 stage-3 stage-4` returns `implementer` for all nine
+  commits that touch a stage folder, and for no other author.
+- The human sent **six** messages in all: the four stage dispatches, and two process notes, at
+  2026-10-04 12:36 UTC and 2026-10-05 08:26 UTC. Each note opens by naming itself as a process
+  note and says nothing about the service or what to check. Both were sent after a seat ended a
+  turn whose message never reached the room, leaving the others waiting; they say that the seats
+  were restarted and ask the seat to report work it had already finished rather than redo it.
+- The history is as the seats made it: nothing was amended, rebased or squashed.
+  `git log --merges` is empty and the reflog holds no rebase.
 - The human wrote `README.md`, `FACTORY.md`, the files in `mandates/`, `dispatch/` and `tools/`, and the first commit.
 
 ## How to read this repository
@@ -25,7 +32,7 @@
 | `dispatch/` | the message sent to the coordinator for each stage |
 | `tools/` | the programs the checking seats call; commands in `tools/README.md` |
 | `stage-1/` to `stage-4/` | one complete service per stage, each with a `Dockerfile` and a `RUN.md`; only the stages that were reached are present |
-| `evidence/stage-N/` | [FILL FROM THE RUN: "the verifier's check list and cards, and the falsifier's verdict cards, for that stage", once they were copied into it; otherwise remove this row] |
+| `evidence/stage-N/` | the verifier's check list and cards, and the falsifier's verdict cards with their run logs, for that stage |
 | `room.json` | the whole room as downloaded from BAND, unchanged |
 
 ## Run a stage
